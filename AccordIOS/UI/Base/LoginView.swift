@@ -79,58 +79,65 @@ struct LoginView: View {
             switch viewModel.state {
             case .initial:
                 VStack {
-                    Text("Welcome to Accord")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .padding(.bottom, 5)
-                        .padding(.top)
-                    Text("Choose how you want to login")
-                        .foregroundColor(Color.secondary)
-                        .padding(.bottom)
-                    TextField("Email", text: $email)
-                        .frame(width: 1)
-                    SecureField("Password", text: $password)
-                    TextField("Token (optional)", text: $token)
-                    TextField("Proxy IP (optional)", text: $proxyIP)
-                    TextField("Proxy Port (optional)", text: $proxyPort)
-                    if let error = error {
-                        Text(error)
-                            .foregroundColor(Color.red)
-                            .font(.subheadline)
-                    }
-                    HStack {
-                        Spacer()
-                        Button("Cancel") {
-                            exit(EXIT_SUCCESS)
+                    VStack {
+                        Text("Welcome to Accord")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.bottom, 5)
+                            .padding(.top)
+                        
+                        Text("Choose how you want to login")
+                            .foregroundColor(Color.secondary)
+                            .padding(.bottom)
+                        TextField("Email", text: $email)
+                        SecureField("Password", text: $password)
+                        TextField("Token (optional)", text: $token)
+                        TextField("Proxy IP (optional)", text: $proxyIP)
+                        TextField("Proxy Port (optional)", text: $proxyPort)
+                        if let error = error {
+                            Text(error)
+                                .foregroundColor(Color.red)
+                                .font(.subheadline)
                         }
-                        .controlSize(.large)
-                        Button("Login") {
-                            UserDefaults.standard.set(self.proxyIP, forKey: "proxyIP")
-                            UserDefaults.standard.set(self.proxyPort, forKey: "proxyPort")
-                            if token != "" {
-                                UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                               
-                                AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                              //  KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
-                               // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                UIApplication.shared.restart()
-                            } else {
-                                do {
-                                    try viewModel.login(email, password, twofactor)
-                                } catch {
-                                    switch error {
-                                    case DiscordLoginErrors.invalidForm:
-                                        self.error = "Invalid login and/or password"
-                                    default:
-                                        self.error = "An error occured"
+                        
+                        HStack {
+                            Spacer()
+                            Button("Cancel") {
+                                exit(EXIT_SUCCESS)
+                            }
+                            .controlSize(.large)
+                            
+                            Button("Login") {
+                                UserDefaults.standard.set(self.proxyIP, forKey: "proxyIP")
+                                UserDefaults.standard.set(self.proxyPort, forKey: "proxyPort")
+                                if token != "" {
+                                    UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
+                                   
+                                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                  //  KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
+                                   // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                    UIApplication.shared.restart()
+                                } else {
+                                    do {
+                                        try viewModel.login(email, password, twofactor)
+                                    } catch {
+                                        switch error {
+                                        case DiscordLoginErrors.invalidForm:
+                                            self.error = "Invalid login and/or password"
+                                        default:
+                                            self.error = "An error occured"
+                                        }
                                     }
                                 }
+                                print("logging in")
                             }
-                            print("logging in")
+                            .controlSize(.large)
+                            Spacer()
                         }
-                        .controlSize(.large)
+                        .padding(.top)
                     }
-                    .padding(.top, 5)
+                    .frame(width: 300, height: 100)
+                    
                 }
                 .transition(AnyTransition.moveAway)
                 //.textFieldStyle(RoundedBorderTextFieldStyle())
@@ -147,9 +154,8 @@ struct LoginView: View {
                     SecureField("Six-digit MFA code", text: $twofactor)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .frame(width: 100)
-                    Spacer()
+                        .padding(.bottom, 20)
                     HStack {
-                        Spacer()
                         Button("Login") {
                             if let ticket = viewModel.ticket {
                                 Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/mfa/totp"), headers: Headers(userAgent: discordUserAgent,

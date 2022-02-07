@@ -75,7 +75,7 @@ final class Headers {
             "browser": "Discord Client",
             "release_channel": "stable",
             "client_version": "0.0.264",
-            //"os_version": NSWorkspace.kernelVersion,
+            "os_version": UIApplication.kernelVersion,
             "os_arch": "x64",
             "system_locale": "\(NSLocale.current.languageCode ?? "en")-\(NSLocale.current.regionCode ?? "US")",
             "client_build_number": dscVersion,
