@@ -1,45 +1,14 @@
-## Accord
-A faster discord client for your Mac. 
+## AccordiOS
+A port of Accord from macOS to iOS.
 
-### OS Requirement
+This app is currently the bare minimum i could to get working after solving 172 errors.
 
-Recommended: macOS Monterey
-* Has Markdown support for messages
-* Much more stable
-* Fully tested
+### Notices
+The UI needs an overhaul so it works and fits on the iPhone, currently its designed for the Mac.
 
-Minimum requirement: macOS Big Sur
-* Untested
-* Many features are missing
-* Performance issues 
-<sup>
-If you want to help and have a macOS Big Sur device, PRs are welcomed
-</sup>
+I am currently storing the token in user default as I am having issues with getting the token to save in keychain, I hope this can be rectified soon.
 
-### Building
-Xcode is required.
-1. Download the project and open it in Xcode 
-2. In the project settings, select Signing & Capabilities tab, select your development team and input a new bundle id.
-3. Open your terminal app and cd into the directory. 
-4. Run `xcodebuild` 
+A lot of code has either been modified or removed in order to get it working on iOS, I intend to slowly add the code that I have removed however in the meantime compare the code to [Accord](https://github.com/evelyneee/accord) to see what has been removed.
 
-The built product will be in the `build/Release` directory
-
-### Licensing
-tbd
-
-### TestFlight
-
-[Join the Accord TestFlight](https://testflight.apple.com/join/YmTwJT8u)
-
-### Support
-
-[Discord Server](https://discord.gg/nUGnmA9yFH)
-
-### Latest testflight description
-
-Welcome to the first Accord beta. 
-
-This beta has a few known issues: 
-- Many features are disabled due to them being unfinished
-- Login will not work in a new location. To log in, you must open a private browser tab, log in to the account and try again
+### Disclaimer
+I am not responsible for anything that may happen to your Discord account while this app is in development. 
