@@ -114,6 +114,28 @@ struct FastButton<Content: View>: View {
     }
 }
 
+struct WebVideoPlayer: UIViewRepresentable {
+    init(url: URL) {
+        self.url = url
+    }
+
+    let url: URL
+
+    func makeUIView(context _: Context) -> WKWebView {
+        var webView = WKWebView()
+        let webConfiguration = WKWebViewConfiguration()
+        webConfiguration.mediaTypesRequiringUserActionForPlayback = []
+
+        webView = WKWebView(frame: .zero, configuration: webConfiguration)
+        let html = "<video playsinline controls width=\"100%\" src=\"\(url.absoluteString)\"> </video>"
+        webView.loadHTMLString(html, baseURL: url)
+        print(html, webView)
+        return webView
+    }
+
+    func updateUIView(_: WKWebView, context _: Context) {}
+}
+
 extension GridItem {
     static func multiple(count: Int, size: Self.Size = .flexible(), spacing: CGFloat? = nil, alignment: SwiftUI.Alignment? = nil) -> [GridItem] {
         Array(repeating: GridItem(size, spacing: spacing, alignment: alignment), count: count)

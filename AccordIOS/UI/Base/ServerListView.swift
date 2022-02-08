@@ -119,7 +119,7 @@ struct ServerListView: View {
         }) {
             Image(systemName: "bubble.left.fill")
                 .frame(width: 45, height: 45)
-                .background(Color.gray.blur(radius: 0.5))
+                .background(VisualEffectView(effect: UIBlurEffect(style: .regular)))
                 .cornerRadius(selectedServer == 999 ? 15.0 : 23.5)
         }
         lazy var onlineButton: some View = Button("Offline") {
@@ -179,6 +179,16 @@ struct ServerListView: View {
             }
         }
         
+        lazy var settingsLink: some View = NavigationLink(destination: NavigationLazyView(SettingsViewRedesign()), tag: 1, selection: self.$selection) {
+            ZStack(alignment: .bottomTrailing) {
+                Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
+                    .scaledToFit()
+                    .clipShape(Circle())
+                    .frame(width: 45, height: 45)
+                statusIndicator
+            }
+        }
+        
         return NavigationView {
             HStack(spacing: 0) {
                 ScrollView(.vertical, showsIndicators: false) {
@@ -187,7 +197,15 @@ struct ServerListView: View {
                         if !online || !NetworkCore.shared.connected {
                             onlineButton
                         }
+                        Text("Hello")
+                        Text("Hello")
+                        Text("Hello")
+                        Text("Hello")
+                        Text("Hello")
+                        
                         dmButton
+                        foldersList()
+                        settingsLink
                     }
                     .padding(.vertical)
                 }
@@ -288,3 +306,4 @@ struct ServerListView: View {
         }
     }
 }
+

@@ -56,7 +56,7 @@ struct MessageCellView: View {
 
                 VStack(alignment: .leading) {
                     if message.isSameAuthor, message.referenced_message == nil {
-                        Text("AsyncMarkdown was supposed to be here but it isnt")
+                        AsyncMarkdown(message.content)
                             .padding(.leading, 41)
                     } else {
                         Text(nick ?? message.author?.username ?? "Unknown User")

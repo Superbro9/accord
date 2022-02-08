@@ -7,7 +7,6 @@
 
 import UIKit
 import Combine
-import Darwin
 import Foundation
 import Network
 import SwiftUI
@@ -174,6 +173,7 @@ public final class Request {
         }()
         guard var request = request else { return completion(nil, FetchErrors.invalidRequest) }
         var config = URLSessionConfiguration.default
+
         guard !(wss != nil && headers?.discordHeaders == true && wss?.connection?.state != NWConnection.State.ready) else {
             print("No active websocket connection")
             return
@@ -221,6 +221,7 @@ public final class Request {
         }()
         guard var request = request else { return completion(nil, FetchErrors.invalidRequest) }
         var config = URLSessionConfiguration.default
+        
         guard !(wss != nil && headers?.discordHeaders == true && wss?.connection?.state != NWConnection.State.ready) else {
             print("No active websocket connection")
             return
@@ -243,6 +244,31 @@ public final class Request {
     }
 
     // MARK: - Image getter
+    
+    class func image(url: URL?, to size: CGSize? = nil, completion: @escaping ((_ value: UIImage?) -> Void)) {
+        guard let url = url else { return completion(nil) }
+        let request = URLRequest(url: url)
+        if let cachedImage = cache.cachedResponse(for: request) {
+            return completion(UIImage(data: cachedImage.data) ?? UIImage())
+        }
+        URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+            guard let data = data,
+                  let imageData = UIImage(data: data)?.downsample(image: UIImage(data: data)!, to: size),
+                  let image = UIImage(data: imageData)
+            else {
+                print(error?.localizedDescription ?? "unknown error")
+                if let data = data {
+                    cache.storeCachedResponse(CachedURLResponse(response: response!, data: data), for: request)
+                    return completion(UIImage(data: data))
+                } else {
+                    print("load failed")
+                    return completion(nil)
+                }
+            }
+            cache.storeCachedResponse(CachedURLResponse(response: response!, data: imageData), for: request)
+            return completion(image)
+        }).resume()
+    }
 }
 
 public final class RequestPublisher {

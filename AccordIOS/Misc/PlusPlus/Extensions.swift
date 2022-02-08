@@ -117,7 +117,6 @@ extension Color {
     return res
 }
 
-@available(macOS 11.0, *)
 struct Folder<Content: View>: View {
     @State var icon: [Guild]
     @State var color: UIColor
@@ -298,7 +297,7 @@ extension DispatchQueue {
         }
     }
 
-    @available(*, unavailable)
+    
     func asyncWithAnimation(_ perform: @escaping () -> Void) {
         async {
             withAnimation {
@@ -307,7 +306,7 @@ extension DispatchQueue {
         }
     }
 
-    @available(*, unavailable)
+    
     func asyncAfterWithAnimation(deadline: DispatchTime, _ perform: @escaping () -> Void) {
         asyncAfter(deadline: deadline) {
             withAnimation {

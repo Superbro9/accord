@@ -252,6 +252,7 @@ final class Gateway {
                         switch closeMessage {
                         case "Authentication failed.":
                             logOut()
+                            UIApplication.shared.restart()
                         default: break
                         }
                     } else {
