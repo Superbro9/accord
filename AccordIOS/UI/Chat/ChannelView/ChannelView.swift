@@ -106,6 +106,7 @@ struct ChannelView: View, Equatable {
                     .rotationEffect(.init(degrees: 180))
                     .if(metalRenderer, transform: { $0.drawingGroup() })
                 }
+                .listStyle(PlainListStyle())
                 .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
                 .rotationEffect(.init(degrees: 180))
                 blurredTextField
