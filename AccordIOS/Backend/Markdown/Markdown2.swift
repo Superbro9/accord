@@ -122,7 +122,7 @@ public final class Markdown {
                 return promise(.success(Text(word) + Text(" ")))
             }
             do {
-                if #available(macOS 12, *) {
+                if #available(iOS 15.0, *) {
                     let markdown = try AttributedString(markdown: word)
                     return promise(.success(Text(markdown) + Text(" ")))
                 } else { throw MarkdownErrors.unsupported }

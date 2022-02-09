@@ -13,12 +13,11 @@ struct ChatControls: View {
     enum FocusedElements: Hashable {
       case mainTextField
     }
-    
-    @available(macOS 12.0, *)
+    @available(iOS 15.0, *)
     @FocusState private var focusedField: FocusedElements?
     
     @State var chatTextFieldContents: String = ""
-    @State var pfps: [String: NSImage] = [:]
+    @State var pfps: [String: UIImage] = [:]
     @Binding var guildID: String
     @Binding var channelID: String
     @Binding var chatText: String
@@ -29,11 +28,10 @@ struct ChatControls: View {
     @Binding var fileUpload: Data?
     @Binding var fileUploadURL: URL?
     @State var dragOver: Bool = false
-    @State var pluginPoppedUp: [Bool] = Array(repeating: false, count: AccordCoreVars.plugins.count)
     @Binding var users: [User]
     @StateObject var viewModel = ChatControlsViewModel()
     @State var typing: Bool = false
-    weak var textField: NSTextField?
+    weak var textField: UITextField?
     @AppStorage("Nitroless") var nitrolessEnabled: Bool = false
 
     private func send() {
@@ -51,7 +49,7 @@ struct ChatControls: View {
             } else {
                 viewModel.send(text: viewModel.textFieldContents, guildID: guildID, channelID: channelID)
             }
-            if #available(macOS 12.0, *) {
+            if #available(iOS 15.0, *) {
                 DispatchQueue.main.async {
                     self.focusedField = .mainTextField
                 }
@@ -119,7 +117,7 @@ struct ChatControls: View {
                         .padding(.bottom, 7)
                     }
                     HStack {
-                        if #available(macOS 12.0, *) {
+                        if #available(iOS 15.0, *) {
                             TextField(viewModel.percent ?? chatText, text: $viewModel.textFieldContents)
                                 .focused($focusedField, equals: .mainTextField)
                                 .onSubmit {
@@ -206,7 +204,6 @@ struct ChatControls: View {
                                 typing = false
                             }
                         }
-                        viewModel?.markdown()
                         textQueue.async {
                             viewModel?.checkText(guildID: guildID)
                         }
@@ -247,3 +244,4 @@ extension Array where Element: Hashable {
         self = removingDuplicates()
     }
 }
+

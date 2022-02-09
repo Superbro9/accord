@@ -47,7 +47,7 @@ extension ChannelView {
             )
             .padding(13)
         }
-        .background(VisualEffectView(material: NSVisualEffectView.Material.sidebar, blendingMode: NSVisualEffectView.BlendingMode.withinWindow)) // blurred background
+        .background(VisualEffectView(effect: UIBlurEffect(style: .regular)))
         .clipShape(RoundedCorners(tl: replyingTo != nil || !typing.isEmpty ? 7 : 12, tr: replyingTo != nil || !typing.isEmpty ? 7 : 12, bl: 12, br: 12))
         .padding(12)
         .padding(.bottom, 2)

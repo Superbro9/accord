@@ -22,7 +22,7 @@ struct NitrolessEmote: Decodable {
 }
 
 // actual view
-@available(macOS 11.0, *)
+@available(iOS 15.0, *)
 struct NitrolessView: View, Equatable {
     static func == (_: NitrolessView, _: NitrolessView) -> Bool {
         true

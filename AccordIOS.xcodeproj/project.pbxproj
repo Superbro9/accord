@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		8934607E27B1ACCC00BD681F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8934607D27B1ACCC00BD681F /* SettingsView.swift */; };
+		8984EECA27B43E4E0025AEC5 /* ChannelView+TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EEC927B43E4E0025AEC5 /* ChannelView+TextField.swift */; };
+		8984EECC27B43E6D0025AEC5 /* ChatControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */; };
+		8984EECE27B43E830025AEC5 /* ChatControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */; };
+		8984EED227B4454C0025AEC5 /* AttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EED127B4454C0025AEC5 /* AttachmentView.swift */; };
 		8991164027AFEF3800FFDE93 /* AccordIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8991163F27AFEF3800FFDE93 /* AccordIOSApp.swift */; };
 		8991164227AFEF3800FFDE93 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8991164127AFEF3800FFDE93 /* ContentView.swift */; };
 		8991164427AFEF3800FFDE93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8991164327AFEF3800FFDE93 /* Assets.xcassets */; };
@@ -86,6 +90,10 @@
 
 /* Begin PBXFileReference section */
 		8934607D27B1ACCC00BD681F /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8984EEC927B43E4E0025AEC5 /* ChannelView+TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelView+TextField.swift"; sourceTree = "<group>"; };
+		8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsView.swift; sourceTree = "<group>"; };
+		8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsViewModel.swift; sourceTree = "<group>"; };
+		8984EED127B4454C0025AEC5 /* AttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentView.swift; sourceTree = "<group>"; };
 		8991163C27AFEF3800FFDE93 /* AccordIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AccordIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8991163F27AFEF3800FFDE93 /* AccordIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccordIOSApp.swift; sourceTree = "<group>"; };
 		8991164127AFEF3800FFDE93 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -148,9 +156,6 @@
 		89E9FEF827AFFEC800861F05 /* ServerListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerListView.swift; sourceTree = "<group>"; };
 		89E9FEF927AFFEC800861F05 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		89E9FEFA27AFFEC800861F05 /* ServerListView+Mentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ServerListView+Mentions.swift"; sourceTree = "<group>"; };
-		89E9FF1227B0063500861F05 /* ChatControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChatControlsView.swift; path = ../../../../../accord/Accord/UI/Chat/TextField/ChatControlsView.swift; sourceTree = "<group>"; };
-		89E9FF1327B0063500861F05 /* ChatControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChatControlsViewModel.swift; path = ../../../../../accord/Accord/UI/Chat/TextField/ChatControlsViewModel.swift; sourceTree = "<group>"; };
-		89E9FF1427B0063500861F05 /* ChannelView+TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ChannelView+TextField.swift"; path = "../../../../../accord/Accord/UI/Chat/TextField/ChannelView+TextField.swift"; sourceTree = "<group>"; };
 		89E9FF1527B0063E00861F05 /* MentionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MentionsView.swift; path = ../../../../../accord/Accord/UI/Chat/Accessories/MentionsView.swift; sourceTree = "<group>"; };
 		89E9FF1627B0063E00861F05 /* EmotesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmotesView.swift; path = ../../../../../accord/Accord/UI/Chat/Accessories/EmotesView.swift; sourceTree = "<group>"; };
 		89E9FF1727B0063E00861F05 /* EmbedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmbedView.swift; path = ../../../../../accord/Accord/UI/Chat/Accessories/EmbedView.swift; sourceTree = "<group>"; };
@@ -434,9 +439,9 @@
 		89E9FF0327B0058000861F05 /* TextFields */ = {
 			isa = PBXGroup;
 			children = (
-				89E9FF1427B0063500861F05 /* ChannelView+TextField.swift */,
-				89E9FF1227B0063500861F05 /* ChatControlsView.swift */,
-				89E9FF1327B0063500861F05 /* ChatControlsViewModel.swift */,
+				8984EEC927B43E4E0025AEC5 /* ChannelView+TextField.swift */,
+				8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */,
+				8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */,
 			);
 			path = TextFields;
 			sourceTree = "<group>";
@@ -444,6 +449,7 @@
 		89E9FF0427B0058A00861F05 /* Accessories */ = {
 			isa = PBXGroup;
 			children = (
+				8984EED127B4454C0025AEC5 /* AttachmentView.swift */,
 				89E9FF1727B0063E00861F05 /* EmbedView.swift */,
 				89E9FF1627B0063E00861F05 /* EmotesView.swift */,
 				89E9FF1527B0063E00861F05 /* MentionsView.swift */,
@@ -572,6 +578,7 @@
 				89E9FE7527AFFAAF00861F05 /* Reaction.swift in Sources */,
 				89E9FED527AFFD0700861F05 /* Songlink.swift in Sources */,
 				89E9FF1B27B0063E00861F05 /* EmotesView.swift in Sources */,
+				8984EECE27B43E830025AEC5 /* ChatControlsViewModel.swift in Sources */,
 				89E9FEFD27AFFEC800861F05 /* ServerListView.swift in Sources */,
 				89E9FEB327AFFC8500861F05 /* Queues.swift in Sources */,
 				89E9FEEA27AFFE6800861F05 /* SearchView.swift in Sources */,
@@ -586,6 +593,7 @@
 				89E9FEA827AFFC3500861F05 /* Print++.swift in Sources */,
 				89E9FF2627B014DD00861F05 /* Images.swift in Sources */,
 				89E9FEA627AFFC3500861F05 /* Networking++.swift in Sources */,
+				8984EECA27B43E4E0025AEC5 /* ChannelView+TextField.swift in Sources */,
 				89F5A57627B2CF2000385E06 /* foldersList.swift in Sources */,
 				89E9FED727AFFD0700861F05 /* MentionProtocol.swift in Sources */,
 				89E9FE7927AFFAAF00861F05 /* Status.swift in Sources */,
@@ -609,6 +617,7 @@
 				89F5A57827B3173800385E06 /* GifManager.swift in Sources */,
 				89F5A58727B31A9D00385E06 /* Markdown2.swift in Sources */,
 				89E9FECE27AFFD0700861F05 /* Socket.swift in Sources */,
+				8984EECC27B43E6D0025AEC5 /* ChatControlsView.swift in Sources */,
 				89E9FE6327AFF98200861F05 /* Constants.swift in Sources */,
 				89E9FE8327AFFB8A00861F05 /* SongLink.swift in Sources */,
 				89D8B7EA27B1CEC3006C1503 /* foldersListSecondView.swift in Sources */,
@@ -616,6 +625,7 @@
 				89E9FE7727AFFAAF00861F05 /* Channel.swift in Sources */,
 				89E9FE8C27AFFBAB00861F05 /* LoginPayloads.swift in Sources */,
 				89E9FE8A27AFFBAB00861F05 /* Events.swift in Sources */,
+				8984EED227B4454C0025AEC5 /* AttachmentView.swift in Sources */,
 				89E9FEB227AFFC8500861F05 /* ImageProcessing.swift in Sources */,
 				89E9FE7F27AFFAAF00861F05 /* ReadState.swift in Sources */,
 				89F5A57A27B3174000385E06 /* AppKitLink.swift in Sources */,

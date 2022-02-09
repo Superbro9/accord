@@ -101,12 +101,14 @@ struct ChannelView: View, Equatable {
                             }
                         }
                     }
+                    .listRowSeparator(.hidden)
                     .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
                     .rotationEffect(.init(degrees: 180))
                     .if(metalRenderer, transform: { $0.drawingGroup() })
                 }
                 .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
                 .rotationEffect(.init(degrees: 180))
+                blurredTextField
             }
             if memberListShown {
                 MemberListView(list: $memberList)

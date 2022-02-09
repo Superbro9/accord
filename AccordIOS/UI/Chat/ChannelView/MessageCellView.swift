@@ -33,7 +33,7 @@ struct MessageCellView: View {
                     Text(replyNick ?? reply.author?.username ?? "")
                         .foregroundColor(replyRole != nil && roleColors[replyRole!]?.0 != nil && !message.isSameAuthor ? Color(int: roleColors[replyRole!]!.0) : Color(UIColor.gray))
                         .fontWeight(.semibold)
-                    if #available(macOS 12.0, *) {
+                    if #available(iOS 15.0, *) {
                         Text(try! AttributedString(markdown: reply.content))
                             .lineLimit(0)
                     } else {
@@ -57,7 +57,6 @@ struct MessageCellView: View {
                 VStack(alignment: .leading) {
                     if message.isSameAuthor, message.referenced_message == nil {
                         AsyncMarkdown(message.content)
-                            .padding(.leading, 41)
                     } else {
                         Text(nick ?? message.author?.username ?? "Unknown User")
                             .foregroundColor(role != nil && roleColors[role!]?.0 != nil && !message.isSameAuthor ? Color(int: roleColors[role!]!.0) : Color(UIColor.gray))
@@ -74,6 +73,7 @@ struct MessageCellView: View {
                             Text((pronouns != nil) ? " • \(pronouns ?? "Use my name")" : "")
                             .foregroundColor(Color.secondary)
                             .font(.subheadline)
+                        AsyncMarkdown(message.content)
                     }
                 }
                 Spacer()
