@@ -46,7 +46,7 @@ struct GuildView: View {
                         .foregroundColor(Color.secondary)
                         .font(.subheadline)
                 } else {
-                    NavigationLink(destination: NavigationLazyView(ChannelView(channel, guild.name).equatable()), tag: Int(channel.id) ?? 0, selection: self.$selection) {
+                    NavigationLink(destination: ChannelView(channel, guild.name).equatable(), tag: Int(channel.id) ?? 0, selection: self.$selection) {
                         ServerListViewCell(channel: channel)
                     }
                     .buttonStyle(BorderlessButtonStyle())
@@ -143,7 +143,8 @@ struct ServerListViewCell: View {
             if let readState = channel?.read_state, readState.mention_count != 0 {
                 readStateDot
             }
-        }.onHover { val in
+        }
+        .onHover { val in
             self.hovered = val
         }
     }

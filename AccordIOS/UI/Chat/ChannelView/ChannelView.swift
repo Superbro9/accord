@@ -162,7 +162,7 @@ struct ChannelView: View, Equatable {
             return true
         }
         .toolbar {
-            ToolbarItemGroup {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Toggle(isOn: $pins) {
                     Image(systemName: "pin.fill")
                         .rotationEffect(.degrees(45))
@@ -185,6 +185,7 @@ struct ChannelView: View, Equatable {
                 }
             }
         }
+        Spacer()
     }
 }
 

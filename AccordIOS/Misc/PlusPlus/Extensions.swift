@@ -117,6 +117,7 @@ extension Color {
     return res
 }
 
+@available(iOS 15.0, *)
 struct Folder<Content: View>: View {
     @State var icon: [Guild]
     @State var color: UIColor
