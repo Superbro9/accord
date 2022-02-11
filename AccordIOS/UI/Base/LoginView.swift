@@ -128,23 +128,26 @@ struct LoginView: View {
                     HStack {
                         Button("Login") {
                             if let ticket = viewModel.ticket {
-                                Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/mfa/totp"), headers: Headers(userAgent: discordUserAgent,
-                                                                                                                                                 token: AccordCoreVars.token,
-                                                                                                                                                 bodyObject: ["code": twofactor, "ticket": ticket],
-                                                                                                                                                 type: .POST,
-                                                                                                                                                 discordHeaders: true,
-                                                                                                                                                 json: true))
-                                { value, error in
-                                    if let token = value?.token {
-                                        UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                       
-                                        AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                       // KeychainManager.save(key: keychainItemName, data: token.data(using: .utf8) ?? Data())
-                                       // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                        self.captcha = false
-                                        print("got 2fa code 1")
-                                        UIApplication.shared.restart()
-                                    } else if let error = error {
+                                Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/mfa/totp"), headers: Headers(
+                                    userAgent: discordUserAgent,
+                                    token: AccordCoreVars.token,
+                                    bodyObject: ["code": twofactor, "ticket": ticket],
+                                    type: .POST,
+                                    discordHeaders: true,
+                                    json: true
+                                )) { completion in
+                                    switch completion {
+                                    case .success(let value):
+                                        if let token = value.token {
+                                            UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
+                                            AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                            
+                                            //   KeychainManager.save(key: keychainItemName, data: token.data(using: .utf8) ?? Data())
+                                            //   AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                            self.captcha = false
+                                            UIApplication.shared.restart()
+                                        }
+                                    case .failure(let error):
                                         print(error)
                                     }
                                 }
@@ -161,38 +164,43 @@ struct LoginView: View {
                                 type: .POST,
                                 discordHeaders: true,
                                 json: true
-                            )) { response, _ in
-                                if let token = response?.token {
-                                    UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                   
-                                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                    //KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
-                                   // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                    self.captcha = false
-                                    print("got 2fa code 2")
-                                    UIApplication.shared.restart()
-                                }
-                                if let response = response, let ticket = response.ticket {
-                                    Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/mfa/totp"), headers: Headers(userAgent: discordUserAgent,
-                                                                                                                                                     contentType: "application/json",
-                                                                                                                                                     token: AccordCoreVars.token,
-                                                                                                                                                     bodyObject: ["code": twofactor, "ticket": ticket],
-                                                                                                                                                     type: .POST,
-                                                                                                                                                     discordHeaders: true,
-                                                                                                                                                     json: true))
-                                    { value, _ in
-                                        if let token = value?.token {
-                                            UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                           
-                                            AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                          //  KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
-                                           // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                            self.captcha = false
-                                            print("my token is \(token)")
-                                            print("got 2fa code 3")
-                                            UIApplication.shared.restart()
+                            )) { completion in
+                                switch completion {
+                                case .success(let response):
+                                    if let token = response.token {
+                                        UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
+                                        AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                        
+                                     //   KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
+                                     //   AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                        self.captcha = false
+                                        UIApplication.shared.restart()
+                                    }
+                                    if let ticket = response.ticket {
+                                        Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/mfa/totp"), headers: Headers(
+                                            userAgent: discordUserAgent,
+                                            contentType: "application/json",
+                                            token: AccordCoreVars.token,
+                                            bodyObject: ["code": twofactor, "ticket": ticket],
+                                            type: .POST,
+                                            discordHeaders: true,
+                                            json: true
+                                        )) { completion in
+                                            switch completion {
+                                            case .success(let response):
+                                                if let token = response.token {
+                                                    KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
+                                                    AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                                    self.captcha = false
+                                                    UIApplication.shared.restart()
+                                                }
+                                            case .failure(let error):
+                                                print(error)
+                                            }
                                         }
                                     }
+                                case .failure(let error):
+                                    print(error)
                                 }
                             }
                         }
@@ -217,11 +225,11 @@ final class LoginViewViewModel: ObservableObject {
     @Published var captchaVCKey: String?
     @Published var captchaPayload: String?
     @Published var ticket: String? = nil
+    @Published var loginError: Error? = nil
 
-    init() {}
+    init () {}
 
     func login(_ email: String, _ password: String, _: String) throws {
-        var loginError: Error?
         Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/login"), headers: Headers(
             userAgent: discordUserAgent,
             contentType: "application/json",
@@ -232,44 +240,41 @@ final class LoginViewViewModel: ObservableObject {
             type: .POST,
             discordHeaders: true,
             json: true
-        )) { response, error in
-            if let response = response {
-                if let error = response.message {
-                    switch error {
-                    case "Invalid Form Body":
-                        loginError = DiscordLoginErrors.invalidForm
-                    default:
-                        loginError = DiscordLoginErrors.invalidForm
-                    }
-                }
+        )) { [weak self] completion in
+            switch completion {
+            case .success(let response):
                 if let checktoken = response.token {
                     UserDefaults.standard.set(checktoken.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                   
                     AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                   
-                   // KeychainManager.save(key: keychainItemName, data: checktoken.data(using: String.Encoding.utf8) ?? Data())
-                    //AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                    
+                 //   KeychainManager.save(key: keychainItemName, data: checktoken.data(using: String.Encoding.utf8) ?? Data())
+                 //   AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
                     exit(EXIT_SUCCESS)
                 } else {
                     if let captchaKey = response.captcha_sitekey {
                         DispatchQueue.main.async {
-                            self.captchaVCKey = captchaKey
-                            captchaPublicKey = self.captchaVCKey!
-                            self.state = .captcha
+                            self?.captchaVCKey = captchaKey
+                            captchaPublicKey = captchaKey
+                            self?.state = .captcha
                         }
                     } else if let ticket = response.ticket {
-                        self.state = .twofactor
-                        self.ticket = ticket
+                        self?.state = .twofactor
+                        self?.ticket = ticket
                         print("[Login debug] Got ticket")
                     }
                 }
-            } else if let error = error {
+                if let error = response.message {
+                    switch error {
+                    case "Invalid Form Body":
+                        self?.loginError = DiscordLoginErrors.invalidForm
+                    default:
+                        self?.loginError = DiscordLoginErrors.invalidForm
+                    }
+                }
+            case .failure(let error):
                 print(error)
-                loginError = error
+                self?.loginError = error
             }
-        }
-        if let loginError = loginError {
-            throw loginError
         }
     }
 }

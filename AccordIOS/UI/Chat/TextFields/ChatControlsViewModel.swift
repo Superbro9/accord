@@ -8,19 +8,21 @@
 import UIKit
 import Combine
 import Foundation
+import SwiftUI
 
 final class ChatControlsViewModel: ObservableObject {
-    @Published var matchedUsers = [User]()
+    @Published var matchedUsers = [String:String]()
     @Published var matchedChannels = [Channel]()
     @Published var matchedEmoji = [DiscordEmote]()
     @Published var textFieldContents: String = ""
-    @Published var cachedUsers = [User]()
     @Published var percent: String? = nil
     var observation: NSKeyValueObservation?
 
     weak var textField: UITextField?
     var currentValue: String?
     var currentRange: Int?
+    
+    @AppStorage("SilentTyping") var silentTyping: Bool = false
 
     func checkText(guildID: String) {
         let mentions = textFieldContents.matches(for: #"(?<=@)(?:(?!\ ).)*"#)
@@ -28,9 +30,9 @@ final class ChatControlsViewModel: ObservableObject {
         let slashes = textFieldContents.matches(for: #"(?<=\/)(?:(?!\ ).)*"#)
         let emoji = textFieldContents.matches(for: #"(?<=:).*"#)
         if let search = mentions.first {
-            let matched = cachedUsers.filter { $0.username.lowercased().contains(search.lowercased()) }
+            let matched = Storage.usernames.filter { $0.value.lowercased().contains(search.lowercased()) }
             DispatchQueue.main.async {
-                self.matchedUsers = matched.removingDuplicates()
+                self.matchedUsers = matched
             }
         } else if let search = channels.first {
             let matches = ServerListView.folders.map { $0.guilds.compactMap { $0.channels?.filter { $0.name?.contains(search) ?? false } } }
@@ -143,6 +145,7 @@ final class ChatControlsViewModel: ObservableObject {
     }
 
     func type(channelID: String, guildID: String) {
+        guard !silentTyping else { return }
         Request.ping(url: URL(string: "https://discord.com/api/v9/channels/\(channelID)/typing"), headers: Headers(
             userAgent: discordUserAgent,
             token: AccordCoreVars.token,

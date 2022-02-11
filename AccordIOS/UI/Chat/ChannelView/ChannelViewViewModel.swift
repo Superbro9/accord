@@ -67,9 +67,10 @@ final class ChannelViewViewModel: ObservableObject {
             }
             .store(in: &cancellable)
         wss.memberChunkSubject
-            .sink { [unowned self] msg in
+            .sink { [weak self] msg in
                 webSocketQueue.async {
                     guard let chunk = try? JSONDecoder().decode(GuildMemberChunkResponse.self, from: msg), let users = chunk.d?.members else { return }
+                    guard let self = self else { return }
                     let allUsers: [GuildMember] = users.compactMap { $0 }
                     for person in allUsers {
                         DispatchQueue.main.async {
@@ -81,7 +82,9 @@ final class ChannelViewViewModel: ObservableObject {
                             }
                         }
                         if let avatar = person.avatar {
-                            self.avatars[person.user.id] = avatar
+                            DispatchQueue.main.async {
+                                self.avatars[person.user.id] = avatar
+                            }
                         }
                         if let roles = person.roles {
                             var rolesTemp: [String?] = Array(repeating: nil, count: 100)

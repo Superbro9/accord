@@ -46,6 +46,8 @@ struct SettingsViewRedesign: View {
     var nitrolessEnabled: Bool = false
     @AppStorage("SilentTyping")
     var silentTyping: Bool = false
+    @AppStorage("GifProfilePictures")
+         var gifPfp: Bool = false
     @AppStorage("MusicPlatform")
     var selectedPlatform: Platforms = Platforms.appleMusic
     

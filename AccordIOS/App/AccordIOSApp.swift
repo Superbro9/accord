@@ -21,7 +21,6 @@ struct AccordApp: App {
                 LoginView()
                     .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("LoggedIn"))) { _ in
                         self.token = AccordCoreVars.token
-                        print("the token is \(token)")
                         print("posted", self.token)
                     }
             } else {
@@ -36,19 +35,15 @@ struct AccordApp: App {
                             concurrentQueue.async {
                                 _ = NetworkCore.shared
                             }
-                            UNUserNotificationCenter.current().getNotificationSettings { settings in
-                                if settings.authorizationStatus != .authorized {
-                                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) {
-                                        granted, error in
-                                        if granted {
-                                            print("lol")
-                                        } else {
-                                            print(error)
-                                        }
-                                    }
+                            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) {
+                                granted, error in
+                                if granted {
+                                    print("lol")
+                                } else {
+                                    print(error)
                                 }
                             }
-                        } 
+                        }
                         .sheet(isPresented: $popup, onDismiss: {}) {
                             SearchView()
                         }

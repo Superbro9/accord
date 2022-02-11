@@ -20,9 +20,15 @@ struct MessageCellView: View {
     @Binding var role: String?
     @Binding var replyRole: String?
     @Binding var replyingTo: Message?
+    @Binding var editing: String?
     @State var popup: Bool = false
     @State var textElement: Text?
     @State var bag = Set<AnyCancellable>()
+    
+    @State var editedText: String = ""
+    
+    @AppStorage("GifProfilePictures") var gifPfp: Bool = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             if let reply = message.referenced_message {
@@ -45,13 +51,22 @@ struct MessageCellView: View {
             }
             HStack { [unowned message] in
                 if !(message.isSameAuthor && message.referenced_message == nil && message.author?.avatar != nil) {
-                    Attachment(avatar != nil ? "https://cdn.discordapp.com/guilds/\(guildID ?? "")/users/\(message.author?.id ?? "")/avatars/\(avatar!).png?size=48" : pfpURL(message.author?.id, message.author?.avatar)).equatable()
-                        .frame(width: 33, height: 33)
-                        .clipShape(Circle())
-                        .highPriorityGesture(TapGesture())
-                        .onTapGesture {
-                            popup.toggle()
-                        }
+                    if let author = message.author, let avatar = author.avatar, gifPfp && message.author?.avatar?.prefix(2) == "a_" {
+                        HoverGifView.init(url: "https://cdn.discordapp.com/avatars/\(author.id)/\(avatar).gif?size=48")
+                            .frame(width: 33, height: 33)
+                            .clipShape(Circle())
+                            .popover(isPresented: $popup, content: {
+                                PopoverProfileView(user: message.author)
+                            })
+                    } else {
+                        Attachment(avatar != nil ? "https://cdn.discordapp.com/guilds/\(guildID ?? "")/users/\(message.author?.id ?? "")/avatars/\(avatar!).png?size=48" : pfpURL(message.author?.id, message.author?.avatar)).equatable()
+                            .frame(width: 33, height: 33)
+                            .clipShape(Circle())
+                            .popover(isPresented: $popup, content: {
+                                PopoverProfileView(user: message.author)
+                            })
+                    }
+
                 }
 
                 VStack(alignment: .leading) {
@@ -102,6 +117,30 @@ struct MessageCellView: View {
                     .frame(width: 160, height: 160)
                     .cornerRadius(3)
                     .padding(.leading, 41)
+            }
+        }
+        .contextMenu {
+            Button("Reply") { [weak message] in
+                replyingTo = message
+            }
+            Button("Edit") { [weak message] in
+                self.editing = message?.id
+            }
+            Button("Delete") { [weak message] in
+                message?.delete()
+            }
+            Button("Copy") { [weak message] in
+                guard let content = message?.content else { return }
+                UIPasteboard.general.items = []
+                UIPasteboard.general.string = "\(content)"
+            }
+            Button("Copy Message Link") { [weak message] in
+                guard let channelID = message?.channel_id, let id = message?.id else { return }
+                UIPasteboard.general.items = []
+                UIPasteboard.general.string = "https://discord.com/channels/\(message?.guild_id ?? "@me")/\(channelID)/\(id)"
+            }
+            Button("Show profile") {
+                popup.toggle()
             }
         }
         .id(message.id)

@@ -32,7 +32,7 @@ struct GuildView: View {
                         EmptyView()
                     }
                 }
-                Text(guild.name)
+                Text(guild.name ?? "Unknown Guild")
                     .fontWeight(.medium)
             }
             if let banner = guild.banner {
@@ -46,7 +46,7 @@ struct GuildView: View {
                         .foregroundColor(Color.secondary)
                         .font(.subheadline)
                 } else {
-                    NavigationLink(destination: ChannelView(channel, guild.name).equatable(), tag: Int(channel.id) ?? 0, selection: self.$selection) {
+                    NavigationLink(destination: NavigationLazyView(ChannelView(channel, guild.name).equatable()), tag: Int(channel.id) ?? 0, selection: self.$selection) {
                         ServerListViewCell(channel: channel)
                     }
                     .buttonStyle(BorderlessButtonStyle())
@@ -58,6 +58,7 @@ struct GuildView: View {
                             channel.read_state?.last_message_id = channel.last_message_id
                         }
                     })
+                    
                 }
             }
         }
@@ -73,7 +74,6 @@ struct ServerListViewCell: View {
         guildID = channel.guild_id ?? "@me"
     }
 
-    @State var hovered: Bool = false
     var body: some View {
         var readStateDot: some View {
             ZStack {
@@ -143,9 +143,7 @@ struct ServerListViewCell: View {
             if let readState = channel?.read_state, readState.mention_count != 0 {
                 readStateDot
             }
-        }
-        .onHover { val in
-            self.hovered = val
+
         }
     }
 }

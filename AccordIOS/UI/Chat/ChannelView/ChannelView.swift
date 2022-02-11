@@ -43,6 +43,8 @@ struct ChannelView: View, Equatable {
     @State var memberList = [OPSItems]()
     @State var fileUpload: Data?
     @State var fileUploadURL: URL?
+    
+    @State var editing: String? = nil
 
     @AppStorage("MetalRenderer") var metalRenderer: Bool = false
 
@@ -72,31 +74,14 @@ struct ChannelView: View, Equatable {
                                 guildID: guildID,
                                 role: $viewModel.roles[author.id],
                                 replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
-                                replyingTo: $replyingTo
+                                replyingTo: $replyingTo,
+                                editing: $editing
                             )
                             .onAppear {
                                 if (viewModel?.messages.count ?? 0) >= 50 {
                                     if message == viewModel?.messages[viewModel!.messages.count - 2] {
                                         viewModel?.loadMoreMessages()
                                     }
-                                }
-                            }
-                            .contextMenu {
-                                Button("Reply") { [weak message] in
-                                    replyingTo = message
-                                }
-                                Button("Delete") { [weak message] in
-                                    message?.delete()
-                                }
-                                Button("Copy") { [weak message] in
-                                    guard let content = message?.content else { return }
-                                    UIPasteboard.general.items = []
-                                    UIPasteboard.general.string = "\(content)"
-                                }
-                                Button("Copy Message Link") { [weak message] in
-                                    guard let channelID = message?.channel_id, let id = message?.id else { return }
-                                    UIPasteboard.general.items = []
-                                    UIPasteboard.general.string = "https://discord.com/channels/\(message?.guild_id ?? "@me")/\(channelID)/\(id)"
                                 }
                             }
                         }
