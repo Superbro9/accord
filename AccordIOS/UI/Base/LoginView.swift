@@ -7,38 +7,8 @@
 
 import SwiftUI
 import WebKit
-import UIKit
-import Darwin
-import UserNotifications
 
 public var captchaPublicKey: String = "error"
-
-var confirmChange: Alert {
-    Alert(title: Text("Change Configuration?"), message: Text("This application needs to restart to update the configuration.\n\nDo you want to restart the application?"),
-          primaryButton: .default (Text("Yes")) {
-        restartApplication()
-    },
-          secondaryButton: .cancel(Text("No"))
-    )
-}
-func restartApplication(){
-    var localUserInfo: [AnyHashable : Any] = [:]
-    localUserInfo["pushType"] = "restart"
-    
-    let content = UNMutableNotificationContent()
-    content.title = "Configuration Update Complete"
-    content.body = "Tap to reopen the application"
-    content.sound = UNNotificationSound.default
-    content.userInfo = localUserInfo
-    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
-    
-    let identifier = "com.domain.restart"
-    let request = UNNotificationRequest.init(identifier: identifier, content: content, trigger: trigger)
-    let center = UNUserNotificationCenter.current()
-    
-    center.add(request)
-    exit(0)
-}
 
 enum LoginState {
     case initial

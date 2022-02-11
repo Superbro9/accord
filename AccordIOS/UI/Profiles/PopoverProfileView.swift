@@ -25,7 +25,7 @@ struct PopoverProfileView: View {
                 Spacer().frame(height: 100)
                 VStack(alignment: .leading) {
                     if user?.avatar?.prefix(2) == "a_" {
-                        AsyncImage(url: URL(string: "https://tessutiblog.s3.amazonaws.com/wp-content/uploads/2019/03/test.jpg"))
+                        GifView(url: "https://cdn.discordapp.com/avatars/\(user?.id ?? "")/\(user?.avatar ?? "").gif?size=64")
                             .clipShape(Circle())
                             .frame(width: 45, height: 45)
                             .shadow(radius: 5)
@@ -54,18 +54,11 @@ struct PopoverProfileView: View {
                             .background(hovered == 1 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
                         })
                         .buttonStyle(BorderlessButtonStyle())
-                        .onHover(perform: { hover in
-                            switch hover {
-                            case true:
-                                withAnimation {
-                                    hovered = 1
-                                }
-                            case false:
-                                withAnimation {
-                                    hovered = nil
-                                }
+                        .onTapGesture {
+                            withAnimation {
+                                hovered = 4
                             }
-                        })
+                        }
                         Button(action: {}, label: {
                             VStack {
                                 Image(systemName: "phone.fill")
@@ -78,18 +71,11 @@ struct PopoverProfileView: View {
                             .background(hovered == 2 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
                         })
                         .buttonStyle(BorderlessButtonStyle())
-                        .onHover(perform: { hover in
-                            switch hover {
-                            case true:
-                                withAnimation {
-                                    hovered = 2
-                                }
-                            case false:
-                                withAnimation {
-                                    hovered = nil
-                                }
+                        .onTapGesture {
+                            withAnimation {
+                                hovered = 4
                             }
-                        })
+                        }
                         Button(action: {}, label: {
                             VStack {
                                 Image(systemName: "camera.circle.fill")
@@ -102,18 +88,11 @@ struct PopoverProfileView: View {
                             .background(hovered == 3 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
                         })
                         .buttonStyle(BorderlessButtonStyle())
-                        .onHover(perform: { hover in
-                            switch hover {
-                            case true:
-                                withAnimation {
-                                    hovered = 3
-                                }
-                            case false:
-                                withAnimation {
-                                    hovered = nil
-                                }
+                        .onTapGesture {
+                            withAnimation {
+                                hovered = 4
                             }
-                        })
+                        }
                         Button(action: {}, label: {
                             VStack {
                                 Image(systemName: "person.crop.circle.badge.plus")
@@ -126,18 +105,11 @@ struct PopoverProfileView: View {
                             .background(hovered == 4 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
                         })
                         .buttonStyle(BorderlessButtonStyle())
-                        .onHover(perform: { hover in
-                            switch hover {
-                            case true:
-                                withAnimation {
-                                    hovered = 4
-                                }
-                            case false:
-                                withAnimation {
-                                    hovered = nil
-                                }
+                        .onTapGesture {
+                            withAnimation {
+                                hovered = 4
                             }
-                        })
+                        }
                     }
                     .transition(AnyTransition.opacity)
                 }

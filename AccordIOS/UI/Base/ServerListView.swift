@@ -37,6 +37,7 @@ struct ServerListView: View {
         guard Self.folders.isEmpty else {
             return
         }
+        
         Activity.current = Activity(
             emoji: StatusEmoji(
                 name: full?.user_settings?.custom_status?.emoji_name ?? "",
@@ -179,6 +180,78 @@ struct ServerListView: View {
             }
         }
         
+        lazy var folderList: some View = {
+            ForEach(Self.folders, id: \.hashValue) { folder in
+                if folder.guilds.count != 1 {
+                    Folder(icon: Array(folder.guilds.prefix(4)), color: UIColor.black) {
+                        ForEach(folder.guilds, id: \.hashValue) { guild in
+                            ZStack(alignment: .bottomTrailing) {
+                                Button(action: { [weak wss] in
+                                    wss?.cachedMemberRequest.removeAll()
+                                    if selectedServer == 201 {
+                                        selectedServer = guild.index
+                                    } else {
+                                        withAnimation {
+                                            selectedServer = guild.index
+                                        }
+                                    }
+                                }) {
+                                    Attachment(iconURL(guild.id, guild.icon ?? "")).equatable()
+                                        .frame(width: 45, height: 45)
+                                        .cornerRadius(selectedServer == guild.index ? 15.0 : 23.5)
+                                }
+                                if pingCount(guild: guild) != 0 {
+                                    ZStack {
+                                        Circle()
+                                            .foregroundColor(Color.red)
+                                            .frame(width: 15, height: 15)
+                                        Text(String(pingCount(guild: guild)))
+                                            .foregroundColor(Color.white)
+                                            .fontWeight(.semibold)
+                                            .font(.caption)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.bottom, 1)
+                } else {
+                    ForEach(Self.folders, id: \.hashValue) { folder in
+                        ZStack(alignment: .bottomTrailing) {
+                            ForEach(folder.guilds, id: \.hashValue) { guild in
+                                Button(action: { [weak wss] in
+                                    wss?.cachedMemberRequest.removeAll()
+                                    if selectedServer == 201 {
+                                        selectedServer = guild.index
+                                    } else {
+                                        withAnimation {
+                                            selectedServer = guild.index
+                                        }
+                                    }
+                                }) {
+                                    Attachment(iconURL(guild.id, guild.icon ?? ""), size: nil).equatable()
+                                        .frame(width: 45, height: 45)
+                                        .cornerRadius((selectedServer == guild.index) ? 15.0 : 23.5)
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+                                if pingCount(guild: guild) != 0 {
+                                    ZStack {
+                                        Circle()
+                                            .foregroundColor(Color.red)
+                                            .frame(width: 15, height: 15)
+                                        Text(String(pingCount(guild: guild)))
+                                            .foregroundColor(Color.white)
+                                            .fontWeight(.semibold)
+                                            .font(.caption)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }()
+        
         lazy var settingsLink: some View = NavigationLink(destination: NavigationLazyView(SettingsViewRedesign()), tag: 1, selection: self.$selection) {
             ZStack(alignment: .bottomTrailing) {
                 Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
@@ -197,14 +270,8 @@ struct ServerListView: View {
                         if !online || !NetworkCore.shared.connected {
                             onlineButton
                         }
-                        Text("Hello")
-                        Text("Hello")
-                        Text("Hello")
-                        Text("Hello")
-                        Text("Hello")
-                        
                         dmButton
-                        foldersList()
+                        folderList
                         settingsLink
                     }
                     .padding(.vertical)
@@ -239,8 +306,9 @@ struct ServerListView: View {
                 }
             }
             .frame(minWidth: 300, maxWidth: 500, maxHeight: .infinity)
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationViewStyle(DoubleColumnNavigationViewStyle())
+        .navigationViewStyle(.columns)
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("Refresh")), perform: { pub in
             guard let uInfo = pub.userInfo as? [Int: Int],
                   let firstKey = uInfo.first else { return }

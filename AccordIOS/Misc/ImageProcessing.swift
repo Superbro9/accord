@@ -41,12 +41,12 @@ extension UIImage {
         return downScaledImage.png
     }
         
-     //   func getSize(from source: CGImageSource) -> CGSize? {
-     //       guard let metadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil),
-     //             let height = (metadata as NSDictionary)["PixelHeight"] as? Double,
-     //             let width = (metadata as NSDictionary)["PixelWidth"] as? Double else { return nil }
-     //       return CGSize(width: width, height: height)
-     //   }
+        func getSize(from source: CGImageSource) -> CGSize? {
+            guard let metadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil),
+                  let height = (metadata as NSDictionary)["PixelHeight"] as? Double,
+                  let width = (metadata as NSDictionary)["PixelWidth"] as? Double else { return nil }
+            return CGSize(width: width, height: height)
+        }
 }
 
 extension Data {

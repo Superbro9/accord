@@ -8,7 +8,7 @@
 import SwiftUI
 
 // actual view
-@available(macOS 11.0, *)
+@available(iOS 15.0, *)
 struct EmotesView: View, Equatable {
     static func == (_: EmotesView, _: EmotesView) -> Bool {
         true
@@ -67,7 +67,7 @@ struct EmotesView: View, Equatable {
                 TextField("Search emotes", text: $search)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
-                    .background(VisualEffectView(material: NSVisualEffectView.Material.sidebar, blendingMode: NSVisualEffectView.BlendingMode.withinWindow)) // blurred background
+                    .background(VisualEffectView(effect: UIBlurEffect(style: .regular)))
             }
         }
         .frame(minWidth: 250, maxWidth: .infinity, maxHeight: .infinity)
