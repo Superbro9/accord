@@ -63,18 +63,15 @@ struct ChatControls: View {
                 VStack {
                     if !(viewModel.matchedUsers.isEmpty) || !(viewModel.matchedEmoji.isEmpty) || !(viewModel.matchedChannels.isEmpty) {
                         VStack {
-                            ForEach(viewModel.matchedUsers.prefix(10), id: \.id) { user in
-                                Button(action: { [weak viewModel, weak user] in
+                            ForEach(viewModel.matchedUsers.sorted(by: >).prefix(10), id: \.key) { id, username in
+                                Button(action: { [weak viewModel] in
                                     if let range = viewModel?.textFieldContents.range(of: "@") {
                                         viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
                                     }
-                                    viewModel?.textFieldContents.append("<@!\(user?.id ?? "")>")
-                                }, label: { [weak user] in
+                                    viewModel?.textFieldContents.append("<@!\(id)>")
+                                }, label: {
                                     HStack {
-                                        Attachment(pfpURL(user?.id, user?.avatar, "24"), size: CGSize(width: 48, height: 48))
-                                            .clipShape(Circle())
-                                            .frame(width: 20, height: 20)
-                                        Text(user?.username ?? "Unknown User")
+                                        Text(username)
                                         Spacer()
                                     }
                                 })
@@ -128,11 +125,10 @@ struct ChatControls: View {
                                     self.focusedField = .mainTextField
                                 }
                         } else {
-                            TextField(viewModel.percent ?? chatText, text: $viewModel.textFieldContents, onEditingChanged: { _ in
-                            }, onCommit: {
+                            TextField(viewModel.percent ?? chatText, text: $viewModel.textFieldContents, onEditingChanged: { _ in }) {
                                 typing = false
                                 send()
-                            })
+                            }
                         }
 
                         Button(action: {
@@ -189,9 +185,6 @@ struct ChatControls: View {
                              */
                         }
                     }
-                    .onChange(of: users) { [weak viewModel] value in
-                        viewModel?.cachedUsers = value
-                    }
                     .onReceive(viewModel.$textFieldContents) { [weak viewModel] _ in
                         if !typing, viewModel?.textFieldContents != "" {
                             messageSendQueue.async {
@@ -208,7 +201,6 @@ struct ChatControls: View {
                     }
                 }
                 .onAppear {
-                    viewModel.cachedUsers = self.users
                     viewModel.findView()
                 }
                 .textFieldStyle(PlainTextFieldStyle())
