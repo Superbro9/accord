@@ -284,7 +284,7 @@ public final class RequestPublisher {
 
     // MARK: - Get a publisher for the request
 
-    class func fetch<T: Decodable>(_: T.Type, request: URLRequest? = nil, url: URL? = nil, headers: Headers? = nil) -> AnyPublisher<T, Error> {
+    class func fetch<T: Decodable>(_: T.Type, request: URLRequest? = nil, url: URL? = nil, headers: Headers? = nil, retry: Int = 2) -> AnyPublisher<T, Error> {
         let request: URLRequest? = {
             if let request = request {
                 return request
@@ -305,7 +305,7 @@ public final class RequestPublisher {
         do { try headers?.set(request: &request, config: &config) } catch { return Empty(completeImmediately: true).eraseToAnyPublisher() }
 
         return URLSession(configuration: config).dataTaskPublisher(for: request)
-            .retry(2)
+            .retry(retry)
             .tryMap { data, response throws -> T in
                 guard let httpResponse = response as? HTTPURLResponse else { throw Request.FetchErrors.badResponse(response) }
                 if httpResponse.statusCode == 200 {

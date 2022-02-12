@@ -28,7 +28,6 @@ struct ChatControls: View {
     @Binding var fileUpload: Data?
     @Binding var fileUploadURL: URL?
     @State var dragOver: Bool = false
-    @Binding var users: [User]
     @StateObject var viewModel = ChatControlsViewModel()
     @State var typing: Bool = false
     weak var textField: UITextField?
@@ -56,7 +55,7 @@ struct ChatControls: View {
             }
         }
     }
-
+    
     var body: some View {
         HStack { [unowned viewModel] in
             ZStack(alignment: .trailing) {
@@ -75,8 +74,8 @@ struct ChatControls: View {
                                         Spacer()
                                     }
                                 })
-                                .buttonStyle(.borderless)
-                                .padding(3)
+                                    .buttonStyle(.borderless)
+                                    .padding(3)
                             }
                             ForEach(viewModel.matchedEmoji.prefix(10), id: \.id) { emoji in
                                 Button(action: { [weak viewModel] in
@@ -165,24 +164,6 @@ struct ChatControls: View {
                                 Image(systemName: "doc.fill")
                                     .foregroundColor(Color.secondary)
                             }
-                            /*
-                             if AccordCoreVars.plugins != [] {
-                                 ForEach(AccordCoreVars.plugins.enumerated().reversed().reversed(), id: \.offset) { offset, plugin in
-                                     if pluginPoppedUp.indices.contains(offset) {
-                                         Button(action: {
-                                             pluginPoppedUp[offset].toggle()
-                                         }) {
-                                             Image(systemName: plugin.symbol)
-                                         }
-                                         .buttonStyle(BorderlessButtonStyle())
-                                         .popover(isPresented: $pluginPoppedUp[offset], content: {
-                                             NSViewWrapper(plugin.body ?? NSView())
-                                                 .frame(width: 200, height: 200)
-                                         })
-                                     }
-                                 }
-                             }
-                             */
                         }
                     }
                     .onReceive(viewModel.$textFieldContents) { [weak viewModel] _ in

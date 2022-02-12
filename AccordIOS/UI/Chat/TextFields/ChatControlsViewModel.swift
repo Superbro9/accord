@@ -56,6 +56,12 @@ final class ChatControlsViewModel: ObservableObject {
             self?.textField = textField
         }
     }
+    
+    func clearMatches() {
+             self.matchedEmoji.removeAll()
+             self.matchedUsers.removeAll()
+             self.matchedChannels.removeAll()
+         }
 
     func send(text: String, guildID: String, channelID: String) {
         DispatchQueue.main.sync {

@@ -64,10 +64,14 @@ struct LoginView: View {
                         TextField("Token (optional)", text: $token)
                         TextField("Proxy IP (optional)", text: $proxyIP)
                         TextField("Proxy Port (optional)", text: $proxyPort)
-                        if let error = error {
-                            Text(error)
-                                .foregroundColor(Color.red)
-                                .font(.subheadline)
+                        #warning("TODO: test this")
+                        if let error = viewModel.loginError {
+                            switch error {
+                            case DiscordLoginErrors.invalidForm:
+                                Text("Wrong username/password")
+                            default:
+                                EmptyView()
+                            }
                         }
                         
                         HStack {
@@ -76,28 +80,20 @@ struct LoginView: View {
                                 exit(EXIT_SUCCESS)
                             }
                             .controlSize(.large)
-                            
-                            Button("Login") {
+                            Button("Login") { [weak viewModel] in
+                                viewModel?.loginError = nil
                                 UserDefaults.standard.set(self.proxyIP, forKey: "proxyIP")
                                 UserDefaults.standard.set(self.proxyPort, forKey: "proxyPort")
                                 if token != "" {
                                     UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                   
+                                    
                                     AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                  //  KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
+                                    
+                                   // KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
                                    // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
                                     UIApplication.shared.restart()
                                 } else {
-                                    do {
-                                        try viewModel.login(email, password, twofactor)
-                                    } catch {
-                                        switch error {
-                                        case DiscordLoginErrors.invalidForm:
-                                            self.error = "Invalid login and/or password"
-                                        default:
-                                            self.error = "An error occured"
-                                        }
-                                    }
+                                    try? viewModel?.login(email, password, twofactor)
                                 }
                                 print("logging in")
                             }

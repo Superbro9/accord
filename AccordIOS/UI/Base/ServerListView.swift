@@ -91,7 +91,7 @@ struct ServerListView: View {
         }
         Self.folders = folderTemp
         Self.readStates = full?.read_state?.entries ?? []
-        selection = nil
+        selection = UserDefaults.standard.integer(forKey: "AccordChannelIn\(full?.guilds.first?.id ?? "")")
         concurrentQueue.async {
             guard let guilds = full?.guilds else { return }
             roleColors = RoleManager.arrangeRoleColors(guilds: guilds)
@@ -252,7 +252,7 @@ struct ServerListView: View {
             }
         }()
         
-        lazy var settingsLink: some View = NavigationLink(destination: NavigationLazyView(SettingsViewRedesign()), tag: 1, selection: self.$selection) {
+        lazy var settingsLink: some View = NavigationLink(destination: NavigationLazyView(SettingsViewRedesign()), tag: 0, selection: self.$selection) {
             ZStack(alignment: .bottomTrailing) {
                 Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
                     .scaledToFit()
@@ -271,7 +271,15 @@ struct ServerListView: View {
                             onlineButton
                         }
                         dmButton
+                        Color.gray
+                            .frame(height: 1)
+                            .opacity(0.75)
+                            .padding(.horizontal)
                         folderList
+                        Color.gray
+                            .frame(height: 1)
+                            .opacity(0.75)
+                            .padding(.horizontal)
                         settingsLink
                     }
                     .padding(.vertical)
