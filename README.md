@@ -1,7 +1,7 @@
 ## AccordiOS
 A port of Accord from macOS to iOS.
 
-This app is currently the bare minimum i could to get working after solving 172 errors.
+This app is in a working state however there is still UI bugs and optimisations that need to be done.
 
 ### Notices
 The UI needs an overhaul so it works and fits on the iPhone, currently its designed for the Mac.
