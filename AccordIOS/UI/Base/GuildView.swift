@@ -143,7 +143,6 @@ struct ServerListViewCell: View {
             if let readState = channel?.read_state, readState.mention_count != 0 {
                 readStateDot
             }
-
         }
     }
 }

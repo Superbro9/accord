@@ -37,9 +37,7 @@ struct AccordApp: App {
                             }
                             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) {
                                 granted, error in
-                                if granted {
-                                    print("lol")
-                                } else {
+                                if !granted {
                                     print(error)
                                 }
                             }

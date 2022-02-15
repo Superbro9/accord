@@ -22,7 +22,7 @@ struct AttachmentView: View {
                     } else if obj.content_type?.prefix(6).stringLiteral == "video/", let url = URL(string: obj.url) {
                         VideoPlayer(player: AVPlayer.init(url: url))
                             .cornerRadius(5)
-                            .frame(minWidth: 300, minHeight: 300)
+                            .frame(minWidth: 200, maxWidth: 350, minHeight: 200, maxHeight: 350)
                             .onDisappear {
                                 print("goodbye")
                             }
@@ -45,4 +45,34 @@ struct AttachmentView: View {
             }
         }
     }
+}
+
+struct VideoPlayerController: UIViewRepresentable {
+    
+    init(url: URL) {
+        player = AVPlayer(url: url)
+    }
+    
+    var player: AVPlayer?
+    func makeUIView(context: Context) -> PlayerView {
+        let playerView = PlayerView()
+        playerView.player = player
+        return playerView
+    }
+    
+    func updateUIView(_ uiView: PlayerView, context: Context) { }
+}
+
+class PlayerView: UIView {
+
+    // Override the property to make AVPlayerLayer the view's backing layer.
+    override static var layerClass: AnyClass { AVPlayerLayer.self }
+    
+    // The associated player object.
+    var player: AVPlayer? {
+        get { playerLayer.player }
+        set { playerLayer.player = newValue }
+    }
+    
+    private var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
 }

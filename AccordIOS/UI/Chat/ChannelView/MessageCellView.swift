@@ -169,18 +169,28 @@ struct MessageCellView: View {
             Button("Delete") { [weak message] in
                 message?.delete()
             }
-            Button("Copy") { [weak message] in
+            Button("Show profile") {
+                popup.toggle()
+            }
+            Button("Copy message text") { [weak message] in
                 guard let content = message?.content else { return }
                 UIPasteboard.general.items = []
-                UIPasteboard.general.string = "\(content)"
+                UIPasteboard.general.string = content
             }
-            Button("Copy Message Link") { [weak message] in
+            Button("Copy message link") { [weak message] in
                 guard let channelID = message?.channel_id, let id = message?.id else { return }
                 UIPasteboard.general.items = []
                 UIPasteboard.general.string = "https://discord.com/channels/\(message?.guild_id ?? "@me")/\(channelID)/\(id)"
             }
-            Button("Show profile") {
-                popup.toggle()
+            Button("Copy user ID") { [weak message] in
+                guard let id = message?.author?.id else { return }
+                UIPasteboard.general.items = []
+                UIPasteboard.general.string = id
+            }
+            Button("Copy message ID") { [weak message] in
+                guard let id = message?.id else { return }
+                UIPasteboard.general.items = []
+                UIPasteboard.general.string = id
             }
         }
         .id(message.id)

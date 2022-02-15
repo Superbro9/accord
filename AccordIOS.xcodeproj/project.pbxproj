@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8934607E27B1ACCC00BD681F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8934607D27B1ACCC00BD681F /* SettingsView.swift */; };
+		897836CD27BBE85A00B86857 /* FolderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897836CC27BBE85A00B86857 /* FolderListView.swift */; };
+		897836CF27BBE93B00B86857 /* ServerListView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897836CE27BBE93B00B86857 /* ServerListView+Init.swift */; };
 		8984EECA27B43E4E0025AEC5 /* ChannelView+TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EEC927B43E4E0025AEC5 /* ChannelView+TextField.swift */; };
 		8984EECC27B43E6D0025AEC5 /* ChatControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */; };
 		8984EECE27B43E830025AEC5 /* ChatControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */; };
@@ -88,6 +90,8 @@
 
 /* Begin PBXFileReference section */
 		8934607D27B1ACCC00BD681F /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		897836CC27BBE85A00B86857 /* FolderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListView.swift; sourceTree = "<group>"; };
+		897836CE27BBE93B00B86857 /* ServerListView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerListView+Init.swift"; sourceTree = "<group>"; };
 		8984EEC927B43E4E0025AEC5 /* ChannelView+TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelView+TextField.swift"; sourceTree = "<group>"; };
 		8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsView.swift; sourceTree = "<group>"; };
 		8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsViewModel.swift; sourceTree = "<group>"; };
@@ -425,6 +429,8 @@
 				89E9FEF827AFFEC800861F05 /* ServerListView.swift */,
 				89E9FEFA27AFFEC800861F05 /* ServerListView+Mentions.swift */,
 				89E9FEF527AFFEC800861F05 /* ServerListView+Misc.swift */,
+				897836CC27BBE85A00B86857 /* FolderListView.swift */,
+				897836CE27BBE93B00B86857 /* ServerListView+Init.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -560,6 +566,7 @@
 				89D7CBAF27B5801400D4B567 /* GifView.swift in Sources */,
 				89E9FEAA27AFFC3500861F05 /* Combine++.swift in Sources */,
 				89E9FF2327B0064A00861F05 /* MessageCellView.swift in Sources */,
+				897836CD27BBE85A00B86857 /* FolderListView.swift in Sources */,
 				89E9FEFE27AFFEC800861F05 /* LoginView.swift in Sources */,
 				89E9FEDC27AFFD0700861F05 /* Gateway+MessageHandle.swift in Sources */,
 				89E9FE7527AFFAAF00861F05 /* Reaction.swift in Sources */,
@@ -575,6 +582,7 @@
 				89E9FE7E27AFFAAF00861F05 /* Embed.swift in Sources */,
 				89E9FE8B27AFFBAB00861F05 /* GatewayStructure.swift in Sources */,
 				89E9FEA327AFFC3500861F05 /* Extensions.swift in Sources */,
+				897836CF27BBE93B00B86857 /* ServerListView+Init.swift in Sources */,
 				8991164027AFEF3800FFDE93 /* AccordIOSApp.swift in Sources */,
 				89E9FEA827AFFC3500861F05 /* Print++.swift in Sources */,
 				89E9FF2627B014DD00861F05 /* Images.swift in Sources */,

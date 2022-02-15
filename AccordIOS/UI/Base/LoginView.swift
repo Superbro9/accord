@@ -124,7 +124,7 @@ struct LoginView: View {
                     HStack {
                         Button("Login") {
                             if let ticket = viewModel.ticket {
-                                Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/mfa/totp"), headers: Headers(
+                                Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
                                     userAgent: discordUserAgent,
                                     token: AccordCoreVars.token,
                                     bodyObject: ["code": twofactor, "ticket": ticket],
@@ -150,7 +150,7 @@ struct LoginView: View {
                                 return
                             }
                             self.captchaPayload = notif["key"] as? String ?? ""
-                            Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/login"), headers: Headers(
+                            Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/login"), headers: Headers(
                                 userAgent: discordUserAgent,
                                 bodyObject: [
                                     "email": email,
@@ -173,7 +173,7 @@ struct LoginView: View {
                                         UIApplication.shared.restart()
                                     }
                                     if let ticket = response.ticket {
-                                        Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/mfa/totp"), headers: Headers(
+                                        Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
                                             userAgent: discordUserAgent,
                                             contentType: "application/json",
                                             token: AccordCoreVars.token,
@@ -226,7 +226,7 @@ final class LoginViewViewModel: ObservableObject {
     init () {}
 
     func login(_ email: String, _ password: String, _: String) throws {
-        Request.fetch(LoginResponse.self, url: URL(string: "https://discord.com/api/v9/auth/login"), headers: Headers(
+        Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/login"), headers: Headers(
             userAgent: discordUserAgent,
             contentType: "application/json",
             bodyObject: [

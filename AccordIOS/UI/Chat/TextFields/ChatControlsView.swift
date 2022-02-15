@@ -120,7 +120,7 @@ struct ChatControls: View {
                                     typing = false
                                     send()
                                 }
-                                .task {
+                                .onAppear {
                                     self.focusedField = .mainTextField
                                 }
                         } else {
