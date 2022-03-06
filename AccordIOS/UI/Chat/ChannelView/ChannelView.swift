@@ -69,8 +69,7 @@ struct ChannelView: View {
                                 guildID: guildID,
                                 role: $viewModel.roles[author.id],
                                 replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
-                                replyingTo: $replyingTo,
-                                editing: $editing
+                                replyingTo: $replyingTo
                             )
                             .onAppear {
                                 if (viewModel?.messages.count ?? 0) >= 50 {

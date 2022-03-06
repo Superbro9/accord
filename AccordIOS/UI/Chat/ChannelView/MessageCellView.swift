@@ -20,7 +20,7 @@ struct MessageCellView: View {
     @Binding var role: String?
     @Binding var replyRole: String?
     @Binding var replyingTo: Message?
-    @Binding var editing: String?
+    @State var editing: String?
     @State var popup: Bool = false
     @State var textElement: Text?
     @State var bag = Set<AnyCancellable>()
