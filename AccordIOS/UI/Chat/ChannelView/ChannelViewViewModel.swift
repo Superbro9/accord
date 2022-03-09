@@ -11,17 +11,14 @@ import Foundation
 import SwiftUI
 
 final class ChannelViewViewModel: ObservableObject {
-    #if DEBUG
-        internal static let developingOffline: Bool = false
-    #endif
-
-    @Published var messages = [Message]()
-    @Published var nicks: [String: String] = [:]
-    @Published var roles: [String: String] = [:]
-    @Published var avatars: [String: String] = [:]
-    @Published var pronouns: [String: String] = [:]
-    var cancellable = Set<AnyCancellable>()
-
+    
+    @Published var messages: [Message] = .init()
+    @Published var nicks: [String: String] = .init()
+    @Published var roles: [String: String] = .init()
+    @Published var avatars: [String: String] = .init()
+    @Published var pronouns: [String: String] = .init()
+    var cancellable: Set<AnyCancellable> = .init()
+    
     var guildID: String
     var channelID: String
 
@@ -30,15 +27,19 @@ final class ChannelViewViewModel: ObservableObject {
         self.guildID = guildID
         guard wss != nil else { return }
         messageFetchQueue.async {
-            self.guildID == "@me" ? try? wss.subscribeToDM(channelID) : try? wss.subscribe(to: guildID)
+            if guildID == "@me" {
+                try? wss.subscribeToDM(channelID)
+            } else {
+                try? wss.subscribe(to: guildID)
+                try? wss.getCommands(guildID: guildID)
+            }
             MentionSender.shared.removeMentions(server: guildID)
-            // fetch messages
-            self.getMessages(channelID: channelID, guildID: guildID)
         }
-        subscribe()
+        self.getMessages(channelID: channelID, guildID: guildID)
+        self.connect()
     }
 
-    func subscribe() {
+    func connect() {
         wss.messageSubject
             .receive(on: webSocketQueue)
             .sink { [weak self] msg, channelID, _ in

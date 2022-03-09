@@ -9,32 +9,38 @@ import Combine
 import Foundation
 import SwiftUI
 
-struct AsyncMarkdown: View {
-    private var _text: String
-    @State private var cancellable: AnyCancellable? = nil
-    @State var markdown: Text?
+final class AsyncMarkdownModel: ObservableObject {
+    
+    init (text: String) {
+        self.markdown = Text(text)
+        self.make(text: text)
+    }
+    
+    @Published var markdown: Text
+    
+    private func make(text: String) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            Markdown.markAll(text: text, Storage.usernames)
+                .replaceError(with: Text(text))
+                .receive(on: RunLoop.main)
+                .assign(to: &self.$markdown)
+        }
+    }
+}
+
+struct AsyncMarkdown: View, Equatable {
+    
+    static func == (lhs: AsyncMarkdown, rhs: AsyncMarkdown) -> Bool {
+        return true
+    }
+    
+    @StateObject var model: AsyncMarkdownModel
+    
     init(_ text: String) {
-        _text = text
-        markdown = nil
-        cancellable = nil
+        _model = StateObject(wrappedValue: AsyncMarkdownModel(text: text))
     }
-
-    private func make() {
-        textQueue.async {
-            self.cancellable = Markdown.markAll(text: self._text, Storage.usernames)
-                .replaceError(with: Text(self._text))
-                .sink { res in
-                    self.markdown = res
-                }
-        }
-    }
-
+    
     var body: some View {
-        HStack {
-            markdown ?? Text(_text)
-        }
-        .onAppear {
-            make()
-        }
+        model.markdown
     }
 }
