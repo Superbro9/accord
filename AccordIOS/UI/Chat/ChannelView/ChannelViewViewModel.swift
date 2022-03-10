@@ -11,14 +11,14 @@ import Foundation
 import SwiftUI
 
 final class ChannelViewViewModel: ObservableObject {
-    
+
     @Published var messages: [Message] = .init()
     @Published var nicks: [String: String] = .init()
     @Published var roles: [String: String] = .init()
     @Published var avatars: [String: String] = .init()
     @Published var pronouns: [String: String] = .init()
     var cancellable: Set<AnyCancellable> = .init()
-    
+
     var guildID: String
     var channelID: String
 
@@ -72,26 +72,20 @@ final class ChannelViewViewModel: ObservableObject {
                 for person in allUsers {
                     DispatchQueue.main.async {
                         wss.cachedMemberRequest["\(self.guildID)$\(person.user.id)"] = person
-                    }
-                    if let nickname = person.nick {
-                        DispatchQueue.main.async {
+                        if let nickname = person.nick {
                             self.nicks[person.user.id] = nickname
                         }
-                    }
-                    if let avatar = person.avatar {
-                        self.avatars[person.user.id] = avatar
+                        if let avatar = person.avatar {
+                            self.avatars[person.user.id] = avatar
+                        }
                     }
                     if let roles = person.roles {
-                        var rolesTemp: [String?] = Array(repeating: nil, count: 100)
-                        for role in roles {
-                            if let roleColor = roleColors[role]?.1 {
-                                rolesTemp[roleColor] = role
-                            }
-                        }
-                        let temp: [String] = (rolesTemp.compactMap { $0 }).reversed()
-                        if !(temp.isEmpty) {
+                        let temp = roles
+                            .filter { roleColors[$0] != nil }
+                            .sorted(by: { roleColors[$0]!.1 > roleColors[$1]!.1 })
+                        if let foregroundRoleColor = temp.first {
                             DispatchQueue.main.async {
-                                self.roles[person.user.id] = temp[0]
+                                self.roles[person.user.id] = foregroundRoleColor
                             }
                         }
                     }
@@ -102,11 +96,7 @@ final class ChannelViewViewModel: ObservableObject {
             .receive(on: webSocketQueue)
             .sink { [weak self] msg, channelID in
                 guard channelID == self?.channelID else { return }
-                let messageMap = self?.messages.enumerated().compactMap { index, element in
-                    [element.id: index]
-                }.reduce(into: [:]) { result, next in
-                    result.merge(next) { _, rhs in rhs }
-                }
+                let messageMap = self?.messages.generateKeyMap()
                 guard let gatewayMessage = try? JSONDecoder().decode(GatewayDeletedMessage.self, from: msg) else { return }
                 guard let message = gatewayMessage.d else { return }
                 guard let index = messageMap?[message.id] else { return }
@@ -124,11 +114,7 @@ final class ChannelViewViewModel: ObservableObject {
                 // Received a message from backend
                 guard channelID == self?.channelID else { return }
                 guard let message = try? JSONDecoder().decode(GatewayMessage.self, from: msg).d else { return }
-                let messageMap = self?.messages.enumerated().compactMap { index, element in
-                    [element.id: index]
-                }.reduce(into: [:]) { result, next in
-                    result.merge(next) { _, rhs in rhs }
-                }
+                let messageMap = self?.messages.generateKeyMap()
                 guard let index = messageMap?[message.id] else { return }
                 DispatchQueue.main.async {
                     self?.messages[index] = message
@@ -208,16 +194,12 @@ final class ChannelViewViewModel: ObservableObject {
             avatars[person.user.id] = avatar
         }
         if let roles = person.roles {
-            var rolesTemp: [String?] = Array(repeating: nil, count: 100)
-            for role in roles {
-                if let roleColor = roleColors[role]?.1 {
-                    rolesTemp[roleColor] = role
-                }
-            }
-            let temp: [String] = rolesTemp.compactMap { $0 }.reversed()
-            if !(temp.isEmpty) {
+            let temp = roles
+                .filter { roleColors[$0] != nil }
+                .sorted(by: { roleColors[$0]!.1 > roleColors[$1]!.1 })
+            if let foregroundRoleColor = temp.first {
                 DispatchQueue.main.async {
-                    self.roles[person.user.id] = temp[0]
+                    self.roles[person.user.id] = foregroundRoleColor
                 }
             }
         }
@@ -255,7 +237,7 @@ final class ChannelViewViewModel: ObservableObject {
         }
         .store(in: &cancellable)
     }
-    
+
     func getCachedMemberChunk() {
         let allUserIDs = messages.compactMap { $0.author?.id }
             .removingDuplicates()
@@ -268,13 +250,12 @@ final class ChannelViewViewModel: ObservableObject {
                 avatars[person.user.id] = avatar
             }
             if let roles = person.roles {
-                print(person.user.username, roles)
-                for role in roles.sorted(by: { lhs, rhs -> Bool in
-                    guard let lhs = roleColors[lhs]?.1, let rhs = roleColors[rhs]?.1 else { return false }
-                    return lhs < rhs
-                }) {
+                let temp = roles
+                    .filter { roleColors[$0] != nil }
+                    .sorted(by: { roleColors[$0]!.1 > roleColors[$1]!.1 })
+                if let foregroundRoleColor = temp.first {
                     DispatchQueue.main.async {
-                        self.roles[person.user.id] = role
+                        self.roles[person.user.id] = foregroundRoleColor
                     }
                 }
             }
@@ -317,6 +298,8 @@ final class ChannelViewViewModel: ObservableObject {
 
     deinit {
         print("Closing \(channelID)")
+        self.cancellable.invalidateAll()
+        SlashCommandStorage.commands[guildID]?.removeAll()
     }
 }
 

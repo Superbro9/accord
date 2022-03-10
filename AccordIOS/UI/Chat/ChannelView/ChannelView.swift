@@ -51,9 +51,6 @@ struct ChannelView: View {
         channelName = channel.name ?? channel.recipients?.first?.username ?? "Unknown channel"
         self.guildName = guildName ?? "Direct Messages"
         _viewModel = StateObject(wrappedValue: ChannelViewViewModel(channelID: channel.id, guildID: channel.guild_id ?? "@me"))
-        if DiscordDesktopRPCEnabled {
-            DiscordDesktopRPC.update(guildName: channel.guild_name, channelName: channel.computedName)
-        }
     }
 
     var body: some View {
@@ -105,8 +102,6 @@ struct ChannelView: View {
             }
         }
         .navigationTitle(Text("\(guildID == "@me" ? "" : "#")\(channelName)"))
-        .navigationSubtitle(Text(guildName))
-        .presentedWindowToolbarStyle(.unifiedCompact)
         .onAppear {
             guard wss != nil else { return MentionSender.shared.deselect() }
             wss.typingSubject
