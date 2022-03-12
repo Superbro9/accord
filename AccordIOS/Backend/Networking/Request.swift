@@ -45,7 +45,18 @@ func logOut() {
 }
 
 final class Headers {
-    init(userAgent: String = discordUserAgent, contentType: String? = nil, token: String? = nil, bodyObject: [String: Any]? = nil, type: RequestTypes, discordHeaders: Bool = false, referer: String? = nil, empty: Bool = false, json: Bool = false, cached: Bool = false) {
+    init(
+        userAgent: String = discordUserAgent,
+        contentType: String? = nil,
+        token: String? = nil,
+        bodyObject: [String: Any]? = nil,
+        type: RequestTypes,
+        discordHeaders: Bool = false,
+        referer: String? = nil,
+        empty: Bool = false,
+        json: Bool = false,
+        cached: Bool = false
+    ) {
         self.userAgent = userAgent
         self.contentType = contentType
         self.token = token
@@ -82,8 +93,11 @@ final class Headers {
         ]
         return try? JSONSerialization.data(withJSONObject: json, options: []).base64EncodedString()
     }
-
-    func set(request: inout URLRequest, config: inout URLSessionConfiguration) throws {
+    
+    func set(
+        request: inout URLRequest,
+        config: inout URLSessionConfiguration
+    ) throws {
         if cached {
             config.requestCachePolicy = .returnCacheDataElseLoad
         }
@@ -160,7 +174,13 @@ public final class Request {
     
     // MARK: - Perform request with completion handler
     
-    class func fetch<T: Decodable>(_: T.Type, request: URLRequest? = nil, url: URL? = nil, headers: Headers? = nil, completion: @escaping (Result<T, Error>) -> Void) {
+    class func fetch<T: Decodable>(
+        _: T.Type,
+        request: URLRequest? = nil,
+        url: URL? = nil,
+        headers: Headers? = nil,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
         let request: URLRequest? = {
             if let request = request {
                 return request
@@ -205,10 +225,14 @@ public final class Request {
             }
         }).resume()
     }
-
+    
     // MARK: - Perform data request with completion handler
-
-    class func fetch(request: URLRequest? = nil, url: URL? = nil, headers: Headers? = nil, completion: @escaping (Result<Data, Error>) -> Void) {
+    class func fetch(
+        request: URLRequest? = nil,
+        url: URL? = nil,
+        headers: Headers? = nil,
+        completion: @escaping (Result<Data, Error>) -> Void
+    ) {
         let request: URLRequest? = {
             if let request = request {
                 return request
@@ -221,7 +245,7 @@ public final class Request {
         }()
         guard var request = request else { return completion(.failure(FetchErrors.invalidRequest)) }
         var config = URLSessionConfiguration.default
-        
+       
         guard !(wss != nil && headers?.discordHeaders == true && wss?.connection?.state != NWConnection.State.ready) else {
             print("No active websocket connection")
             return
@@ -239,58 +263,22 @@ public final class Request {
         }).resume()
     }
     
-    class func createMultipartBody(
-        with payloadJson: String?,
-        fileURL: String? = nil,
-        boundary: String = "Boundary-\(UUID().uuidString)"
-    ) throws -> Data {
-        var body = Data()
-        
-        body.append("--\(boundary)\r\n")
-        
-        if let payloadJson = payloadJson {
-            body.append(
-                "Content-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json\r\n\r\n"
-            )
-            body.append("\(payloadJson)\r\n")
-        }
-        
-        if let fileURL = fileURL,
-           let url = URL(string: fileURL) {
-            let filename = url.lastPathComponent
-            let data = try Data(contentsOf: url)
-            let mimetype = url.mimeType()
-            
-            body.append("--\(boundary)\r\n")
-            body.append(
-                "Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n"
-            )
-            body.append("Content-Type: \(mimetype)\r\n\r\n")
-            body.append(data)
-            body.append("\r\n")
-        }
-        
-        body.append("--\(boundary)--\r\n")
-        print(String(data: body, encoding: .utf8))
-        return body
-    }
-    /*
-     ------WebKitFormBoundaryeDoDxVailL1LpUnN
-     Content-Disposition: form-data; name="payload_json"
-
-     {"type":2,"application_id":"836759847357251604","guild_id":"815369174096412692","channel_id":"839005662931189801","session_id":"0f77b7545645d1991d11e54cccfa8425","data":{"version":"847239978559078431","id":"847239978559078430","name":"minesweeper","type":1,"options":[],"application_command":{"application_id":"836759847357251604","default_member_permissions":null,"default_permission":true,"description":"play minesweeper on a 5-5-5 board","dm_permission":null,"id":"847239978559078430","name":"minesweeper","permissions":[],"type":1,"version":"847239978559078431"},"attachments":[]},"nonce":"946208314188890112"}
-     ------WebKitFormBoundaryeDoDxVailL1LpUnN--
-     */
-
     // MARK: - fetch() wrapper for empty requests without completion handlers
-
-    class func ping(request: URLRequest? = nil, url: URL? = nil, headers: Headers? = nil) {
+    class func ping(
+        request: URLRequest? = nil,
+        url: URL? = nil,
+        headers: Headers? = nil
+    ) {
         fetch(AnyDecodable.self, request: request, url: url, headers: headers) { _ in }
     }
-
+    
     // MARK: - Image getter
     
-    class func image(url: URL?, to size: CGSize? = nil, completion: @escaping ((_ value: UIImage?) -> Void)) {
+    class func image(
+        url: URL?,
+        to size: CGSize? = nil,
+        completion: @escaping ((_ value: UIImage?) -> Void)
+    ) {
         guard let url = url else { return completion(nil) }
         let request = URLRequest(url: url)
         if let cachedImage = cache.cachedResponse(for: request) {
@@ -314,20 +302,108 @@ public final class Request {
             return completion(image)
         }).resume()
     }
+
+class func fetch(
+    url: URL?,
+    with payloadJson: [String:Any]? = nil,
+    fileURL: String? = nil,
+    boundary: String = "Boundary-\(UUID().uuidString)",
+    headers: Headers? = nil,
+    completion: @escaping (Result<(Data?, HTTPURLResponse?), Error>) -> Void = { _ in }
+) {
+    let request: URLRequest? = {
+        if let url = url {
+            return URLRequest(url: url)
+        } else {
+            print("You need to provide a request method")
+            return nil
+        }
+    }()
+    guard var request = request else { return }
+    var config = URLSessionConfiguration.default
+ 
+    guard !(wss != nil && headers?.discordHeaders == true && wss?.connection?.state != NWConnection.State.ready) else {
+        print("No active websocket connection")
+        return
+    }
+
+    // Set headers
+    do { try headers?.set(request: &request, config: &config) } catch { return }
+    request.httpBody = try? Request.createMultipartBody(with: try payloadJson?.jsonString(), fileURL: fileURL, boundary: boundary)
+    request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+    URLSession(configuration: config).dataTask(with: request, completionHandler: { data, response, error in
+        print(response as? HTTPURLResponse)
+        if let data = data {
+            return completion(.success((data, response as? HTTPURLResponse)))
+        } else if let error = error {
+            return completion(.failure(error))
+        }
+    }).resume()
+}
+
+class func createMultipartBody(
+    with payloadJson: String?,
+    fileURL: String? = nil,
+    boundary: String = "Boundary-\(UUID().uuidString)"
+) throws -> Data {
+    var body = Data()
+    
+    body.append("--\(boundary)\r\n")
+    
+    if let payloadJson = payloadJson {
+        body.append(
+            "Content-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json\r\n\r\n"
+        )
+        body.append("\(payloadJson)\r\n")
+    }
+    
+    if let fileURL = fileURL,
+       let url = URL(string: fileURL) {
+        let filename = url.lastPathComponent
+        let data = try Data(contentsOf: url)
+        let mimetype = url.mimeType()
+        
+        body.append("--\(boundary)\r\n")
+        body.append(
+            "Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n"
+        )
+        body.append("Content-Type: \(mimetype)\r\n\r\n")
+        body.append(data)
+        body.append("\r\n")
+    }
+    
+    body.append("--\(boundary)--\r\n")
+    print(String(data: body, encoding: .utf8))
+    return body
+}
+    /*
+     ------WebKitFormBoundaryeDoDxVailL1LpUnN
+     Content-Disposition: form-data; name="payload_json"
+     
+     {"type":2,"application_id":"836759847357251604","guild_id":"815369174096412692","channel_id":"839005662931189801","session_id":"0f77b7545645d1991d11e54cccfa8425","data":{"version":"847239978559078431","id":"847239978559078430","name":"minesweeper","type":1,"options":[],"application_command":{"application_id":"836759847357251604","default_member_permissions":null,"default_permission":true,"description":"play minesweeper on a 5-5-5 board","dm_permission":null,"id":"847239978559078430","name":"minesweeper","permissions":[],"type":1,"version":"847239978559078431"},"attachments":[]},"nonce":"946208314188890112"}
+     ------WebKitFormBoundaryeDoDxVailL1LpUnN--
+     */
 }
 
 public final class RequestPublisher {
     static var EmptyImagePublisher: AnyPublisher<UIImage, Error> = {
         Empty<UIImage, Error>.init().eraseToAnyPublisher()
     }()
-
+    
     enum ImageErrors: Error {
         case noImage
     }
 
     // MARK: - Get a publisher for the request
 
-    class func fetch<T: Decodable>(_: T.Type, request: URLRequest? = nil, url: URL? = nil, headers: Headers? = nil, retry: Int = 2) -> AnyPublisher<T, Error> {
+    class func fetch<T: Decodable>(
+        _: T.Type,
+        request: URLRequest? = nil,
+        url: URL? = nil,
+        headers: Headers? = nil,
+        retry: Int = 2
+    ) -> AnyPublisher<T, Error> {
         let request: URLRequest? = {
             if let request = request {
                 return request
@@ -364,7 +440,10 @@ public final class RequestPublisher {
     
     // MARK: - Combine Image getter
 
-    class func image(url: URL?, to size: CGSize? = nil) -> AnyPublisher<UIImage, Error> {
+    class func image(
+        url: URL?,
+        to size: CGSize? = nil
+    ) -> AnyPublisher<UIImage, Error> {
         guard let url = url else { return EmptyImagePublisher }
         let request = URLRequest(url: url)
         if let cachedImage = cache.cachedResponse(for: request), let img = UIImage(data: cachedImage.data) {

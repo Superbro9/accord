@@ -8,6 +8,7 @@
 import UIKit
 import AVKit
 import SwiftUI
+import Combine
 
 struct ChannelView: View {
     
@@ -39,10 +40,10 @@ struct ChannelView: View {
     @State var fileUpload: Data?
     @State var fileUploadURL: URL?
     
-    @State var editing: String? = nil
-    
     @AppStorage("MetalRenderer")
     var metalRenderer: Bool = false
+    
+    @State private var cancellable = Set<AnyCancellable>()
 
     // MARK: - init
     init(_ channel: Channel, _ guildName: String? = nil) {
@@ -52,43 +53,48 @@ struct ChannelView: View {
         self.guildName = guildName ?? "Direct Messages"
         _viewModel = StateObject(wrappedValue: ChannelViewViewModel(channelID: channel.id, guildID: channel.guild_id ?? "@me"))
     }
+    
+    var messagesView: some View {
+        ForEach(viewModel.messages, id: \.identifier) { message in
+            if let author = message.author {
+                MessageCellView (
+                    message: message,
+                    nick: viewModel.nicks[author.id],
+                    replyNick: viewModel.nicks[message.referenced_message?.author?.id ?? ""],
+                    pronouns: viewModel.pronouns[author.id],
+                    avatar: viewModel.avatars[author.id],
+                    guildID: guildID,
+                    role: $viewModel.roles[author.id],
+                    replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
+                    replyingTo: $replyingTo
+                )
+                .onAppear {
+                    if viewModel.messages.count >= 50 &&
+                        message == viewModel.messages[viewModel.messages.count - 2] {
+                        messageFetchQueue.async {
+                            viewModel.loadMoreMessages()
+                        }
+                    }
+                }
+            }
+        }
+        .rotationEffect(.degrees(180))
+        .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
+    }
 
     var body: some View {
         HStack {
-            ZStack(alignment: .bottom) { [weak viewModel] in
+            ZStack(alignment: .bottom) {
                 List {
                     Spacer().frame(height: typing.isEmpty && replyingTo == nil ? 65 : 75)
-                    ForEach(viewModel?.messages ?? [], id: \.identifier) { message in
-                        if let author = message.author {
-                            MessageCellView (
-                                message: message,
-                                nick: viewModel?.nicks[author.id],
-                                replyNick: viewModel?.nicks[message.referenced_message?.author?.id ?? ""],
-                                pronouns: viewModel?.pronouns[author.id],
-                                avatar: viewModel?.avatars[author.id],
-                                guildID: guildID,
-                                role: $viewModel.roles[author.id],
-                                replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
-                                replyingTo: $replyingTo,
-                                editing: $editing
-                            )
-                            .onAppear {
-                                if (viewModel?.messages.count ?? 0) >= 50 {
-                                    if message == viewModel?.messages[viewModel!.messages.count - 2] {
-                                        messageFetchQueue.async {
-                                            viewModel?.loadMoreMessages()
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    if metalRenderer {
+                        messagesView.drawingGroup()
+                    } else {
+                        messagesView
                     }
-                    .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
-                    .rotationEffect(.init(degrees: 180))
-                    .if(metalRenderer, transform: { $0.drawingGroup() })
                 }
-                .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
                 .rotationEffect(.init(degrees: 180))
+                .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
                 blurredTextField
             }
             if memberListShown {
@@ -119,23 +125,14 @@ struct ChannelView: View {
                         typing.removeLast()
                     }
                 }
-                .store(in: &viewModel.cancellable)
+                .store(in: &cancellable)
             wss.memberListSubject
                 .sink { list in
                     if self.memberListShown, memberList.isEmpty {
                         self.memberList = Array(list.d.ops.compactMap(\.items).joined())
                     }
                 }
-                .store(in: &viewModel.cancellable)
-        }
-        .onDrop(of: ["public.file-url"], isTargeted: Binding.constant(false)) { providers -> Bool in
-            providers.first?.loadDataRepresentation(forTypeIdentifier: "public.file-url", completionHandler: { data, _ in
-                if let data = data, let path = NSString(data: data, encoding: 4), let url = URL(string: path as String) {
-                    fileUpload = try! Data(contentsOf: url)
-                    fileUploadURL = url
-                }
-            })
-            return true
+                .store(in: &cancellable)
         }
         .toolbar {
             ToolbarItemGroup {
@@ -160,6 +157,10 @@ struct ChannelView: View {
                     }
                 }
             }
+        }
+        .onDisappear {
+            self.cancellable.forEach { $0.cancel() }
+            self.cancellable.removeAll()
         }
     }
 }

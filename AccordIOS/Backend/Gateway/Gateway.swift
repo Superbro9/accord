@@ -344,22 +344,20 @@ final class Gateway {
         try send(json: packet)
     }
     
-    public func getCommands(guildID: String, commandIDs: [String] = [], limit: Int = 10) throws {
-             let packet: [String: Any] = [
-                 "op": 24,
-                 "d": [
-                     "applications": true,
-                     "command_ids": commandIDs,
-                     "guild_id": guildID,
-                     "limit":limit,
-                     "locale":NSNull(),
-                     "nonce":generateFakeNonce(),
-                     "offset":0,
-                     "type":1
-                 ],
-             ]
-             try send(json: packet)
-         }
+    public func getCommands(guildID: String, query: String, limit: Int = 10) throws {
+        let packet: [String: Any] = [
+            "op": 24,
+            "d": [
+                "locale": NSNull(),
+                "query": query,
+                "guild_id": guildID,
+                "limit":limit,
+                "nonce":generateFakeNonce(),
+                "type":1
+            ],
+        ]
+        try send(json: packet)
+    }
 
     // cleanup
     deinit {

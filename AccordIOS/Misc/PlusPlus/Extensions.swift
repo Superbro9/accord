@@ -117,9 +117,10 @@ extension Color {
 
 @available(iOS 15.0, *)
 struct Folder<Content: View>: View {
-    @State var icon: [Guild]
-    @State var color: UIColor
-    @State var content: () -> Content
+    var icon: [Guild]
+    var color: UIColor
+    @Binding var read: Bool
+    var content: () -> Content
 
     @State private var collapsed: Bool = true
 
@@ -130,48 +131,55 @@ struct Folder<Content: View>: View {
             Button(
                 action: { withAnimation(Animation.spring()) { self.collapsed.toggle() } },
                 label: {
-                    VStack(spacing: 3) {
-                        HStack(spacing: 3) {
-                            if let guild = icon.first, let icon = guild.icon {
-                                Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
-                                    .equatable()
-                                    .clipShape(Circle())
-                                    .frame(width: 16, height: 16)
-                            } else {
-                                Spacer().frame(width: 16, height: 16)
+                    HStack {
+                        Circle()
+                            .fill()
+                            .foregroundColor(Color.primary)
+                            .frame(width: 5, height: 5)
+                            .opacity(read ? 1 : 0)
+                        VStack(spacing: 3) {
+                            HStack(spacing: 3) {
+                                if let guild = icon.first, let icon = guild.icon {
+                                    Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
+                                        .equatable()
+                                        .clipShape(Circle())
+                                        .frame(width: 16, height: 16)
+                                } else {
+                                    Spacer().frame(width: 16, height: 16)
+                                }
+                                if let guild = icon[safe: 1], let icon = guild.icon {
+                                    Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
+                                        .equatable()
+                                        .clipShape(Circle())
+                                        .frame(width: 16, height: 16)
+                                } else {
+                                    Spacer().frame(width: 16, height: 16)
+                                }
                             }
-                            if let guild = icon[safe: 1], let icon = guild.icon {
-                                Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
-                                    .equatable()
-                                    .clipShape(Circle())
-                                    .frame(width: 16, height: 16)
-                            } else {
-                                Spacer().frame(width: 16, height: 16)
+                            HStack(spacing: 3) {
+                                if let guild = icon[safe: 2], let icon = guild.icon {
+                                    Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
+                                        .equatable()
+                                        .clipShape(Circle())
+                                        .frame(width: 16, height: 16)
+                                } else {
+                                    Spacer().frame(width: 16, height: 16)
+                                }
+                                if let guild = icon[safe: 3], let icon = guild.icon {
+                                    Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
+                                        .equatable()
+                                        .clipShape(Circle())
+                                        .frame(width: 16, height: 16)
+                                } else {
+                                    Spacer().frame(width: 16, height: 16)
+                                }
                             }
                         }
-                        HStack(spacing: 3) {
-                            if let guild = icon[safe: 2], let icon = guild.icon {
-                                Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
-                                    .equatable()
-                                    .clipShape(Circle())
-                                    .frame(width: 16, height: 16)
-                            } else {
-                                Spacer().frame(width: 16, height: 16)
-                            }
-                            if let guild = icon[safe: 3], let icon = guild.icon {
-                                Attachment("https://cdn.discordapp.com/icons/\(guild.id)/\(icon).png?size=24")
-                                    .equatable()
-                                    .clipShape(Circle())
-                                    .frame(width: 16, height: 16)
-                            } else {
-                                Spacer().frame(width: 16, height: 16)
-                            }
-                        }
+                        .frame(width: 45, height: 45)
+                        .background(Color(color.withAlphaComponent(0.75)))
+                        .cornerRadius(15)
+                        .frame(width: 45, height: 45)
                     }
-                    .frame(width: 45, height: 45)
-                    .background(Color(color.withAlphaComponent(0.75)))
-                    .cornerRadius(15)
-                    .frame(width: 45, height: 45)
                 }
             )
             .buttonStyle(PlainButtonStyle())

@@ -33,9 +33,7 @@ struct Attachment: View, Equatable {
                 .resizable()
                 .frame(idealWidth: imageLoader.image.size.width, idealHeight: imageLoader.image.size.height)
                 .scaledToFit()
-                .onDisappear(perform: {
-                    imageLoader.cancellable?.cancel()
-                })
+                
         }
         .onAppear {
             imageLoader.load()
@@ -48,11 +46,11 @@ struct HoveredAttachment: View, Equatable {
         true
     }
 
-    @StateObject private var imageLoader: ImageLoaderAndCache
+    @StateObject var imageLoader: ImageLoaderAndCache
     @State var hovering = false
 
     init(_ url: String) {
-        _imageLoader = StateObject(wrappedValue: ImageLoaderAndCache(imageURL: url))
+        _imageLoader = StateObject.init(wrappedValue: ImageLoaderAndCache(imageURL: url))
     }
 
     var body: some View {
@@ -69,7 +67,6 @@ struct HoveredAttachment: View, Equatable {
 
 final class ImageLoaderAndCache: ObservableObject {
     @Published var image: UIImage = .init()
-    var cancellable: AnyCancellable?
     private var url: URL?
     private var size: CGSize?
 
@@ -80,14 +77,11 @@ final class ImageLoaderAndCache: ObservableObject {
 
     func load() {
         if self.size?.width == 350 { print("loading attachment") }
-        self.cancellable = RequestPublisher.image(url: self.url, to: self.size)
-            .subscribe(on: imageQueue)
+        RequestPublisher.image(url: self.url, to: self.size)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.global(qos: .userInitiated))
             .replaceError(with: UIImage(systemName: "wifi.slash") ?? UIImage())
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.image = $0 }
-    }
-
-    deinit {
-        self.cancellable?.cancel()
+            .receive(on: RunLoop.main)
+            .assign(to: &$image)
     }
 }
