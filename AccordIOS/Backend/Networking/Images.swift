@@ -24,7 +24,7 @@ struct Attachment: View, Equatable {
 
     init(_ url: String, size: CGSize? = nil) {
         self.url = url
-        _imageLoader = StateObject(wrappedValue: ImageLoaderAndCache(imageURL: url, size: size))
+        _imageLoader = StateObject.init(wrappedValue: ImageLoaderAndCache(imageURL: url, size: size))
     }
 
     var body: some View {
