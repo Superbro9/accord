@@ -75,7 +75,7 @@ public final class Markdown {
      **/
     public class func markWord(_ word: String, _ members: [String: String] = [:]) -> TextPublisher {
         let emoteIDs = word.matches(for: #"(?<=\:)(\d+)(.*?)(?=\>)"#)
-        if let id = emoteIDs.first, let emoteURL = URL(string: "https://cdn.discordapp.com/emojis/\(id).png?size=16") {
+        if let id = emoteIDs.first, let emoteURL = URL(string: cdnURL + "/emojis/\(id).png?size=16") {
             return RequestPublisher.image(url: emoteURL)
                 .replaceError(with: UIImage(systemName: "wifi.slash") ?? UIImage())
                 .map { Text("\(Image(uiImage: $0))") + Text(" ") }

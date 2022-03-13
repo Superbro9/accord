@@ -74,7 +74,8 @@ struct ServerListView: View {
         }) {
             Image(systemName: "bubble.left.fill")
                 .frame(width: 45, height: 45)
-                .background(VisualEffectView(effect: UIBlurEffect(style: .regular)))
+                .foregroundColor(.white)
+                .background(.gray)
                 .cornerRadius(selectedServer == 201 ? 15.0 : 23.5)
         }
     }
@@ -142,10 +143,15 @@ struct ServerListView: View {
     var settingsLink: some View {
         NavigationLink(destination: NavigationLazyView(SettingsViewRedesign()), tag: 0, selection: self.$selection) {
             ZStack(alignment: .bottomTrailing) {
-                Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
-                    .scaledToFit()
+                Image(systemName: "gear")
                     .frame(width: 45, height: 45)
-                    .cornerRadius((self.selection == 0) ? 15.0 : 23.5)
+                    .foregroundColor(.white)
+                    .background(.gray)
+                    .cornerRadius(23.5)
+//                Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
+//                    .scaledToFit()
+//                    .frame(width: 45, height: 45)
+//                    .cornerRadius((self.selection == 0) ? 15.0 : 23.5)
                 statusIndicator
             }
         }

@@ -89,13 +89,17 @@ struct ChannelView: View {
                     Spacer().frame(height: typing.isEmpty && replyingTo == nil ? 65 : 75)
                     if metalRenderer {
                         messagesView.drawingGroup()
+                            .listRowSeparator(.hidden)
                     } else {
                         messagesView
+                            .listRowSeparator(.hidden)
                     }
                 }
+                .listStyle(.plain)
                 .rotationEffect(.init(degrees: 180))
                 .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
                 blurredTextField
+                
             }
             if memberListShown {
                 MemberListView(list: $memberList)
@@ -135,7 +139,7 @@ struct ChannelView: View {
                 .store(in: &cancellable)
         }
         .toolbar {
-            ToolbarItemGroup {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Toggle(isOn: $pins) {
                     Image(systemName: "pin.fill")
                         .rotationEffect(.degrees(45))
