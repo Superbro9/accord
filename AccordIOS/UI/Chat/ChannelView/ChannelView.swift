@@ -13,28 +13,28 @@ import Combine
 struct ChannelView: View {
     
     @StateObject var viewModel: ChannelViewViewModel
-
+    
     var guildID: String
     var channelID: String
     var channelName: String
     var guildName: String
-
+    
     // Whether or not there is a message send in progress
     @State var sending: Bool = false
-
+    
     // Nicknames/Usernames of users typing
     @State var typing: [String] = []
-
+    
     // WebSocket error
     @State var error: String?
-
+    
     // Mention users in replies
     @State var mention: Bool = true
     @State var replyingTo: Message?
-
+    
     @State var pins: Bool = false
     @State var mentions: Bool = false
-
+    
     @State var memberListShown: Bool = false
     @State var memberList: [OPSItems] = .init()
     @State var fileUpload: Data?
@@ -44,7 +44,7 @@ struct ChannelView: View {
     var metalRenderer: Bool = false
     
     @State private var cancellable = Set<AnyCancellable>()
-
+    
     // MARK: - init
     init(_ channel: Channel, _ guildName: String? = nil) {
         guildID = channel.guild_id ?? "@me"
@@ -68,20 +68,20 @@ struct ChannelView: View {
                     replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
                     replyingTo: $replyingTo
                 )
-                .onAppear {
-                    if viewModel.messages.count >= 50 &&
-                        message == viewModel.messages[viewModel.messages.count - 2] {
-                        messageFetchQueue.async {
-                            viewModel.loadMoreMessages()
+                    .onAppear {
+                        if viewModel.messages.count >= 50 &&
+                            message == viewModel.messages[viewModel.messages.count - 2] {
+                            messageFetchQueue.async {
+                                viewModel.loadMoreMessages()
+                            }
                         }
                     }
-                }
             }
         }
         .rotationEffect(.degrees(180))
         .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
     }
-
+    
     var body: some View {
         HStack {
             ZStack(alignment: .bottom) {
@@ -138,30 +138,37 @@ struct ChannelView: View {
                 }
                 .store(in: &cancellable)
         }
-        .toolbar {
+        .toolbar(content: {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Toggle(isOn: $pins) {
+                Button(action: {
+                    self.pins.toggle()
+                }) {
                     Image(systemName: "pin.fill")
                         .rotationEffect(.degrees(45))
                 }
                 .sheet(isPresented: $pins) {
-                    PinsView(guildID: guildID, channelID: channelID, replyingTo: Binding.constant(nil))
+                    PinsView(guildID: guildID, channelID: guildID, replyingTo: Binding.constant(nil))
                         .frame(width: 500, height: 600)
                 }
-                Toggle(isOn: $mentions) {
+                
+                Button(action: {
+                    self.mentions.toggle()
+                }) {
                     Image(systemName: "bell.badge.fill")
                 }
                 .sheet(isPresented: $mentions) {
                     MentionsView(replyingTo: Binding.constant(nil))
                         .frame(width: 500, height: 600)
                 }
+                
                 if guildID != "@me" {
                     Toggle(isOn: $memberListShown.animation()) {
                         Image(systemName: "person.2.fill")
-                    }
-                }
-            }
-        }
+                      }
+                  }
+              }
+           }
+        )
         .onDisappear {
             self.cancellable.forEach { $0.cancel() }
             self.cancellable.removeAll()
