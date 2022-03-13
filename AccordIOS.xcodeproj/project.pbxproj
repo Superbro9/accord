@@ -20,6 +20,7 @@
 		8991164727AFEF3800FFDE93 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8991164627AFEF3800FFDE93 /* Preview Assets.xcassets */; };
 		89A54FDA27D93AAA003142A0 /* Collection++.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A54FD927D93AAA003142A0 /* Collection++.swift */; };
 		89A54FDC27D93DB6003142A0 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A54FDB27D93DB6003142A0 /* Permissions.swift */; };
+		89C209AC27DE9DB900A2994E /* PinsView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C209AB27DE9DB900A2994E /* PinsView2.swift */; };
 		89D7CBAF27B5801400D4B567 /* GifView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D7CBAE27B5801400D4B567 /* GifView.swift */; };
 		89D7CBB627B58C1F00D4B567 /* EmotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D7CBB527B58C1F00D4B567 /* EmotesView.swift */; };
 		89D7CBB827B58C3800D4B567 /* EmbedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D7CBB727B58C3800D4B567 /* EmbedView.swift */; };
@@ -79,7 +80,6 @@
 		89E9FEFE27AFFEC800861F05 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FEF927AFFEC800861F05 /* LoginView.swift */; };
 		89E9FEFF27AFFEC800861F05 /* ServerListView+Mentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FEFA27AFFEC800861F05 /* ServerListView+Mentions.swift */; };
 		89E9FF1A27B0063E00861F05 /* MentionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF1527B0063E00861F05 /* MentionsView.swift */; };
-		89E9FF1E27B0063E00861F05 /* PinsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF1927B0063E00861F05 /* PinsView.swift */; };
 		89E9FF2227B0064A00861F05 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF1F27B0064A00861F05 /* ChannelView.swift */; };
 		89E9FF2327B0064A00861F05 /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2027B0064A00861F05 /* MessageCellView.swift */; };
 		89E9FF2427B0064A00861F05 /* ChannelViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */; };
@@ -106,6 +106,7 @@
 		89A54FD927D93AAA003142A0 /* Collection++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection++.swift"; sourceTree = "<group>"; };
 		89A54FDB27D93DB6003142A0 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		89BEB1D827B04BD30097A2AF /* AccordIOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AccordIOS.entitlements; sourceTree = "<group>"; };
+		89C209AB27DE9DB900A2994E /* PinsView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinsView2.swift; sourceTree = "<group>"; };
 		89D7CBAE27B5801400D4B567 /* GifView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifView.swift; sourceTree = "<group>"; };
 		89D7CBB527B58C1F00D4B567 /* EmotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotesView.swift; sourceTree = "<group>"; };
 		89D7CBB727B58C3800D4B567 /* EmbedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbedView.swift; sourceTree = "<group>"; };
@@ -165,7 +166,6 @@
 		89E9FEF927AFFEC800861F05 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		89E9FEFA27AFFEC800861F05 /* ServerListView+Mentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ServerListView+Mentions.swift"; sourceTree = "<group>"; };
 		89E9FF1527B0063E00861F05 /* MentionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MentionsView.swift; path = ../../../../../accord/Accord/UI/Chat/Accessories/MentionsView.swift; sourceTree = "<group>"; };
-		89E9FF1927B0063E00861F05 /* PinsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PinsView.swift; path = ../../../../../accord/Accord/UI/Chat/Accessories/PinsView.swift; sourceTree = "<group>"; };
 		89E9FF1F27B0064A00861F05 /* ChannelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
 		89E9FF2027B0064A00861F05 /* MessageCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewViewModel.swift; sourceTree = "<group>"; };
@@ -467,7 +467,7 @@
 				8984EED127B4454C0025AEC5 /* AttachmentView.swift */,
 				89D7CBB527B58C1F00D4B567 /* EmotesView.swift */,
 				89E9FF1527B0063E00861F05 /* MentionsView.swift */,
-				89E9FF1927B0063E00861F05 /* PinsView.swift */,
+				89C209AB27DE9DB900A2994E /* PinsView2.swift */,
 				89D7CBB727B58C3800D4B567 /* EmbedView.swift */,
 			);
 			path = Accessories;
@@ -563,6 +563,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89E9FEF327AFFE8C00861F05 /* PopoverProfileView.swift in Sources */,
+				89C209AC27DE9DB900A2994E /* PinsView2.swift in Sources */,
 				89E9FEA427AFFC3500861F05 /* Keypath++.swift in Sources */,
 				89E9FE6227AFF98200861F05 /* AccordAlert.swift in Sources */,
 				89E9FEA527AFFC3500861F05 /* NSColor++.swift in Sources */,
@@ -603,7 +604,6 @@
 				89E9FEAD27AFFC5800861F05 /* Github.swift in Sources */,
 				89E9FE7827AFFAAF00861F05 /* Attachment.swift in Sources */,
 				89E9FE6427AFF98200861F05 /* LoadingScreenView.swift in Sources */,
-				89E9FF1E27B0063E00861F05 /* PinsView.swift in Sources */,
 				89A54FDC27D93DB6003142A0 /* Permissions.swift in Sources */,
 				89E9FEFB27AFFEC800861F05 /* ServerListView+Misc.swift in Sources */,
 				89E9FE8027AFFAAF00861F05 /* Emote.swift in Sources */,

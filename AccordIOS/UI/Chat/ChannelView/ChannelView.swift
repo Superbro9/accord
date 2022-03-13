@@ -147,7 +147,7 @@ struct ChannelView: View {
                         .rotationEffect(.degrees(45))
                 }
                 .sheet(isPresented: $pins) {
-                    PinsView(guildID: guildID, channelID: guildID, replyingTo: Binding.constant(nil))
+                    PinsView(guildID: guildID, channelID: channelID, replyingTo: Binding.constant(nil))
                         .frame(width: 500, height: 600)
                 }
                 
