@@ -19,12 +19,12 @@ struct Attachment: View, Equatable {
         lhs.url == rhs.url
     }
 
-    @StateObject var imageLoader: ImageLoaderAndCache
+    @StateObject private var imageLoader: ImageLoaderAndCache
     var url: String
 
     init(_ url: String, size: CGSize? = nil) {
         self.url = url
-        _imageLoader = StateObject.init(wrappedValue: ImageLoaderAndCache(imageURL: url, size: size))
+        _imageLoader = StateObject(wrappedValue: ImageLoaderAndCache(imageURL: url, size: size))
     }
 
     var body: some View {
@@ -33,7 +33,6 @@ struct Attachment: View, Equatable {
                 .resizable()
                 .frame(idealWidth: imageLoader.image.size.width, idealHeight: imageLoader.image.size.height)
                 .scaledToFit()
-                
         }
         .onAppear {
             imageLoader.load()

@@ -184,8 +184,11 @@ struct LoginView: View {
                                             switch completion {
                                             case .success(let response):
                                                 if let token = response.token {
-                                                    KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
-                                                    AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                                    UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
+                                                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                                    
+                                                   // KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
+                                                    //AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
                                                     self.captcha = false
                                                     UIApplication.shared.restart()
                                                 }

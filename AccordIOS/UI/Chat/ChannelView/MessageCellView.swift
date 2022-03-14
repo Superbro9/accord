@@ -186,6 +186,9 @@ struct MessageCellView: View {
                     .cornerRadius(3)
                     .padding(.leading, 41)
             }
+            AttachmentView(media: message.attachments)
+                .padding(.leading, 41)
+                .padding(.top, 5)
         }
         .contextMenu {
             Button("Reply") { [weak message] in
