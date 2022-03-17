@@ -55,8 +55,6 @@ struct ServerListView: View {
     
     @State var selection: Int?
     @State var selectedServer: Int? = 0
-    @State var online: Bool = true
-    @State var alert: Bool = true
     public static var folders: [GuildFolder] = []
     public static var privateChannels: [Channel] = []
     internal static var readStates: [ReadStateEntry] = []
@@ -68,9 +66,9 @@ struct ServerListView: View {
     
     var dmButton: some View {
         Button(action: {
-            wss?.cachedMemberRequest.removeAll()
             selectedServer = 201
             selection = nil
+            wss?.cachedMemberRequest.removeAll()
         }) {
             Image(systemName: "bubble.left.fill")
                 .frame(width: 45, height: 45)
@@ -82,33 +80,7 @@ struct ServerListView: View {
     
     var onlineButton: some View {
         Button("Offline") {
-            alert.toggle()
-        }
-        .alert(isPresented: $alert) {
-            Alert(
-                title: Text("Could not connect"),
-                message: Text("There was an error connecting to Discord"),
-                primaryButton: .default(
-                    Text("Ok"),
-                    action: {
-                        alert.toggle()
-                    }
-                ),
-                secondaryButton: .destructive(
-                    Text("Reconnect"),
-                    action: {
-                        if let wss = wss {
-                            wss.reset()
-                        } else {
-                            concurrentQueue.async {
-                                guard let new = try? Gateway(url: Gateway.gatewayURL) else { return }
-                                new.ready().sink(receiveCompletion: doNothing, receiveValue: doNothing).store(in: &new.bag)
-                                wss = new
-                            }
-                        }
-                    }
-                )
-            )
+            AccordApp.error("Offline" as! Error, additionalDescription: "Check your network connection")
         }
     }
     
@@ -148,10 +120,10 @@ struct ServerListView: View {
                     .foregroundColor(.white)
                     .background(.gray)
                     .cornerRadius(23.5)
-//                Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
-//                    .scaledToFit()
-//                    .frame(width: 45, height: 45)
-//                    .cornerRadius((self.selection == 0) ? 15.0 : 23.5)
+                //                Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
+                //                    .scaledToFit()
+                //                    .frame(width: 45, height: 45)
+                //                    .cornerRadius((self.selection == 0) ? 15.0 : 23.5)
                 statusIndicator
             }
         }
@@ -163,7 +135,7 @@ struct ServerListView: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     // MARK: - Messages button
                     LazyVStack {
-                        if !online || !NetworkCore.shared.connected {
+                        if !NetworkCore.shared.connected {
                             onlineButton
                         }
                         dmButton
@@ -200,6 +172,32 @@ struct ServerListView: View {
                                             channel.read_state?.last_message_id = channel.last_message_id
                                         }
                                     })
+                                    .contextMenu {
+                                        Button("Copy Channel ID") {
+                                            UIPasteboard.general.items = []
+                                            UIPasteboard.general.string = channel.id
+                                        }
+                                        Button(action: {
+                                            let headers = Headers(
+                                                userAgent: discordUserAgent,
+                                                contentType: nil,
+                                                token: AccordCoreVars.token,
+                                                type: .DELETE,
+                                                discordHeaders: true,
+                                                referer: "https://discord.com/channels/@me",
+                                                empty: true
+                                            )
+                                            Request.ping(url: URL(string: "\(rootURL)/channels/\(channel.id)"), headers: headers)
+                                        }) {
+                                            Text("Close DM")
+                                        }
+                                        Button(action: {
+                                            channel.read_state?.mention_count = 0
+                                            channel.read_state?.last_message_id = channel.last_message_id
+                                        }) {
+                                            Text("Mark as read")
+                                        }
+                                    }
                             }
                         }
                     }

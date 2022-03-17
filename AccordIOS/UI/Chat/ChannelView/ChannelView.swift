@@ -52,6 +52,18 @@ struct ChannelView: View {
         channelName = channel.name ?? channel.recipients?.first?.username ?? "Unknown channel"
         self.guildName = guildName ?? "Direct Messages"
         _viewModel = StateObject(wrappedValue: ChannelViewViewModel(channelID: channel.id, guildID: channel.guild_id ?? "@me"))
+        for overwrite in channel.permission_overwrites ?? [] {
+            if let allowString = overwrite.allow,
+               let allow = Int(allowString) {
+                let perms = Permissions.getValues(for: allow)
+                print(perms, channel.name, "allow", overwrite.id)
+            }
+            if let denyString = overwrite.deny,
+               let deny = Int(denyString) {
+                let perms = Permissions.getValues(for: deny)
+                print(perms, channel.name, "deny", overwrite.id)
+            }
+        }
     }
     
     var messagesView: some View {
@@ -68,12 +80,22 @@ struct ChannelView: View {
                     replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
                     replyingTo: $replyingTo
                 )
+                .if(message.mentions.compactMap({ $0?.id }).contains(user_id), transform: {
+                    $0
+                        .padding(5)
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity
+                        )
+                        .background(Color.yellow.opacity(0.05))
+                        .cornerRadius(7)
+                })
                     .onAppear {
-                        if viewModel.messages.count >= 50 &&
-                            message == viewModel.messages[viewModel.messages.count - 2] {
-                            messageFetchQueue.async {
-                                viewModel.loadMoreMessages()
-                            }
+                    if viewModel.messages.count >= 50 &&
+                        message == viewModel.messages[viewModel.messages.count - 2] {
+                        messageFetchQueue.async {
+                            viewModel.loadMoreMessages()
+                        }
                         }
                     }
             }
@@ -181,7 +203,7 @@ struct MemberListView: View {
     var body: some View {
         List(list.compactMap(\.member), id: \.user.id) { ops in
             HStack {
-                Attachment(pfpURL(ops.user.id, ops.user.avatar, "24"))
+                Attachment(pfpURL(ops.user.id, ops.user.avatar, discriminator: ops.user.discriminator, "24"))
                     .equatable()
                     .frame(width: 33, height: 33)
                     .clipShape(Circle())

@@ -52,7 +52,7 @@ struct GuildView: View {
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     .foregroundColor(channel.read_state?.last_message_id == channel.last_message_id ? Color.secondary : nil)
-                    .opacity(channel.read_state?.last_message_id == channel.last_message_id ? 0.5 : 1)
+                    .opacity(channel.read_state?.last_message_id != channel.last_message_id ? 1 : 0.5)
                     .padding((channel.type == .guild_public_thread || channel.type == .guild_private_thread) ? .leading : [])
                     .onChange(of: self.selection, perform: { _ in
                         if self.selection == Int(channel.id) {
@@ -60,7 +60,19 @@ struct GuildView: View {
                             channel.read_state?.last_message_id = channel.last_message_id
                         }
                     })
-                    
+                    .contextMenu {
+                        Button("Copy Channel ID") {
+                            UIPasteboard.general.items = []
+                            UIPasteboard.general.string = channel.id
+                        }
+                        Button(action: {
+                            channel.read_state?.mention_count = 0
+                            channel.read_state?.last_message_id = channel.last_message_id
+                        }) {
+                            Text("Mark as read")
+                        }
+                    }
+                    .animation(nil, value: UUID())
                 }
             }
         }
@@ -113,7 +125,7 @@ struct ServerListViewCell: View {
                 }
             case .dm:
                 HStack {
-                    Attachment(pfpURL(channel?.recipients?[0].id, channel?.recipients?[0].avatar)).equatable()
+                    Attachment(pfpURL(channel?.recipients?[0].id, channel?.recipients?[0].avatar, discriminator: channel?.recipients?[0].discriminator ?? "0005")).equatable()
                         .frame(width: 24, height: 24)
                         .clipShape(Circle())
                     Text(channel?.computedName ?? "Unknown Channel")

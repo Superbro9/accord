@@ -26,14 +26,16 @@ struct AccordApp: App {
             } else {
                 GeometryReader { reader in
                     ContentView(loaded: $loaded)
-                        .preferredColorScheme(darkMode ? .dark : nil)
                         .onAppear {
                             // AccordCoreVars.loadVersion()
                             // DispatchQueue(label: "socket").async {
                             //     let rpc = IPC().start()
                             // }
                             concurrentQueue.async {
-                                _ = NetworkCore.shared
+                                NetworkCore.shared = NetworkCore()
+                            }
+                            DispatchQueue.global(qos: .background).async {
+                                Regex.precompute()
                             }
                             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) {
                                 granted, error in
@@ -42,6 +44,7 @@ struct AccordApp: App {
                                 }
                             }
                         }
+                        .preferredColorScheme(darkMode ? .dark : nil)
                         .sheet(isPresented: $popup, onDismiss: {}) {
                             SearchView()
                         }

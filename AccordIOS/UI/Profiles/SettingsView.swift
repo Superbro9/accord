@@ -47,7 +47,9 @@ struct SettingsViewRedesign: View {
     @AppStorage("SilentTyping")
     var silentTyping: Bool = false
     @AppStorage("GifProfilePictures")
-         var gifPfp: Bool = false
+    var gifPfp: Bool = false
+    @AppStorage("ShowHiddenChannels")
+    var showHiddenChannels: Bool = false
     @AppStorage("MusicPlatform")
     var selectedPlatform: Platforms = Platforms.appleMusic
     
@@ -58,6 +60,12 @@ struct SettingsViewRedesign: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
+        Button {
+            logOut()
+        } label: {
+            Text("Log Out")
+        }
+
         List {
             LazyVStack(alignment: .leading) {
                 Text("Accord Settings")

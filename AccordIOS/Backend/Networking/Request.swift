@@ -40,7 +40,8 @@ extension String {
 }
 
 func logOut() {
-    KeychainManager.save(key: keychainItemName, data: Data())
+    //KeychainManager.save(key: keychainItemName, data: Data())
+    UserDefaults.standard.set(Data(), forKey: "tokenKeyUserDefault")
     exit(0)
 }
 
