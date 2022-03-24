@@ -10,12 +10,6 @@ import Combine
 import Foundation
 import SwiftUI
 
-extension Array where Element == String {
-    @inlinable func replaceAllOccurences(of original: String, with string: String) -> [String] {
-        map { $0.replacingOccurrences(of: original, with: string) }
-    }
-}
-
 public final class Markdown {
     enum MarkdownErrors: Error {
         case unsupported // For the new Markdown Parser, which is unavailable on Big Sur
@@ -28,15 +22,48 @@ public final class Markdown {
     public static var newLinePublisher: TextArrayPublisher = Just<[Text]>.init([Text("\n")]).setFailureType(to: Error.self).eraseToAnyPublisher()
     fileprivate static let blankCharacter = "‎" // Not an empty string
 
+    /***
+     
+     Overengineered processing for Markdown using Combine
+
+
+                        +------------------------------+
+                        |  Call the Markdown.markAll   |
+        +---------------|  function and subscribe to   |
+        |               |  the publisher               |
+        |               +------------------------------+
+        |                               |
+     Combine the final                  |                     \*.+\*|~~.+~~|`{1,3}.+`{1,3}|([^*~\s]+)+
+     result in AnyPublisher             |                                         |
+        |                               |                                         |
+        |                       Split text by `\n`                                |
+        |                               |                        +----Split text with custom regex---+
+        |                               |                        |                                   |
+        |                               |                        |                                   |
+     +-------------------------------+  |        +------------------------------+                    |
+     |  Collect the markLine         |  |--------| Call the Markdown.markLine   |                    |
+     |  publishers and combine them  |           | function for each split line |                    |
+     |  with `\n`                    |           +------------------------------+                    |
+     +-------------------------------+                                                               |
+                         |                                                                           |
+                         |                     +---------------------------------+      +-------------------------------+
+                         |                     | Collect the markWord publishers |      |  Call the Markdown.markWord   |
+                         +---------------------| and combine them using          |------|  function for each component  |
+                                               | reduce(Text(""), +)             |      +-------------------------------+
+                                               +---------------------------------+
+
+
+     ***/
+    
     /**
      markWord: Simple Publisher that sends a text view with the processed word
      - Parameter word: The String being processed
      - Parameter members: Dictionary of channel members from which we get the mentions
      - Returns AnyPublisher with SwiftUI Text view
      **/
-    public class func markWord(_ word: String, _ members: [String: String] = [:]) -> TextPublisher {
+    public class func markWord(_ word: String, _ members: [String: String] = [:], font: Bool) -> TextPublisher {
         let emoteIDs = word.matches(precomputed: Regex.emojiIDRegex)
-        if let id = emoteIDs.first, let emoteURL = URL(string: cdnURL + "/emojis/\(id).png?size=16") {
+        if let id = emoteIDs.first, let emoteURL = URL(string: cdnURL + "/emojis/\(id).png?size=\(font ? "48" : "16")") {
             return RequestPublisher.image(url: emoteURL)
                 .replaceError(with: UIImage(systemName: "wifi.slash") ?? UIImage())
                 .map { Text("\(Image(uiImage: $0))") + Text(" ") }
@@ -54,6 +81,7 @@ public final class Markdown {
             let channels = word.matches(precomputed: Regex.channelsRegex)
             let songIDs = word.matches(precomputed: Regex.songIDsRegex)
             let platforms = word.matches(precomputed: Regex.platformsRegex)
+                .replaceAllOccurences(of: "music.apple", with: "applemusic")
             let dict = Array(arrayLiteral: zip(songIDs, platforms))
                 .reduce([], +)
             for (id, platform) in dict {
@@ -73,7 +101,7 @@ public final class Markdown {
             for id in mentions {
                 return promise(.success(
                     Text("@\(members[id] ?? "Unknown User")")
-                        .foregroundColor(id == user_id ? Color.init(Color.RGBColorSpace.sRGB, red: 1, green: 0.843, blue: 0, opacity: 1) : Color(UIColor.white))
+                        .foregroundColor(id == user_id ? Color.init(Color.RGBColorSpace.sRGB, red: 1, green: 0.843, blue: 0, opacity: 1) : Color(UIColor.gray))
                         .underline()
                     +
                     Text(" ")
@@ -88,7 +116,7 @@ public final class Markdown {
                 return promise(.success(Text(word) + Text(" ")))
             }
             do {
-                if #available(iOS 15.0, *) {
+                if #available(iOS 15, *) {
                     let markdown = try AttributedString(markdown: word)
                     return promise(.success(Text(markdown) + Text(" ")))
                 } else { throw MarkdownErrors.unsupported }
@@ -109,7 +137,7 @@ public final class Markdown {
     public class func markLine(_ line: String, _ members: [String: String] = [:], font: Bool) -> TextArrayPublisher {
         let line = line.replacingOccurrences(of: "](", with: "]\(blankCharacter)(") // disable link shortening forcefully
         let words = line.matchRange(precomputed: Regex.lineRegex).map { line[$0].trimmingCharacters(in: .whitespaces) }
-        let pubs: [AnyPublisher<Text, Error>] = words.map { markWord($0, members) }
+        let pubs: [AnyPublisher<Text, Error>] = words.map { markWord($0, members, font: font) }
         return Publishers.MergeMany(pubs)
             .collect()
             .eraseToAnyPublisher()
@@ -135,6 +163,32 @@ public final class Markdown {
     }
 }
 
+//final class NSAttributedMarkdown {
+//    public class func markdown(_ text: String, font: UIFont?) -> NSMutableAttributedString {
+//        let mut = NSMutableAttributedString(string: text)
+//        let italic = text.matchRange(for: #"(\*|_)(.*?)\1"#)
+//        let bold = text.matchRange(for: #"(\*\*|__)(.*?)\1"#)
+//        let strikeThrough = text.matchRange(for: #"(~~(\w+(\s\w+)*)~~)"#)
+//        let monospace = text.matchRange(for: #"(`(\w+(\s\w+)*)`)"#)
+//        if let font = font {
+//            mut.setAttributes([.font: font, .foregroundColor: UIColor.label], range: NSRange(mut.string.startIndex..., in: mut.string))
+//        }
+//        italic.forEach { match in
+//            mut.applyFontTraits(NSFontTraitMask.italicFontMask, range: NSRange(match, in: mut.string))
+//        }
+//        bold.forEach { match in
+//            mut.applyFontTraits(NSFontTraitMask.boldFontMask, range: NSRange(match, in: mut.string))
+//        }
+//        strikeThrough.forEach { match in
+//            mut.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSRange(match, in: mut.string))
+//        }
+//        monospace.forEach { match in
+//            mut.addAttribute(NSAttributedString.Key.font, value: UIFont.monospacedSystemFont(ofSize: 12, weight: .regular), range: NSRange(match, in: mut.string))
+//        }
+//        return mut
+//    }
+//}
+
 private extension UIFont {
     var bold: UIFont {
         let font = UIFont.boldSystemFont(ofSize: 12)
@@ -153,3 +207,8 @@ private extension UIFont {
     }
 }
 
+extension Array where Element == String {
+    func replaceAllOccurences(of original: String, with string: String) -> [String] {
+        map { $0.replacingOccurrences(of: original, with: string) }
+    }
+}

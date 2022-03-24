@@ -34,15 +34,7 @@ final class KeychainManager {
             return nil
         }
     }
-
-    class func createUniqueID() -> String {
-        let uuid: CFUUID = CFUUIDCreate(nil)
-        let cfStr: CFString = CFUUIDCreateString(nil, uuid)
-
-        let swiftString: String = cfStr as String
-        return swiftString
-    }
-
+    
     deinit {
         print("login ended")
     }

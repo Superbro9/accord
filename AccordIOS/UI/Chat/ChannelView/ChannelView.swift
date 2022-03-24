@@ -10,7 +10,11 @@ import AVKit
 import SwiftUI
 import Combine
 
-struct ChannelView: View {
+struct ChannelView: View, Equatable {
+    
+    static func == (lhs: ChannelView, rhs: ChannelView) -> Bool {
+        return lhs.viewModel == rhs.viewModel
+    }
     
     @StateObject var viewModel: ChannelViewViewModel
     
@@ -52,18 +56,6 @@ struct ChannelView: View {
         channelName = channel.name ?? channel.recipients?.first?.username ?? "Unknown channel"
         self.guildName = guildName ?? "Direct Messages"
         _viewModel = StateObject(wrappedValue: ChannelViewViewModel(channelID: channel.id, guildID: channel.guild_id ?? "@me"))
-        for overwrite in channel.permission_overwrites ?? [] {
-            if let allowString = overwrite.allow,
-               let allow = Int(allowString) {
-                let perms = Permissions.getValues(for: allow)
-                print(perms, channel.name, "allow", overwrite.id)
-            }
-            if let denyString = overwrite.deny,
-               let deny = Int(denyString) {
-                let perms = Permissions.getValues(for: deny)
-                print(perms, channel.name, "deny", overwrite.id)
-            }
-        }
     }
     
     var messagesView: some View {
@@ -80,10 +72,13 @@ struct ChannelView: View {
                     replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
                     replyingTo: $replyingTo
                 )
+                .equatable()
+                .id(message.identifier)
+                .listRowInsets(.init(top: 0, leading: 0, bottom: (message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 10, trailing: 0))
                 .if(message.mentions.compactMap({ $0?.id }).contains(user_id), transform: {
                     $0
                         .padding(5)
-                        .frame(
+                        .frame (
                             maxWidth: .infinity,
                             maxHeight: .infinity
                         )

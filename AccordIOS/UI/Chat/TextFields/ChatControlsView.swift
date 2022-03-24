@@ -32,27 +32,26 @@ struct ChatControls: View {
     @State var typing: Bool = false
     weak var textField: UITextField?
     @AppStorage("Nitroless") var nitrolessEnabled: Bool = false
-
+    
     private func send() {
-        guard viewModel.textFieldContents != "" else { return }
-        let contents = viewModel.textFieldContents
-        if contents.prefix(1) != "/" {
-            viewModel.emptyTextField()
-        }
-        messageSendQueue.async {
+        messageSendQueue.async { [weak viewModel] in
+            guard viewModel?.textFieldContents != "", let contents = viewModel?.textFieldContents else { return }
+            if contents.prefix(1) != "/" {
+                viewModel?.emptyTextField()
+            }
             if let fileUpload = fileUpload, let fileUploadURL = fileUploadURL {
-                viewModel.send(text: contents, file: fileUploadURL, data: fileUpload, channelID: self.channelID)
+                viewModel?.send(text: contents, file: fileUploadURL, data: fileUpload, channelID: self.channelID)
                 DispatchQueue.main.async {
                     self.fileUpload = nil
                     self.fileUploadURL = nil
                 }
             } else if let replyingTo = replyingTo {
                 self.replyingTo = nil
-                viewModel.send(text: contents, replyingTo: replyingTo, mention: true, guildID: guildID)
-            } else if viewModel.textFieldContents.prefix(1) == "/" {
-                try? viewModel.executeCommand(guildID: guildID, channelID: channelID)
+                viewModel?.send(text: contents, replyingTo: replyingTo, mention: true, guildID: guildID)
+            } else if viewModel?.textFieldContents.prefix(1) == "/" {
+                try? viewModel?.executeCommand(guildID: guildID, channelID: channelID)
             } else {
-                viewModel.send(text: contents, guildID: guildID, channelID: channelID)
+                viewModel?.send(text: contents, guildID: guildID, channelID: channelID)
             }
             if #available(iOS 15.0, *) {
                 DispatchQueue.main.async {
