@@ -175,7 +175,6 @@ struct MessageCellView: View, Equatable {
                             .fontWeight(Font.Weight.medium)
                     }
                     .padding(4)
-                    //.background(Color.black.blur(radius: 0.75))
                     .cornerRadius(4)
                     .padding(.leading, 41)
                 }
@@ -196,6 +195,7 @@ struct MessageCellView: View, Equatable {
                 .padding(.leading, 41)
                 .padding(.top, 5)
         }
+        .scaleEffect(x: -1.0, y: 1.0)
         .contextMenu {
             Button("Reply") { [weak message] in
                 replyingTo = message
@@ -256,7 +256,6 @@ struct MessageCellView: View, Equatable {
 
             }
         }
-
         .id(message.id)
     }
 }

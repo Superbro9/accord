@@ -60,12 +60,6 @@ struct SettingsViewRedesign: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        Button {
-            logOut()
-        } label: {
-            Text("Log Out")
-        }
-
         List {
             LazyVStack(alignment: .leading) {
                 Text("Accord Settings")
@@ -133,11 +127,66 @@ struct SettingsViewRedesign: View {
                 .cornerRadius(15)
                 .padding()
                 .disabled(true)
+                Section {
+                    Group {
+                        SettingsToggleView(toggled: $profilePictures, title: "Show profile pictures")
+                        SettingsToggleView(toggled: $discordSettings, title: "Use stock discord settings")
+                        SettingsToggleView(toggled: $recent, title: "Sort servers by recent messages")
+                        SettingsToggleView(toggled: $suffixes, title: "Enable useless suffix remover")
+                    }
+                    .disabled(true)
+                    Group {
+                        SettingsToggleView(toggled: $pronounDB, title: "Enable PronounDB integration")
+                        SettingsToggleView(toggled: $dark, title: "Always dark mode")
+                        SettingsToggleView(toggled: $menuBarItem, title: "Enable the mentions menu bar popup")
+                        SettingsToggleView(toggled: $nitrolessEnabled, title: "Enable Nitroless support")
+                        SettingsToggleView(toggled: $silentTyping, title: "Enable silent typing")
+                        SettingsToggleView(toggled: $metalRenderer, title: "Enable the Metal Renderer for the chat view", detail: "Experimental")
+                        SettingsToggleView(toggled: $gifPfp, title: "Enable Gif Profile Pictures", detail: "Experimental")
+                        SettingsToggleView(toggled: $showHiddenChannels, title: "Show hidden channels", detail: "Please don't use this")
+                    }
+                    .disabled(false)
+                    HStack(alignment: .top) {
+                        Text("Music platform")
+                            .font(.title3)
+                            .fontWeight(.medium)
+                            .padding()
+                        Spacer()
+                        Picker(selection: $selectedPlatform, content: {
+                            Text("Amazon Music").tag(Platforms.amazonMusic)
+                            Text("Apple Music").tag(Platforms.appleMusic)
+                            Text("Deezer").tag(Platforms.deezer)
+                            Text("iTunes").tag(Platforms.itunes)
+                            Text("Napster").tag(Platforms.napster)
+                            Text("Pandora").tag(Platforms.pandora)
+                            Text("Soundcloud").tag(Platforms.soundcloud)
+                            Text("Spotify").tag(Platforms.spotify)
+                            Text("Tidal").tag(Platforms.tidal)
+                            Text("Youtube Music").tag(Platforms.youtubeMusic)
+                        }, label: {})
+                            .padding()
+                    }
+                    .disabled(true)
+                }
+                .toggleStyle(SwitchToggleStyle())
+                .pickerStyle(MenuPickerStyle())
+                .padding(5)
+                .background(Color.black.opacity(colorScheme == .dark ? 0.25 : 0.10))
+                .cornerRadius(15)
+                .padding()
+                   Button {
+                       logOut()
+                   } label: {
+                       Text("Log Out")
+                   }
+                   .padding(.leading, 20)
+                   .foregroundColor(.secondary)
+                Spacer()
                 
-                Text("Accord (red.evelyn.accord) \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                Text("AccordiOS (com.superbro.AccordIOS) \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
                     .padding(.leading, 20)
                     .foregroundColor(.secondary)
-                Text("OS: macOS \(String(describing: ProcessInfo.processInfo.operatingSystemVersionString))")
+                Text("OS: iOS \(String(describing: ProcessInfo.processInfo.operatingSystemVersionString))")
                     .padding(.leading, 20)
                     .foregroundColor(.secondary)
                 HStack(alignment: .center) {
@@ -148,11 +197,11 @@ struct SettingsViewRedesign: View {
                         .foregroundColor(Color.accentColor)
                         .frame(width: 13, height: 13)
                         .onTapGesture {
-                            UIApplication.shared.open(URL(string: "https://github.com/evelyneee/Accord")!)
+                            UIApplication.shared.open(URL(string: "https://github.com/Superbro9/accord")!)
                         }
                 }
                 .frame(height: 5)
-                Text("Made with 🤍 by Evelyn")
+                Text("Made with 🤍 by Superbro")
                     .padding(.leading, 20)
                     .foregroundColor(.secondary)
             }
