@@ -20,8 +20,9 @@ struct EmbedView: View, Equatable {
     var body: some View {
         HStack(spacing: 0) {
          //   if let color = embed?.color {
-               // Color(uiColor: UIColor.gray).frame(width: 3).padding(.trailing, 5)
-        //    }
+         //       Color(UIColor.color)
+         //      Color(uiColor: UIColor.gray).frame(width: 3).padding(.trailing, 5)
+         //   }
             VStack(alignment: .leading) {
                 if let author = embed?.author {
                     HStack {
@@ -62,9 +63,10 @@ struct EmbedView: View, Equatable {
                         .equatable()
                         .cornerRadius(5)
                         .maxFrame(width: 400, height: 300, originalWidth: image.width ?? 0, originalHeight: image.height ?? 0)
+                        
                 }
                 if let video = embed?.video,
-                    let urlString = video.proxy_url ?? video.url,
+                   let urlString = video.proxy_url ?? video.url,
                     let url = URL(string: urlString) {
                     VideoPlayer(player: AVPlayer(url: url))
                         .cornerRadius(5)
@@ -84,6 +86,11 @@ struct EmbedView: View, Equatable {
                     }
                 }
             }
+            .padding(5)
+            .overlay (
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.blue, lineWidth: 4)
+            )
         }
         .padding(.top, 5)
     }
