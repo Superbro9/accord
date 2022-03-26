@@ -19,10 +19,11 @@ struct EmbedView: View, Equatable {
 
     var body: some View {
         HStack(spacing: 0) {
-         //   if let color = embed?.color {
-         //       Color(UIColor.color)
-         //      Color(uiColor: UIColor.gray).frame(width: 3).padding(.trailing, 5)
-         //   }
+            if let color = embed?.color {
+                Color.init(int: color)
+                    .frame(width: 3)
+                    .padding(.trailing, 5)
+            }
             VStack(alignment: .leading) {
                 if let author = embed?.author {
                     HStack {
@@ -86,11 +87,7 @@ struct EmbedView: View, Equatable {
                     }
                 }
             }
-            .padding(5)
-            .overlay (
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.blue, lineWidth: 4)
-            )
+            
         }
         .padding(.top, 5)
     }

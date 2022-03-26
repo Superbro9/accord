@@ -90,14 +90,6 @@ extension Color {
     }
 }
 
-@discardableResult func runCommand(command: String) -> Int32 {
-    let systemPtr = dlsym(UnsafeMutableRawPointer(bitPattern: -2), "system")
-    let system = unsafeBitCast(systemPtr, to: (@convention(c) (_: UnsafePointer<CChar>) -> Int32).self)
-    guard let cString = command.cString else { return 1 }
-    let res = system(cString)
-    return res
-}
-
 @available(iOS 15.0, *)
 struct Folder<Content: View>: View {
     var icon: [Guild]
@@ -270,5 +262,11 @@ extension Data {
          if let data = string.data(using: .utf8) {
              append(data)
          }
+     }
+ }
+
+ extension Date {
+     func makeProperDate() -> String {
+         return DateFormatter.localizedString(from: self, dateStyle: .medium, timeStyle: .short)
      }
  }

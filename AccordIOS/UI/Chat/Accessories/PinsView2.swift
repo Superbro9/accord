@@ -32,6 +32,7 @@ struct PinsView: View {
                 replyingTo: $replyingTo
             )
         }
+        .scaleEffect(x: -1.0, y: 1.0)
         .onAppear(perform: {
             messageFetchQueue.async {
                 // https://discord.com/api/v9/channels/831692717397770272/pins

@@ -71,6 +71,6 @@ struct EmotesView: View, Equatable {
                     .background(VisualEffectView(effect: UIBlurEffect(style: .regular)))
             }
         }
-        .frame(minWidth: 250, maxWidth: .infinity, maxHeight: .infinity)
+        .frame(minWidth: 450, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
     }
 }

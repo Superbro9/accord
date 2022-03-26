@@ -85,7 +85,7 @@ final class Reply: Codable, Equatable, Identifiable, Hashable {
     var mentions: [User?]
     var nonce: Int?
     var pinned: Bool?
-    var timestamp: String
+    var timestamp: Date
     var tts: Bool
     var type: MessageType
     var attachments: [AttachedFiles]

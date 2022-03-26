@@ -52,7 +52,9 @@ extension Gateway {
         case .inviteCreate: break
         case .inviteDelete: break
         case .messageCreate:
-            guard let message = try? JSONDecoder().decode(GatewayMessage.self, from: event.data).d else { print("uhhhhh"); return }
+            let decoder = JSONDecoder.init()
+            decoder.dateDecodingStrategy = .iso8601
+            guard let message = try? decoder.decode(GatewayMessage.self, from: event.data).d else { print("uhhhhh"); return }
             if let channelID = event.channelID, let author = message.author {
                 messageSubject.send((event.data, channelID, author.id == user_id))
             }
@@ -101,9 +103,11 @@ extension Gateway {
                                  SlashCommandStorage.GuildApplicationCommandsUpdateEvent.self,
                                  from: event.data
                              )
+                             print(commands)
                              let userKeyMap = commands.d.applications.generateKeyMap()
                              SlashCommandStorage.commands[guildID] = commands.d.application_commands
                                  .map { (command) -> SlashCommandStorage.Command in
+                                     print(commands)
                                      if let index = userKeyMap[command.application_id],
                                         let avatar = commands.d.applications[index].icon {
                                          command.avatar = avatar
