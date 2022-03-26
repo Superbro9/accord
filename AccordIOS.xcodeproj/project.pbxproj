@@ -281,13 +281,13 @@
 				89E9FE7327AFFAAF00861F05 /* Emote.swift */,
 				89E9FE6727AFFAAF00861F05 /* Guild.swift */,
 				89E9FE6E27AFFAAF00861F05 /* Message.swift */,
-				89E9FE6827AFFAAF00861F05 /* Reaction.swift */,
 				89E9FE7227AFFAAF00861F05 /* ReadState.swift */,
 				89E9FE6F27AFFAAF00861F05 /* Roles.swift */,
 				89E9FE7027AFFAAF00861F05 /* Settings.swift */,
 				89E9FE6C27AFFAAF00861F05 /* Status.swift */,
 				89E9FE6927AFFAAF00861F05 /* Sticker.swift */,
 				89E9FE6D27AFFAAF00861F05 /* User.swift */,
+				89E9FE6827AFFAAF00861F05 /* Reaction.swift */,
 				89A54FDB27D93DB6003142A0 /* Permissions.swift */,
 			);
 			path = DiscordTypes;
@@ -304,9 +304,9 @@
 		89E9FE8427AFFB9800861F05 /* GatewayPayloads */ = {
 			isa = PBXGroup;
 			children = (
+				89E9FE8827AFFBAB00861F05 /* LoginPayloads.swift */,
 				89E9FE8627AFFBAB00861F05 /* Events.swift */,
 				89E9FE8727AFFBAB00861F05 /* GatewayStructure.swift */,
-				89E9FE8827AFFBAB00861F05 /* LoginPayloads.swift */,
 				89E9FE8527AFFBAB00861F05 /* MemberList.swift */,
 			);
 			path = GatewayPayloads;
@@ -315,10 +315,10 @@
 		89E9FE8D27AFFBB900861F05 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
-				89E9FE8F27AFFBD100861F05 /* Engine.swift */,
 				89E9FE8E27AFFBD100861F05 /* Models.swift */,
-				89E9FE9027AFFBD100861F05 /* Storage.swift */,
+				89E9FE8F27AFFBD100861F05 /* Engine.swift */,
 				89E9FE9127AFFBD100861F05 /* Views.swift */,
+				89E9FE9027AFFBD100861F05 /* Storage.swift */,
 			);
 			path = Commands;
 			sourceTree = "<group>";
@@ -398,9 +398,9 @@
 				89E9FEB727AFFD0600861F05 /* Core.swift */,
 				89E9FEC127AFFD0600861F05 /* MentionProtocol.swift */,
 				89E9FF2527B014DD00861F05 /* Images.swift */,
-				89E9FEC427AFFD0600861F05 /* RegisterImages.swift */,
 				89E9FEB527AFFD0600861F05 /* Request.swift */,
 				89E9FEBF27AFFD0600861F05 /* Songlink.swift */,
+				89E9FEC427AFFD0600861F05 /* RegisterImages.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -419,8 +419,8 @@
 			isa = PBXGroup;
 			children = (
 				89E9FEE827AFFE6100861F05 /* Search */,
-				89E9FEEE27AFFE7900861F05 /* Profiles */,
 				89D7CBAD27B57FE800D4B567 /* Gifs */,
+				89E9FEEE27AFFE7900861F05 /* Profiles */,
 				89E9FEF427AFFEBA00861F05 /* Base */,
 				89E9FF0227B0051700861F05 /* Chat */,
 			);
@@ -447,11 +447,11 @@
 		89E9FEF427AFFEBA00861F05 /* Base */ = {
 			isa = PBXGroup;
 			children = (
-				89E9FEF727AFFEC800861F05 /* GuildView.swift */,
 				89E9FEF927AFFEC800861F05 /* LoginView.swift */,
 				89E9FEF827AFFEC800861F05 /* ServerListView.swift */,
 				89E9FEFA27AFFEC800861F05 /* ServerListView+Mentions.swift */,
 				89E9FEF527AFFEC800861F05 /* ServerListView+Misc.swift */,
+				89E9FEF727AFFEC800861F05 /* GuildView.swift */,
 				897836CC27BBE85A00B86857 /* FolderListView.swift */,
 				897836CE27BBE93B00B86857 /* ServerListView+Init.swift */,
 			);
@@ -482,10 +482,10 @@
 			isa = PBXGroup;
 			children = (
 				8984EED127B4454C0025AEC5 /* AttachmentView.swift */,
+				89D7CBB727B58C3800D4B567 /* EmbedView.swift */,
 				89D7CBB527B58C1F00D4B567 /* EmotesView.swift */,
 				89E9FF1527B0063E00861F05 /* MentionsView.swift */,
 				89C209AB27DE9DB900A2994E /* PinsView2.swift */,
-				89D7CBB727B58C3800D4B567 /* EmbedView.swift */,
 			);
 			path = Accessories;
 			sourceTree = "<group>";

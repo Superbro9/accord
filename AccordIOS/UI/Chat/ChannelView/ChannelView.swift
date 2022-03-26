@@ -164,7 +164,7 @@ struct ChannelView: View, Equatable {
                 }
                 .sheet(isPresented: $pins) {
                     PinsView(guildID: guildID, channelID: channelID, replyingTo: Binding.constant(nil))
-                        .frame(width: 500, height: 600)
+                        .frame(width: 500, height: 700)
                 }
                 
                 Button(action: {
@@ -174,7 +174,7 @@ struct ChannelView: View, Equatable {
                 }
                 .sheet(isPresented: $mentions) {
                     MentionsView(replyingTo: Binding.constant(nil))
-                        .frame(width: 500, height: 600)
+                        .frame(width: 500, height: 700)
                 }
                 
                 if guildID != "@me" {

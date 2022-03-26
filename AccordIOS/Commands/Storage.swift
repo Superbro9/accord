@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 final class SlashCommandStorage {
     
     static var commands: [String:[Command]] = .init()

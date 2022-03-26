@@ -32,7 +32,7 @@ struct NitrolessView: View, Equatable {
     fileprivate static let nitrolessRoot = "https://raw.githubusercontent.com/evelyneee/Repo/main/"
 
     @State var searchenabled = true
-    var columns: [GridItem] = GridItem.multiple(count: 8, spacing: 1)
+    var columns: [GridItem] = GridItem.multiple(count: 5, spacing: 1)
     @Binding var chatText: String
     @State var allEmotes: [String: String] = [:]
     @State var search: String = ""
@@ -47,10 +47,11 @@ struct NitrolessView: View, Equatable {
                         Button(action: {
                             guard let emote = allEmotes[key] else { return }
                             chatText.append(contentsOf: "\(Self.nitrolessRoot)emotes/\(key)\(emote)")
+                            chatText.append(contentsOf: " ")
                         }) {
                             VStack {
                                 HoveredAttachment("\(Self.nitrolessRoot)emotes/\(key)\(allEmotes[key] ?? "")").equatable()
-                                    .frame(width: 20, height: 20)
+                                    .frame(width: 40, height: 40)
                             }
                             .frame(width: 30, height: 30)
                         }
@@ -60,7 +61,7 @@ struct NitrolessView: View, Equatable {
             }
         }
         .padding()
-        .frame(minWidth: 250, maxWidth: .infinity, maxHeight: .infinity)
+        .frame(width: 400, height: 700, alignment: .center)
         .onAppear {
             imageQueue.async {
                 self.cancellable = RequestPublisher.fetch([NitrolessEmote].self, url: URL(string: "\(Self.nitrolessRoot)emotes.json"))
