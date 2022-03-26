@@ -13,6 +13,7 @@ import UserNotifications
 @main
 struct AccordApp: App {
     @State var loaded: Bool = false
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State var popup: Bool = false
     @State var token = AccordCoreVars.token
     var body: some Scene {
@@ -47,5 +48,17 @@ struct AccordApp: App {
                 }
             }
         }
+    }
+}
+
+
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    
+    private func applicationWillTerminate(_ notification: Notification) {
+        wss?.close(.protocolCode(.noStatusReceived))
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        wss?.reset()
     }
 }
