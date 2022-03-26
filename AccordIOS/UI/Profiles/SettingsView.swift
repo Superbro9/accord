@@ -129,13 +129,6 @@ struct SettingsViewRedesign: View {
                 .disabled(true)
                 Section {
                     Group {
-                        SettingsToggleView(toggled: $profilePictures, title: "Show profile pictures")
-                        SettingsToggleView(toggled: $discordSettings, title: "Use stock discord settings")
-                        SettingsToggleView(toggled: $recent, title: "Sort servers by recent messages")
-                        SettingsToggleView(toggled: $suffixes, title: "Enable useless suffix remover")
-                    }
-                    .disabled(true)
-                    Group {
                         SettingsToggleView(toggled: $pronounDB, title: "Enable PronounDB integration")
                         SettingsToggleView(toggled: $dark, title: "Always dark mode")
                         SettingsToggleView(toggled: $menuBarItem, title: "Enable the mentions menu bar popup")
@@ -146,30 +139,8 @@ struct SettingsViewRedesign: View {
                         SettingsToggleView(toggled: $showHiddenChannels, title: "Show hidden channels", detail: "Please don't use this")
                     }
                     .disabled(false)
-                    HStack(alignment: .top) {
-                        Text("Music platform")
-                            .font(.title3)
-                            .fontWeight(.medium)
-                            .padding()
-                        Spacer()
-                        Picker(selection: $selectedPlatform, content: {
-                            Text("Amazon Music").tag(Platforms.amazonMusic)
-                            Text("Apple Music").tag(Platforms.appleMusic)
-                            Text("Deezer").tag(Platforms.deezer)
-                            Text("iTunes").tag(Platforms.itunes)
-                            Text("Napster").tag(Platforms.napster)
-                            Text("Pandora").tag(Platforms.pandora)
-                            Text("Soundcloud").tag(Platforms.soundcloud)
-                            Text("Spotify").tag(Platforms.spotify)
-                            Text("Tidal").tag(Platforms.tidal)
-                            Text("Youtube Music").tag(Platforms.youtubeMusic)
-                        }, label: {})
-                            .padding()
-                    }
-                    .disabled(true)
                 }
                 .toggleStyle(SwitchToggleStyle())
-                .pickerStyle(MenuPickerStyle())
                 .padding(5)
                 .background(Color.black.opacity(colorScheme == .dark ? 0.25 : 0.10))
                 .cornerRadius(15)
