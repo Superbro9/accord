@@ -18,6 +18,7 @@
 		8991164227AFEF3800FFDE93 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8991164127AFEF3800FFDE93 /* ContentView.swift */; };
 		8991164427AFEF3800FFDE93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8991164327AFEF3800FFDE93 /* Assets.xcassets */; };
 		8991164727AFEF3800FFDE93 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8991164627AFEF3800FFDE93 /* Preview Assets.xcassets */; };
+		8997750227F0C6A5006628FA /* MentionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997750127F0C6A5006628FA /* MentionsView.swift */; };
 		89A54FDA27D93AAA003142A0 /* Collection++.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A54FD927D93AAA003142A0 /* Collection++.swift */; };
 		89A54FDC27D93DB6003142A0 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A54FDB27D93DB6003142A0 /* Permissions.swift */; };
 		89BBFC2527E3A1B600B3D122 /* Gateway+VoiceState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BBFC2427E3A1B600B3D122 /* Gateway+VoiceState.swift */; };
@@ -82,7 +83,6 @@
 		89E9FEFD27AFFEC800861F05 /* ServerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FEF827AFFEC800861F05 /* ServerListView.swift */; };
 		89E9FEFE27AFFEC800861F05 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FEF927AFFEC800861F05 /* LoginView.swift */; };
 		89E9FEFF27AFFEC800861F05 /* ServerListView+Mentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FEFA27AFFEC800861F05 /* ServerListView+Mentions.swift */; };
-		89E9FF1A27B0063E00861F05 /* MentionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF1527B0063E00861F05 /* MentionsView.swift */; };
 		89E9FF2227B0064A00861F05 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF1F27B0064A00861F05 /* ChannelView.swift */; };
 		89E9FF2327B0064A00861F05 /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2027B0064A00861F05 /* MessageCellView.swift */; };
 		89E9FF2427B0064A00861F05 /* ChannelViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */; };
@@ -106,6 +106,7 @@
 		8991164127AFEF3800FFDE93 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8991164327AFEF3800FFDE93 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8991164627AFEF3800FFDE93 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8997750127F0C6A5006628FA /* MentionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentionsView.swift; sourceTree = "<group>"; };
 		89A54FD927D93AAA003142A0 /* Collection++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection++.swift"; sourceTree = "<group>"; };
 		89A54FDB27D93DB6003142A0 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		89BBFC2427E3A1B600B3D122 /* Gateway+VoiceState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gateway+VoiceState.swift"; sourceTree = "<group>"; };
@@ -171,7 +172,6 @@
 		89E9FEF827AFFEC800861F05 /* ServerListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerListView.swift; sourceTree = "<group>"; };
 		89E9FEF927AFFEC800861F05 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		89E9FEFA27AFFEC800861F05 /* ServerListView+Mentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ServerListView+Mentions.swift"; sourceTree = "<group>"; };
-		89E9FF1527B0063E00861F05 /* MentionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MentionsView.swift; path = ../../../../../accord/Accord/UI/Chat/Accessories/MentionsView.swift; sourceTree = "<group>"; };
 		89E9FF1F27B0064A00861F05 /* ChannelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
 		89E9FF2027B0064A00861F05 /* MessageCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewViewModel.swift; sourceTree = "<group>"; };
@@ -484,8 +484,8 @@
 				8984EED127B4454C0025AEC5 /* AttachmentView.swift */,
 				89D7CBB727B58C3800D4B567 /* EmbedView.swift */,
 				89D7CBB527B58C1F00D4B567 /* EmotesView.swift */,
-				89E9FF1527B0063E00861F05 /* MentionsView.swift */,
 				89C209AB27DE9DB900A2994E /* PinsView2.swift */,
+				8997750127F0C6A5006628FA /* MentionsView.swift */,
 			);
 			path = Accessories;
 			sourceTree = "<group>";
@@ -590,6 +590,7 @@
 				89D7CBAF27B5801400D4B567 /* GifView.swift in Sources */,
 				89E9FEAA27AFFC3500861F05 /* Combine++.swift in Sources */,
 				89E9FF2327B0064A00861F05 /* MessageCellView.swift in Sources */,
+				8997750227F0C6A5006628FA /* MentionsView.swift in Sources */,
 				897836CD27BBE85A00B86857 /* FolderListView.swift in Sources */,
 				89E9FEFE27AFFEC800861F05 /* LoginView.swift in Sources */,
 				89E9FEDC27AFFD0700861F05 /* Gateway+MessageHandle.swift in Sources */,
@@ -658,7 +659,6 @@
 				89BBFC2727E3A24700B3D122 /* String++.swift in Sources */,
 				89E9FE9327AFFBD100861F05 /* Engine.swift in Sources */,
 				89E9FE9427AFFBD100861F05 /* Storage.swift in Sources */,
-				89E9FF1A27B0063E00861F05 /* MentionsView.swift in Sources */,
 				89E9FECD27AFFD0700861F05 /* Core.swift in Sources */,
 				89E9FECC27AFFD0700861F05 /* Keychain.swift in Sources */,
 			);

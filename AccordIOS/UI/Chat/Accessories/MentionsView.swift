@@ -13,6 +13,9 @@ struct MentionsView: View {
     @State var mentions: [Message] = []
     @State var bag = Set<AnyCancellable>()
     @Binding var replyingTo: Message?
+    
+    @Environment(\.presentationMode) private var presentationMode
+    
     var body: some View {
         List($mentions, id: \.id) { $message in
             MessageCellView(
