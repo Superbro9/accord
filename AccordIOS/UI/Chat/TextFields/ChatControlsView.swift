@@ -183,7 +183,7 @@ struct ChatControls: View {
         }) {
             Image(systemName: "plus.circle.fill")
         }
-        .buttonStyle(BorderlessButtonStyle())
+        .buttonStyle(.bordered)
     }
     
     var nitrolessButton: some View {
@@ -192,7 +192,7 @@ struct ChatControls: View {
         }) {
             Image(systemName: "rectangle.grid.3x2.fill")
         }
-        .buttonStyle(BorderlessButtonStyle())
+        .buttonStyle(.bordered)
         .popover(isPresented: $nitroless, content: {
             NavigationLazyView(NitrolessView(chatText: $viewModel.textFieldContents).equatable())
                 .frame(width: 300, height: 400)
@@ -205,8 +205,7 @@ struct ChatControls: View {
         }) {
             Image(systemName: "face.smiling.fill")
         }
-        .buttonStyle(BorderlessButtonStyle())
-        .keyboardShortcut("e", modifiers: [.command])
+        .buttonStyle(.bordered)
         .popover(isPresented: $emotes, content: {
             NavigationLazyView(EmotesView(chatText: $viewModel.textFieldContents).equatable())
                 .frame(width: 300, height: 400)

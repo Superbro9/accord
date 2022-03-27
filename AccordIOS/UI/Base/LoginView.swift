@@ -117,6 +117,7 @@ struct LoginView: View {
                         .font(.title3)
                         .fontWeight(.medium)
                     SecureField("Six-digit MFA code", text: $twofactor)
+                        .keyboardType(.numberPad)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .frame(width: 100)
                         .padding(.bottom, 20)

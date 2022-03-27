@@ -128,6 +128,12 @@ struct ChannelView: View, Equatable {
             }
         }
         .navigationTitle(Text("\(guildID == "@me" ? "" : "#")\(channelName)"))
+        .gesture(DragGesture().onChanged({ _ in
+            self.endTextEditing()
+        }))
+        .onTapGesture {
+              self.endTextEditing()
+        }
         .onAppear {
             guard wss != nil else { return MentionSender.shared.deselect() }
             wss.typingSubject
@@ -220,4 +226,11 @@ struct VisualEffectView: UIViewRepresentable {
     var effect: UIVisualEffect?
     func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView { UIVisualEffectView() }
     func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) { uiView.effect = effect }
+}
+
+extension View {
+  func endTextEditing() {
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                    to: nil, from: nil, for: nil)
+  }
 }

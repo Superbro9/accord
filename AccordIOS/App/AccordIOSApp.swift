@@ -24,6 +24,9 @@ struct AccordApp: App {
                         self.token = AccordCoreVars.token
                         print("posted", self.token)
                     }
+                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                        print("applicationDidBecomeActive")
+                    }
             } else {
                 GeometryReader { reader in
                     ContentView(loaded: $loaded)
@@ -46,6 +49,10 @@ struct AccordApp: App {
                             }
                         }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                    wss?.reset()
+                    print("applicationDidBecomeActive")
+                }
             }
         }
     }
@@ -54,11 +61,9 @@ struct AccordApp: App {
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     
-    private func applicationWillTerminate(_ notification: Notification) {
+    func applicationWillTerminate(_ application: UIApplication) {
         wss?.close(.protocolCode(.noStatusReceived))
-    }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        wss?.reset()
+        print("application terminated")
     }
 }
+

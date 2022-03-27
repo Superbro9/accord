@@ -46,7 +46,7 @@ extension ChannelView {
             )
             .padding(13)
         }
-        .background(VisualEffectView(effect: UIBlurEffect(style: .regular)))
+        .background(VisualEffectView(effect: UIBlurEffect(style: .systemMaterial)))
         .clipShape(RoundedCorners(tl: replyingTo != nil || !typing.isEmpty ? 7 : 12, tr: replyingTo != nil || !typing.isEmpty ? 7 : 12, bl: 12, br: 12))
         .padding(12)
         .padding(.bottom, 2)
