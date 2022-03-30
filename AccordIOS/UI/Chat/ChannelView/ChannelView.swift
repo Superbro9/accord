@@ -11,7 +11,6 @@ import SwiftUI
 import Combine
 
 struct ChannelView: View, Equatable {
-    
     static func == (lhs: ChannelView, rhs: ChannelView) -> Bool {
         return lhs.viewModel == rhs.viewModel
     }
@@ -56,6 +55,7 @@ struct ChannelView: View, Equatable {
         channelName = channel.name ?? channel.recipients?.first?.username ?? "Unknown channel"
         self.guildName = guildName ?? "Direct Messages"
         _viewModel = StateObject(wrappedValue: ChannelViewViewModel(channelID: channel.id, guildID: channel.guild_id ?? "@me"))
+        UITableView.appearance().showsVerticalScrollIndicator = false
     }
     
     var messagesView: some View {
@@ -131,9 +131,6 @@ struct ChannelView: View, Equatable {
         .gesture(DragGesture().onChanged({ _ in
             self.endTextEditing()
         }))
-        .onTapGesture {
-              self.endTextEditing()
-        }
         .onAppear {
             guard wss != nil else { return MentionSender.shared.deselect() }
             wss.typingSubject

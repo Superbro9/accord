@@ -25,6 +25,7 @@ struct AccordApp: App {
                         print("posted", self.token)
                     }
                     .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                        wss?.reset()
                         print("applicationDidBecomeActive")
                     }
             } else {

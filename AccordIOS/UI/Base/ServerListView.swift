@@ -48,8 +48,10 @@ struct ServerListView: View {
     public class UpdateView: ObservableObject {
         @Published var updater: Bool = false
         func updateView() {
-            self.updater.toggle()
-            self.objectWillChange.send()
+            DispatchQueue.main.async {
+                self.updater.toggle()
+                self.objectWillChange.send()
+            }
         }
     }
     
@@ -140,6 +142,7 @@ struct ServerListView: View {
                         }
                         ZStack(alignment: .bottomTrailing) {
                             dmButton
+                                .padding(.leading, 10)
                             if Self.privateChannels.compactMap({ $0.read_state?.mention_count }).reduce(0, +) != 0 {
                                 ZStack {
                                     Circle()
@@ -162,6 +165,7 @@ struct ServerListView: View {
                             .opacity(0.75)
                             .padding(.horizontal)
                         settingsLink
+                            .padding(.leading, 10)
                     }
                     .padding(.vertical)
                 }

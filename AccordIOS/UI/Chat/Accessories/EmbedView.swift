@@ -20,7 +20,7 @@ struct EmbedView: View, Equatable {
     var body: some View {
         HStack(spacing: 0) {
             if let color = embed?.color {
-                Color.init(int: color)
+                Color(int: color)
                     .frame(width: 3)
                     .padding(.trailing, 5)
             }
@@ -53,17 +53,17 @@ struct EmbedView: View, Equatable {
                 if let description = embed?.description {
                     if #available(iOS 15.0, *) {
                         Text((try? AttributedString(markdown: description)) ?? AttributedString(description))
-                            .lineLimit(2)
+                            .lineLimit(5)
                     } else {
                         Text(description)
-                            .lineLimit(2)
+                            .lineLimit(5)
                     }
                 }
                 if let image = embed?.image {
-                    Attachment(image.url, size: CGSize(width: image.width ?? 400, height: image.width ?? 300))
+                    Attachment(image.url, size: CGSize(width: image.width ?? 300, height: image.width ?? 300))
                         .equatable()
                         .cornerRadius(5)
-                        .maxFrame(width: 400, height: 300, originalWidth: image.width ?? 0, originalHeight: image.height ?? 0)
+                        .maxFrame(width: 300, height: 300, originalWidth: image.width ?? 0, originalHeight: image.height ?? 0)
                         
                 }
                 if let video = embed?.video,

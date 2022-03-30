@@ -13,7 +13,7 @@ public var captchaPublicKey: String = "error"
 enum LoginState {
     case initial
     case captcha
-    case twofactor
+    case twoFactor
 }
 
 enum DiscordLoginErrors: Error {
@@ -23,198 +23,220 @@ enum DiscordLoginErrors: Error {
 
 extension UIApplication {
     func restart() {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "LoggedIn"), object: nil, userInfo: [:])
-        }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "LoggedIn"), object: nil, userInfo: [:])
     }
 }
 
+struct LoginViewDataModel {
+    var email: String = ""
+    var password: String = ""
+    var twoFactor: String = ""
+    var token: String = ""
+    var captcha: Bool = false
+    var captchaVCKey: String?
+    var captchaPayload: String?
+    var proxyIP: String = ""
+    var proxyPort: String = ""
+    var state: LoginState = .initial
+    var notification: [String: Any] = [:]
+    var error: String?
+}
+
 struct LoginView: View {
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var twofactor: String = ""
-    @State var token: String = ""
-    @State var captcha: Bool = false
-    @State var captchaVCKey: String?
-    @State var captchaPayload: String?
-    @State var proxyIP: String = ""
-    @State var proxyPort: String = ""
-    @State var state: LoginState = .initial
-    @State var notif: [String: Any] = [:]
-    @State var error: String?
-    @State private var showConfirm = false
-    @StateObject var viewModel = LoginViewViewModel()
+    @StateObject var viewModel: LoginViewViewModel = .init()
+    @State var loginViewDataModel: LoginViewDataModel = .init()
+    
     var body: some View {
         VStack {
             switch viewModel.state {
             case .initial:
-                VStack {
-                    VStack {
-                        Text("Welcome to Accord")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .padding(.bottom, 5)
-                            .padding(.top)
-                        
-                        Text("Choose how you want to login")
-                            .foregroundColor(Color.secondary)
-                            .padding(.bottom)
-                        TextField("Email", text: $email)
-                        SecureField("Password", text: $password)
-                        TextField("Token (optional)", text: $token)
-                        TextField("Proxy IP (optional)", text: $proxyIP)
-                        TextField("Proxy Port (optional)", text: $proxyPort)
-                        if let error = viewModel.loginError {
-                            switch error {
-                            case DiscordLoginErrors.invalidForm:
-                                Text("Wrong username/password")
-                            default:
-                                EmptyView()
-                            }
-                        }
-                        
-                        HStack {
-                            Spacer()
-                            Button("Cancel") {
-                                exit(EXIT_SUCCESS)
-                            }
-                            .controlSize(.large)
-                            Button("Login") { [weak viewModel] in
-                                viewModel?.loginError = nil
-                                UserDefaults.standard.set(self.proxyIP, forKey: "proxyIP")
-                                UserDefaults.standard.set(self.proxyPort, forKey: "proxyPort")
-                                if token != "" {
-                                    UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                    
-                                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                    
-                                   // KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
-                                   // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                    UIApplication.shared.restart()
-                                } else {
-                                    try? viewModel?.login(email, password, twofactor)
-                                }
-                                print("logging in")
-                            }
-                            .controlSize(.large)
-                            Spacer()
-                        }
-                        .padding(.top)
-                    }
-                    .frame(width: 300, height: 100)
-                    
-                }
-                .transition(AnyTransition.moveAway)
-                //.textFieldStyle(RoundedBorderTextFieldStyle())
-                
+                initialView
             case .captcha:
-                CaptchaViewControllerSwiftUI(token: captchaPublicKey)
-                    .transition(AnyTransition.moveAway)
-            case .twofactor:
-                VStack {
-                    Spacer()
-                    Text("Enter your two-factor code here.")
-                        .font(.title3)
-                        .fontWeight(.medium)
-                    SecureField("Six-digit MFA code", text: $twofactor)
-                        .keyboardType(.numberPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 100)
-                        .padding(.bottom, 20)
-                    HStack {
-                        Button("Login") {
-                            if let ticket = viewModel.ticket {
+                captchaView
+            case .twoFactor:
+                twoFactorView
+            }
+        }
+        .frame(width: 500, height: 275)
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("Captcha"))) { notification in
+            self.viewModel.state = .twoFactor
+            self.loginViewDataModel.notification = notification.userInfo as? [String: Any] ?? [:]
+            print(notification)
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    private var initialViewTopView: some View {
+        Text("Welcome to Accord")
+            .font(.title)
+            .fontWeight(.bold)
+            .padding(.bottom, 5)
+            .padding(.top)
+        
+        Text("Choose how you want to login")
+            .foregroundColor(Color.secondary)
+            .padding(.bottom)
+    }
+    
+    @ViewBuilder
+    private var initialViewFields: some View {
+        TextField("Email", text: $loginViewDataModel.email)
+            .frame(width: 375, alignment: .center)
+        SecureField("Password", text: $loginViewDataModel.password)
+            .frame(width: 375, alignment: .center)
+        TextField("Token (optional)", text: $loginViewDataModel.token)
+            .frame(width: 375, alignment: .center)
+        TextField("Proxy IP (optional)", text: $loginViewDataModel.proxyIP)
+            .frame(width: 375, alignment: .center)
+        TextField("Proxy Port (optional)", text: $loginViewDataModel.proxyPort)
+            .frame(width: 375, alignment: .center)
+    }
+    
+    @ViewBuilder
+    private var errorView: some View {
+        if let error = viewModel.loginError {
+            switch error {
+            case DiscordLoginErrors.invalidForm:
+                Text("Wrong username/password")
+            default:
+                EmptyView()
+            }
+        }
+    }
+    
+    private var bottomView: some View {
+        HStack(alignment: .center) {
+            Button("Cancel") {
+                exit(EXIT_SUCCESS)
+            }
+            .controlSize(.large)
+            Button("Login") { [weak viewModel] in
+                viewModel?.loginError = nil
+                UserDefaults.standard.set(self.loginViewDataModel.proxyIP, forKey: "proxyIP")
+                UserDefaults.standard.set(self.loginViewDataModel.proxyPort, forKey: "proxyPort")
+                if loginViewDataModel.token != "" {
+                    UserDefaults.standard.set(loginViewDataModel.token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
+                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                    
+//                    KeychainManager.save(key: keychainItemName, data: loginViewDataModel.token.data(using: String.Encoding.utf8) ?? Data())
+//                    AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                    UIApplication.shared.restart()
+                } else {
+                    try? viewModel?.login(loginViewDataModel.email, loginViewDataModel.password, loginViewDataModel.twoFactor)
+                }
+                print("logging in")
+            }
+            .controlSize(.large)
+        }
+        .padding(.top, 5)
+    }
+    
+    private var initialView: some View {
+        VStack {
+            initialViewTopView
+            initialViewFields
+            errorView
+            bottomView
+        }
+        .transition(AnyTransition.moveAway)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+    }
+    
+    private var twoFactorView: some View {
+        VStack {
+            Text("Enter your two-factor code here.")
+                .font(.title3)
+                .fontWeight(.medium)
+            
+            SecureField("Six-digit MFA code", text: $loginViewDataModel.twoFactor)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .frame(width: 100)
+            
+                Button("Login") {
+                    if let ticket = viewModel.ticket {
+                        Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
+                            userAgent: discordUserAgent,
+                            token: AccordCoreVars.token,
+                            bodyObject: ["code": loginViewDataModel.twoFactor, "ticket": ticket],
+                            type: .POST,
+                            discordHeaders: true,
+                            json: true
+                        )) { completion in
+                            switch completion {
+                            case .success(let value):
+                                if let token = value.token {
+                                    UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
+                                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                  //  KeychainManager.save(key: keychainItemName, data: token.data(using: .utf8) ?? Data())
+                                  //  AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                    self.loginViewDataModel.captcha = false
+                                    UIApplication.shared.restart()
+                                }
+                            case .failure(let error):
+                                print(error)
+                            }
+                        }
+                        return
+                    }
+                    self.loginViewDataModel.captchaPayload = loginViewDataModel.notification["key"] as? String ?? ""
+                    Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/login"), headers: Headers(
+                        userAgent: discordUserAgent,
+                        bodyObject: [
+                            "email": loginViewDataModel.email,
+                            "password": loginViewDataModel.password,
+                            "captcha_key": loginViewDataModel.captchaPayload ?? "",
+                        ],
+                        type: .POST,
+                        discordHeaders: true,
+                        json: true
+                    )) { completion in
+                        switch completion {
+                        case .success(let response):
+                            if let token = response.token {UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
+                                AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                              //  KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
+                              //  AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                self.loginViewDataModel.captcha = false
+                                UIApplication.shared.restart()
+                            }
+                            if let ticket = response.ticket {
                                 Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
                                     userAgent: discordUserAgent,
+                                    contentType: "application/json",
                                     token: AccordCoreVars.token,
-                                    bodyObject: ["code": twofactor, "ticket": ticket],
+                                    bodyObject: ["code": loginViewDataModel.twoFactor, "ticket": ticket],
                                     type: .POST,
                                     discordHeaders: true,
                                     json: true
                                 )) { completion in
                                     switch completion {
-                                    case .success(let value):
-                                        if let token = value.token {
+                                    case .success(let response):
+                                        if let token = response.token {
                                             UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
                                             AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                            
-                                            //   KeychainManager.save(key: keychainItemName, data: token.data(using: .utf8) ?? Data())
-                                            //   AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                            self.captcha = false
+                                           // KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
+                                           // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
+                                            self.loginViewDataModel.captcha = false
                                             UIApplication.shared.restart()
                                         }
                                     case .failure(let error):
                                         print(error)
                                     }
                                 }
-                                return
                             }
-                            self.captchaPayload = notif["key"] as? String ?? ""
-                            Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/login"), headers: Headers(
-                                userAgent: discordUserAgent,
-                                bodyObject: [
-                                    "email": email,
-                                    "password": password,
-                                    "captcha_key": captchaPayload ?? "",
-                                ],
-                                type: .POST,
-                                discordHeaders: true,
-                                json: true
-                            )) { completion in
-                                switch completion {
-                                case .success(let response):
-                                    if let token = response.token {
-                                        UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                        AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                        
-                                     //   KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
-                                     //   AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                        self.captcha = false
-                                        UIApplication.shared.restart()
-                                    }
-                                    if let ticket = response.ticket {
-                                        Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
-                                            userAgent: discordUserAgent,
-                                            contentType: "application/json",
-                                            token: AccordCoreVars.token,
-                                            bodyObject: ["code": twofactor, "ticket": ticket],
-                                            type: .POST,
-                                            discordHeaders: true,
-                                            json: true
-                                        )) { completion in
-                                            switch completion {
-                                            case .success(let response):
-                                                if let token = response.token {
-                                                    UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
-                                                    
-                                                   // KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
-                                                    //AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
-                                                    self.captcha = false
-                                                    UIApplication.shared.restart()
-                                                }
-                                            case .failure(let error):
-                                                print(error)
-                                            }
-                                        }
-                                    }
-                                case .failure(let error):
-                                    print(error)
-                                }
-                            }
+                        case .failure(let error):
+                            print(error)
                         }
-                        .controlSize(.large)
                     }
                 }
-            }
+                .controlSize(.large)
         }
-        .frame(width: 500, height: 275)
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("Captcha"))) { notif in
-            self.viewModel.state = .twofactor
-            self.notif = notif.userInfo as? [String: Any] ?? [:]
-            print(notif)
-        }
-        .padding()
+    }
+    
+    private var captchaView: some View {
+        CaptchaViewControllerSwiftUI(token: captchaPublicKey)
+            .transition(AnyTransition.moveAway)
     }
 }
 
@@ -257,7 +279,7 @@ final class LoginViewViewModel: ObservableObject {
                             self?.state = .captcha
                         }
                     } else if let ticket = response.ticket {
-                        self?.state = .twofactor
+                        self?.state = .twoFactor
                         self?.ticket = ticket
                         print("[Login debug] Got ticket")
                     }

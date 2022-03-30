@@ -170,7 +170,7 @@ struct MessageCellView: View, Equatable {
                     HStack(spacing: 4) {
                         Attachment(cdnURL + "/emojis/\(reaction.emoji.id ?? "").png?size=16")
                             .equatable()
-                            .frame(width: 16, height: 16)
+                            .frame(width: 20, height: 20)
                         Text(String(reaction.count))
                             .fontWeight(Font.Weight.medium)
                     }

@@ -164,7 +164,6 @@ struct ChatControls: View {
         }
     }
     
-    @available(iOS 15.0, *)
     var montereyTextField: some View {
         TextField(viewModel.percent ?? chatText, text: $viewModel.textFieldContents)
             .focused($focusedField, equals: .mainTextField)

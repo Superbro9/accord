@@ -74,10 +74,10 @@ final class ChatControlsViewModel: ObservableObject {
     }
     
     func findView() {
-        //        UIKitLink<UITextField>.introspect { [weak self] textField, _ in
-        //            textField.allowsEditingTextAttributes = true
-        //            self?.textField = textField
-        //        }
+        UIKitLink<UITextField>.introspect { [weak self] textField, _ in
+            textField.allowsEditingTextAttributes = true
+            self?.textField = textField
+        }
     }
     
     func clearMatches() {
