@@ -114,6 +114,7 @@ struct ChannelView: View, Equatable {
                 }
                 .listStyle(.plain)
                 .rotationEffect(.init(degrees: 180))
+                .padding()
                 blurredTextField
                 
             }

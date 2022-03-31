@@ -200,7 +200,6 @@ struct ChatControls: View {
         } label: {
             Label("", systemImage: "plus.circle.fill")
         }
-
     }
     
     var nitrolessButton: some View {
