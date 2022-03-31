@@ -24,7 +24,8 @@ struct ChatControls: View {
     @Binding var replyingTo: Message?
     @State var nitroless = false
     @State var emotes = false
-    @State var fileImport: Bool = false
+    @State var showImagePicker: Bool = false
+    @State var showFilePicker: Bool = false
     @Binding var fileUpload: Data?
     @Binding var fileUploadURL: URL?
     @State var dragOver: Bool = false
@@ -177,12 +178,29 @@ struct ChatControls: View {
     }
     
     var fileImportButton: some View {
-        Button(action: {
-            fileImport.toggle()
-        }) {
-            Image(systemName: "plus.circle.fill")
+//        Button(action: {
+//            showImagePicker.toggle()
+//        }) {
+//            Image(systemName: "plus.circle.fill")
+//        }
+//        .buttonStyle(.bordered)
+        Menu {
+            Button {
+                showImagePicker.toggle()
+            } label: {
+                Label("Image", systemImage: "photo")
+            }
+
+            Button {
+                showFilePicker.toggle()
+            } label: {
+                Label("File", systemImage: "doc.plaintext.fill")
+            }
+
+        } label: {
+            Label("", systemImage: "plus.circle.fill")
         }
-        .buttonStyle(.bordered)
+
     }
     
     var nitrolessButton: some View {
@@ -258,9 +276,16 @@ struct ChatControls: View {
                     viewModel.findView()
                 }
                 .textFieldStyle(PlainTextFieldStyle())
-                .fileImporter(isPresented: $fileImport, allowedContentTypes: [.data]) { result in
-                    fileUpload = try! Data(contentsOf: try! result.get())
-                    fileUploadURL = try! result.get()
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(imageData: $fileUpload, isPresented: $showImagePicker, imageName: $fileUploadURL)
+                }.fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.data]) { result in
+                    switch result {
+                    case .success(let url):
+                        fileUploadURL = url
+                        fileUpload = try? Data(contentsOf: url)
+                    case .failure(let err):
+                        print("error: \(err)")
+                    }
                 }
             }
         }
