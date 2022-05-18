@@ -16,13 +16,13 @@ final class Gateway {
     private(set) var connection: NWConnection?
     private(set) var sessionID: String?
     private(set) var interval: Int = 40000
-
+    
     internal var pendingHeartbeat: Bool = false
     internal var heartbeatTimer: Cancellable?
-
+    
     internal var seq: Int = 0
     internal var bag = Set<AnyCancellable>()
-
+    
     // To communicate with the view
     private(set) var messageSubject = PassthroughSubject<(Data, String, Bool), Never>()
     private(set) var editSubject = PassthroughSubject<(Data, String), Never>()
@@ -30,7 +30,7 @@ final class Gateway {
     private(set) var typingSubject = PassthroughSubject<(Data, String), Never>()
     private(set) var memberChunkSubject = PassthroughSubject<Data, Never>()
     private(set) var memberListSubject = PassthroughSubject<MemberListUpdate, Never>()
-
+    
     private(set) var stateUpdateHandler: (NWConnection.State) -> Void = { state in
         switch state {
         case .ready:
@@ -50,12 +50,12 @@ final class Gateway {
             fatalError()
         }
     }
-
+    
     private let socketEndpoint: NWEndpoint
     internal let compress: Bool
-
+    
     public var cachedMemberRequest: [String: GuildMember] = [:]
-
+    
     enum GatewayErrors: Error {
         case noStringData(String)
         case maxRequestReached
@@ -123,17 +123,17 @@ final class Gateway {
         self.compress = compress
         try connect(session_id, seq)
     }
-
+    
     private func connect(_ session_id: String? = nil, _ seq: Int? = nil) throws {
         connection?.start(queue: concurrentQueue)
         hello(session_id, seq)
     }
-
+    
     private func hello(_ session_id: String? = nil, _ seq: Int? = nil) {
         guard connection?.state != .cancelled else { return } // Don't listen for hello if there is no connection
         connection?.receiveMessage { [weak self] data, _, _, error in
             if let error = error {
-               return print(error)
+                return print(error)
             }
             guard let data = data,
                   let decompressedData = try? self?.decompressor.decompress(data: data),
@@ -174,7 +174,7 @@ final class Gateway {
             }
         }
     }
-
+    
     private func listen(repeat _: Bool = true) {
         guard connection?.state != .cancelled else { return }
         connection?.receiveMessage { data, context, _, error in
@@ -186,260 +186,266 @@ final class Gateway {
             guard let data = data else {
                 return print(context as Any, data as Any)
             }
-            wssThread.async {
-                do {
-                    if self.compress {
-                        let data = try self.decompressor.decompress(data: data)
-                        let event = try GatewayEvent(data: data)
-                        try self.handleMessage(event: event)
-                    } else {
-                        let event = try GatewayEvent(data: data)
-                        try self.handleMessage(event: event)
+            if self.compress {
+                self.decompressor.decompressionQueue.async {
+                    guard let data = try? self.decompressor.decompress(data: data) else { return }
+                    wssThread.async {
+                        do {
+                            let event = try GatewayEvent(data: data)
+                            try self.handleMessage(event: event)
+                        } catch { print(error) }
                     }
-                } catch {
-                    print(error)
+                }
+            } else {
+                wssThread.async {
+                    do {
+                        let event = try GatewayEvent(data: data)
+                        try self.handleMessage(event: event)
+                    } catch {
+                        print(error)
+                    }
                 }
             }
         }
     }
-
-    private func identify() throws {
-        let packet: [String: Any] = [
-            "op": 2,
-            "d": [
-                "token": AccordCoreVars.token,
-                "capabilities": 253,
-                "compress": false,
-                "client_state": [
-                    "guild_hashes": [:],
-                    "highest_last_message_id": "0",
-                    "read_state_version": 0,
-                    "user_guild_settings_version": -1,
-                    "user_settings_version": -1,
+        
+        private func identify() throws {
+            let packet: [String: Any] = [
+                "op": 2,
+                "d": [
+                    "token": AccordCoreVars.token,
+                    "capabilities": 253,
+                    "compress": false,
+                    "client_state": [
+                        "guild_hashes": [:],
+                        "highest_last_message_id": "0",
+                        "read_state_version": 0,
+                        "user_guild_settings_version": -1,
+                        "user_settings_version": -1,
+                    ],
+                    "presence": [
+                        "activities": [],
+                        "afk": false,
+                        "since": 0,
+                        "status": "online",
+                    ],
+                    "properties": [
+                        "os": "Mac OS X",
+                        "browser": "Discord Client",
+                        "release_channel": "stable",
+                        "client_build_number": dscVersion,
+                        "client_version": "0.0.266",
+                        "os_version": "21.2.0",
+                        "os_arch": "x64",
+                        "system-locale": "\(NSLocale.current.languageCode ?? "en")-\(NSLocale.current.regionCode ?? "US")",
+                    ],
                 ],
-                "presence": [
-                    "activities": [],
+            ]
+            try send(json: packet)
+        }
+        
+        private func heartbeat() throws {
+            guard !pendingHeartbeat else {
+                return AccordApp.error(GatewayErrors.heartbeatMissed, additionalDescription: "Check your network connection")
+            }
+            let packet: [String: Any] = [
+                "op": 1,
+                "d": seq,
+            ]
+            try send(json: packet)
+            pendingHeartbeat = true
+        }
+        
+        public func ready() -> Future<GatewayD, Error> {
+            Future { [weak self] promise in
+                self?.connection?.receiveMessage { data, context, _, error in
+                    if let error = error {
+                        print(error)
+                    }
+                    guard let info = context?.protocolMetadata.first as? NWProtocolWebSocket.Metadata,
+                          let data = data
+                    else {
+                        return AccordApp.error(GatewayErrors.essentialEventFailed("READY"), additionalDescription: "Try reconnecting?")
+                    }
+                    switch info.opcode {
+                    case .text:
+                        wssThread.async {
+                            do {
+                                try wss.updateVoiceState(guildID: nil, channelID: nil)
+                                let path = FileManager.default.urls(for: .cachesDirectory,
+                                                                    in: .userDomainMask)[0]
+                                    .appendingPathComponent("socketOut.json")
+                                try data.write(to: path)
+                                let structure = try JSONDecoder().decode(GatewayStructure.self, from: data)
+                                wssThread.async {
+                                    self?.listen()
+                                }
+                                print("Hello, \(structure.d.user.username)#\(structure.d.user.discriminator) !!")
+                                self?.sessionID = structure.d.session_id
+                                print("Connected with session ID", structure.d.session_id)
+                                promise(.success(structure.d))
+                                return
+                            } catch {
+                                promise(.failure(error))
+                                AccordApp.error(error)
+                                return
+                            }
+                        }
+                    case .close:
+                        if let closeMessage = String(data: data, encoding: .utf8) {
+                            print("Closed with #\(closeMessage)#")
+                            switch closeMessage {
+                            case "Authentication failed.":
+                                logOut()
+                                UIApplication.shared.restart()
+                            default: break
+                            }
+                        } else {
+                            print("Closed with unknown close code")
+                        }
+                    case .cont: break
+                    case .binary:
+                        print("binary packet")
+                        wssThread.async {
+                            do {
+                                guard let data = try self?.decompressor.decompress(data: data, large: true) else { return }
+                                try wss.updateVoiceState(guildID: nil, channelID: nil)
+                                let path = FileManager.default.urls(for: .cachesDirectory,
+                                                                    in: .userDomainMask)[0]
+                                    .appendingPathComponent("socketOut.json")
+                                try data.write(to: path)
+                                let structure = try JSONDecoder().decode(GatewayStructure.self, from: data)
+                                wssThread.async {
+                                    self?.listen()
+                                }
+                                print("Hello, \(structure.d.user.username)#\(structure.d.user.discriminator) !!")
+                                self?.sessionID = structure.d.session_id
+                                print("Connected with session ID", structure.d.session_id)
+                                promise(.success(structure.d))
+                                return
+                            } catch {
+                                promise(.failure(error))
+                                AccordApp.error(error)
+                                return
+                            }
+                        }
+                    case .ping: print("ping")
+                    case .pong:  print("pong")
+                    @unknown default:
+                        break
+                    }
+                }
+            }
+        }
+        
+        public func updatePresence(status: String, since: Int, @ActivityBuilder _ activities: () -> [Activity]) throws {
+            let packet: [String: Any] = [
+                "op": 3,
+                "d": [
+                    "status": status,
+                    "since": since,
+                    "activities": activities().map(\.dictValue),
                     "afk": false,
-                    "since": 0,
-                    "status": "online",
                 ],
-                "properties": [
-                    "os": "Mac OS X",
-                    "browser": "Discord Client",
-                    "release_channel": "stable",
-                    "client_build_number": dscVersion,
-                    "client_version": "0.0.266",
-                    "os_version": "21.2.0",
-                    "os_arch": "x64",
-                    "system-locale": "\(NSLocale.current.languageCode ?? "en")-\(NSLocale.current.regionCode ?? "US")",
-                ],
-            ],
-        ]
-        try send(json: packet)
-    }
-
-    private func heartbeat() throws {
-        guard !pendingHeartbeat else {
-            return AccordApp.error(GatewayErrors.heartbeatMissed, additionalDescription: "Check your network connection")
+            ]
+            try send(json: packet)
         }
-        let packet: [String: Any] = [
-            "op": 1,
-            "d": seq,
-        ]
-        try send(json: packet)
-        pendingHeartbeat = true
-    }
-
-    public func ready() -> Future<GatewayD, Error> {
-        Future { [weak self] promise in
-            self?.connection?.receiveMessage { data, context, _, error in
-                if let error = error {
-                    print(error)
-                }
-                guard let info = context?.protocolMetadata.first as? NWProtocolWebSocket.Metadata,
-                      let data = data
-                else {
-                    return AccordApp.error(GatewayErrors.essentialEventFailed("READY"), additionalDescription: "Try reconnecting?")
-                }
-                switch info.opcode {
-                case .text:
-                    wssThread.async {
-                        do {
-                            try wss.updateVoiceState(guildID: nil, channelID: nil)
-                            let path = FileManager.default.urls(for: .cachesDirectory,
-                                                                in: .userDomainMask)[0]
-                                .appendingPathComponent("socketOut.json")
-                            try data.write(to: path)
-                            let structure = try JSONDecoder().decode(GatewayStructure.self, from: data)
-                            wssThread.async {
-                                self?.listen()
-                            }
-                            print("Hello, \(structure.d.user.username)#\(structure.d.user.discriminator) !!")
-                            self?.sessionID = structure.d.session_id
-                            print("Connected with session ID", structure.d.session_id)
-                            promise(.success(structure.d))
-                            return
-                        } catch {
-                            promise(.failure(error))
-                            AccordApp.error(error)
-                            return
-                        }
-                    }
-                case .close:
-                    if let closeMessage = String(data: data, encoding: .utf8) {
-                        print("Closed with #\(closeMessage)#")
-                        switch closeMessage {
-                        case "Authentication failed.":
-                            logOut()
-                            UIApplication.shared.restart()
-                        default: break
-                        }
-                    } else {
-                        print("Closed with unknown close code")
-                    }
-                case .cont: break
-                case .binary:
-                    print("binary packet")
-                    wssThread.async {
-                        do {
-                            guard let data = try self?.decompressor.decompress(data: data) else { return }
-                            try wss.updateVoiceState(guildID: nil, channelID: nil)
-                            let path = FileManager.default.urls(for: .cachesDirectory,
-                                                                in: .userDomainMask)[0]
-                                .appendingPathComponent("socketOut.json")
-                            try data.write(to: path)
-                            let structure = try JSONDecoder().decode(GatewayStructure.self, from: data)
-                            wssThread.async {
-                                self?.listen()
-                            }
-                            print("Hello, \(structure.d.user.username)#\(structure.d.user.discriminator) !!")
-                            self?.sessionID = structure.d.session_id
-                            print("Connected with session ID", structure.d.session_id)
-                            promise(.success(structure.d))
-                            return
-                        } catch {
-                            promise(.failure(error))
-                            AccordApp.error(error)
-                            return
-                        }
-                    }
-                case .ping: print("ping")
-                case .pong:  print("pong")
-                @unknown default:
-                    break
-                }
+        
+        public func reconnect(session_id: String? = nil, seq: Int? = nil) throws {
+            let packet: [String: Any] = [
+                "op": 6,
+                "d": [
+                    "seq": seq ?? self.seq,
+                    "session_id": session_id ?? sessionID ?? "",
+                    "token": AccordCoreVars.token,
+                ],
+            ]
+            try send(json: packet)
+            wssThread.async {
+                self.listen()
             }
         }
-    }
-
-    public func updatePresence(status: String, since: Int, @ActivityBuilder _ activities: () -> [Activity]) throws {
-        let packet: [String: Any] = [
-            "op": 3,
-            "d": [
-                "status": status,
-                "since": since,
-                "activities": activities().map(\.dictValue),
-                "afk": false,
-            ],
-        ]
-        try send(json: packet)
-    }
-
-    public func reconnect(session_id: String? = nil, seq: Int? = nil) throws {
-        let packet: [String: Any] = [
-            "op": 6,
-            "d": [
-                "seq": seq ?? self.seq,
-                "session_id": session_id ?? sessionID ?? "",
-                "token": AccordCoreVars.token,
-            ],
-        ]
-        try send(json: packet)
-        wssThread.async {
-            self.listen()
-        }
-    }
-
-    public func subscribe(to guild: String) throws {
-        let packet: [String: Any] = [
-            "op": 14,
-            "d": [
-                "guild_id": guild,
-                "typing": true,
-                "activities": true,
-                "threads": true,
-            ],
-        ]
-        try send(json: packet)
-    }
-
-    public func memberList(for guild: String, in channel: String) throws {
-        let packet: [String: Any] = [
-            "op": 14,
-            "d": [
-                "channels": [
-                    channel: [[
-                        0, 99,
-                    ]],
+        
+        public func subscribe(to guild: String) throws {
+            let packet: [String: Any] = [
+                "op": 14,
+                "d": [
+                    "guild_id": guild,
+                    "typing": true,
+                    "activities": true,
+                    "threads": true,
                 ],
-                "guild_id": guild,
-            ],
-        ]
-        try send(json: packet)
-    }
-
-    public func subscribeToDM(_ channel: String) throws {
-        let packet: [String: Any] = [
-            "op": 13,
-            "d": [
-                "channel_id": channel,
-            ],
-        ]
-        try send(json: packet)
-        print("sent packet")
-    }
-
-    public func getMembers(ids: [String], guild: String) throws {
-        let packet: [String: Any] = [
-            "op": 8,
-            "d": [
-                "limit": 0,
-                "user_ids": ids,
-                "guild_id": guild,
-            ],
-        ]
-        try send(json: packet)
+            ]
+            try send(json: packet)
+        }
+        
+        public func memberList(for guild: String, in channel: String) throws {
+            let packet: [String: Any] = [
+                "op": 14,
+                "d": [
+                    "channels": [
+                        channel: [[
+                            0, 99,
+                        ]],
+                    ],
+                    "guild_id": guild,
+                ],
+            ]
+            try send(json: packet)
+        }
+        
+        public func subscribeToDM(_ channel: String) throws {
+            let packet: [String: Any] = [
+                "op": 13,
+                "d": [
+                    "channel_id": channel,
+                ],
+            ]
+            try send(json: packet)
+            print("sent packet")
+        }
+        
+        public func getMembers(ids: [String], guild: String) throws {
+            let packet: [String: Any] = [
+                "op": 8,
+                "d": [
+                    "limit": 0,
+                    "user_ids": ids,
+                    "guild_id": guild,
+                ],
+            ]
+            try send(json: packet)
+        }
+        
+        public func getCommands(guildID: String, query: String, limit: Int = 10) throws {
+            let packet: [String: Any] = [
+                "op": 24,
+                "d": [
+                    "locale": NSNull(),
+                    "query": query,
+                    "guild_id": guildID,
+                    "limit":limit,
+                    "nonce":generateFakeNonce(),
+                    "type":1
+                ],
+            ]
+            try send(json: packet)
+        }
+        
+        // cleanup
+        deinit {
+            self.heartbeatTimer = nil
+            self.bag.invalidateAll()
+        }
     }
     
-    public func getCommands(guildID: String, query: String, limit: Int = 10) throws {
-        let packet: [String: Any] = [
-            "op": 24,
-            "d": [
-                "locale": NSNull(),
-                "query": query,
-                "guild_id": guildID,
-                "limit":limit,
-                "nonce":generateFakeNonce(),
-                "type":1
-            ],
-        ]
-        try send(json: packet)
+    @resultBuilder
+    enum ActivityBuilder {
+        static func buildBlock() -> [Activity] { [] }
     }
-
-    // cleanup
-    deinit {
-        self.heartbeatTimer = nil
-        self.bag.invalidateAll()
+    
+    extension ActivityBuilder {
+        static func buildBlock(_ activities: Activity...) -> [Activity] {
+            activities
+        }
     }
-}
-
-@resultBuilder
-enum ActivityBuilder {
-    static func buildBlock() -> [Activity] { [] }
-}
-
-extension ActivityBuilder {
-    static func buildBlock(_ activities: Activity...) -> [Activity] {
-        activities
-    }
-}
