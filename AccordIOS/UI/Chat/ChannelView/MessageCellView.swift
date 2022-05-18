@@ -179,7 +179,7 @@ struct MessageCellView: View, Equatable {
                                     .padding(.horizontal, 4)
                             }
                         }
-                        if message.author?.system ?? false {
+                        if message.author?.system == true {
                             Text("System")
                                 .padding(.horizontal, 4)
                                 .foregroundColor(Color.white)
@@ -215,7 +215,7 @@ struct MessageCellView: View, Equatable {
                         }
                         .padding(4)
                         .frame(minWidth: 45, maxWidth: 55)
-                        .background(Color(NSColor.windowBackgroundColor))
+                        .background(Color(UIColor.systemBackground))
                         .cornerRadius(4)
                     }
                 })
