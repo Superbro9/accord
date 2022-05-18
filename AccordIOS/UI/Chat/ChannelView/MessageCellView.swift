@@ -60,15 +60,17 @@ struct MessageCellView: View, Equatable {
             .appendingPathComponent(guildID!)
             .appendingPathComponent("members")
             .appendingPathComponent(message.author!.id)
-        Request.ping(url: url, headers: Headers(
-            userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
-            bodyObject: ["communication_disabled_until":time],
-            type: .PATCH,
-            discordHeaders: true,
-            referer: "https://discord.com/channels/\(guildID!)/\(self.message.channel_id)",
-            json: true
-        ))
+        DispatchQueue.global().async {
+            Request.ping(url: url, headers: Headers(
+                userAgent: discordUserAgent,
+                token: AccordCoreVars.token,
+                bodyObject: ["communication_disabled_until":time],
+                type: .PATCH,
+                discordHeaders: true,
+                referer: "https://discord.com/channels/\(guildID!)/\(self.message.channel_id)",
+                json: true
+            ))
+        }
     }
     
     
@@ -260,13 +262,15 @@ struct MessageCellView: View, Equatable {
                     .appendingPathComponent(message.channel_id)
                     .appendingPathComponent("pins")
                     .appendingPathComponent(message.id)
-                Request.ping(url: url, headers: Headers(
-                    userAgent: discordUserAgent,
-                    token: AccordCoreVars.token,
-                    type: message.pinned == false ? .PUT : .DELETE,
-                    discordHeaders: true,
-                    referer: "https://discord.com/channels/\(guildID ?? "@me")/\(self.message.channel_id)"
-                ))
+                DispatchQueue.global().async {
+                    Request.ping(url: url, headers: Headers(
+                        userAgent: discordUserAgent,
+                        token: AccordCoreVars.token,
+                        type: message.pinned == false ? .PUT : .DELETE,
+                        discordHeaders: true,
+                        referer: "https://discord.com/channels/\(guildID ?? "@me")/\(self.message.channel_id)"
+                    ))
+                }
                 message.pinned?.toggle()
             }
             .if(!(self.permissions.contains(.manageMessages) || guildID == "@me" || guildID == nil), transform: { $0.hidden() })
@@ -313,14 +317,16 @@ struct MessageCellView: View, Equatable {
                             .appendingPathComponent(guildID)
                             .appendingPathComponent("bans")
                             .appendingPathComponent(author.id)
-                        Request.ping(url: url, headers: Headers(
-                            userAgent: discordUserAgent,
-                            token: AccordCoreVars.token,
-                            bodyObject: ["delete_message_days":1],
-                            type: .PUT,
-                            discordHeaders: true,
-                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
-                        ))
+                        DispatchQueue.global().async {
+                            Request.ping(url: url, headers: Headers(
+                                userAgent: discordUserAgent,
+                                token: AccordCoreVars.token,
+                                bodyObject: ["delete_message_days":1],
+                                type: .PUT,
+                                discordHeaders: true,
+                                referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
+                            ))
+                        }
                     }
                     .disabled(!permissions.contains(.banMembers))
                     Button("Kick") {
@@ -329,13 +335,15 @@ struct MessageCellView: View, Equatable {
                             .appendingPathComponent(guildID)
                             .appendingPathComponent("members")
                             .appendingPathComponent(author.id)
-                        Request.ping(url: url, headers: Headers(
-                            userAgent: discordUserAgent,
-                            token: AccordCoreVars.token,
-                            type: .DELETE,
-                            discordHeaders: true,
-                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
-                        ))
+                        DispatchQueue.global().async {
+                                                     Request.ping(url: url, headers: Headers(
+                                                         userAgent: discordUserAgent,
+                                                         token: AccordCoreVars.token,
+                                                         type: .DELETE,
+                                                         discordHeaders: true,
+                                                         referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
+                                                     ))
+                                                 }
                     }
                     .disabled(!permissions.contains(.kickMembers))
                     Menu("Timeout") {

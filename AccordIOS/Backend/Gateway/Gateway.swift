@@ -15,11 +15,8 @@ import Network
 final class Gateway {
     private(set) var connection: NWConnection?
     private(set) var sessionID: String?
-    private(set) var interval: Int = 40000
     
     internal var pendingHeartbeat: Bool = false
-    internal var heartbeatTimer: Cancellable?
-    
     internal var seq: Int = 0
     internal var bag = Set<AnyCancellable>()
     
@@ -31,7 +28,7 @@ final class Gateway {
     private (set) var memberChunkSubject = PassthroughSubject<Data, Never>()
     private (set) var memberListSubject = PassthroughSubject<MemberListUpdate, Never>()
     
-    public var presencePipeline = [String:PassthroughSubject<PresenceUpdate, Never>]()
+    var presencePipeline = [String:PassthroughSubject<PresenceUpdate, Never>]()
     
     private(set) var stateUpdateHandler: (NWConnection.State) -> Void = { state in
         switch state {
@@ -56,13 +53,11 @@ final class Gateway {
     private let socketEndpoint: NWEndpoint
     internal let compress: Bool
     
-    public var cachedMemberRequest: [String: GuildMember] = [:]
+    var cachedMemberRequest: [String: GuildMember] = [:]
     
     enum GatewayErrors: Error {
         case noStringData(String)
-        case maxRequestReached
         case essentialEventFailed(String)
-        case noSession
         case eventCorrupted
         case unknownEvent(String)
         case heartbeatMissed
@@ -73,10 +68,6 @@ final class Gateway {
                 return "Essential Gateway Event failed: \(event)"
             case .noStringData(let string):
                 return "Invalid data \(string)"
-            case .maxRequestReached:
-                return "Internal rate limit hit, you're going too fast!"
-            case .noSession:
-                return "Session missing?"
             case .eventCorrupted:
                 return "Bad event sent"
             case .unknownEvent(let event):
@@ -102,7 +93,7 @@ final class Gateway {
     internal var decompressor = ZStream()
     
     
-    public init (
+    init (
         url: URL = Gateway.gatewayURL,
         session_id: String? = nil,
         seq: Int? = nil,
@@ -145,9 +136,8 @@ final class Gateway {
                 print("Failed to get a heartbeat interval")
                 return wss.hardReset()
             }
-            self?.interval = interval
             DispatchQueue.main.async {
-                self?.heartbeatTimer = Timer.publish(
+                Timer.publish(
                     every: Double(interval / 1000),
                     tolerance: nil,
                     on: .main,
@@ -164,6 +154,7 @@ final class Gateway {
                         }
                     }
                 }
+                .store(in: &self!.bag)
             }
             do {
                 if let session_id = session_id, let seq = seq {
@@ -177,7 +168,7 @@ final class Gateway {
         }
     }
     
-    private func listen(repeat _: Bool = true) {
+    private func listen() {
         guard connection?.state != .cancelled else { return }
         connection?.receiveMessage { data, context, _, error in
             if let error = error {
@@ -270,7 +261,7 @@ final class Gateway {
             pendingHeartbeat = true
         }
         
-        public func ready() -> Future<GatewayD, Error> {
+        func ready() -> Future<GatewayD, Error> {
             Future { [weak self] promise in
                 self?.connection?.receiveMessage { data, context, _, error in
                     if let error = error {
@@ -354,7 +345,7 @@ final class Gateway {
             }
         }
         
-        public func updatePresence(status: String, since: Int, @ActivityBuilder _ activities: () -> [Activity]) throws {
+        func updatePresence(status: String, since: Int, @ActivityBuilder _ activities: () -> [Activity]) throws {
             let packet: [String: Any] = [
                 "op": 3,
                 "d": [
@@ -367,7 +358,7 @@ final class Gateway {
             try send(json: packet)
         }
         
-        public func reconnect(session_id: String? = nil, seq: Int? = nil) throws {
+        func reconnect(session_id: String? = nil, seq: Int? = nil) throws {
             let packet: [String: Any] = [
                 "op": 6,
                 "d": [
@@ -382,7 +373,7 @@ final class Gateway {
             }
         }
         
-        public func subscribe(to guild: String) throws {
+        func subscribe(to guild: String) throws {
             let packet: [String: Any] = [
                 "op": 14,
                 "d": [
@@ -395,7 +386,7 @@ final class Gateway {
             try send(json: packet)
         }
         
-        public func memberList(for guild: String, in channel: String) throws {
+        func memberList(for guild: String, in channel: String) throws {
             let packet: [String: Any] = [
                 "op": 14,
                 "d": [
@@ -410,7 +401,7 @@ final class Gateway {
             try send(json: packet)
         }
         
-        public func subscribeToDM(_ channel: String) throws {
+        func subscribeToDM(_ channel: String) throws {
             let packet: [String: Any] = [
                 "op": 13,
                 "d": [
@@ -421,7 +412,7 @@ final class Gateway {
             print("sent packet")
         }
         
-        public func getMembers(ids: [String], guild: String) throws {
+       func getMembers(ids: [String], guild: String) throws {
             let packet: [String: Any] = [
                 "op": 8,
                 "d": [
@@ -433,7 +424,7 @@ final class Gateway {
             try send(json: packet)
         }
         
-        public func getCommands(guildID: String, query: String, limit: Int = 10) throws {
+        func getCommands(guildID: String, query: String, limit: Int = 10) throws {
             let packet: [String: Any] = [
                 "op": 24,
                 "d": [
@@ -448,7 +439,7 @@ final class Gateway {
             try send(json: packet)
         }
     
-    public func listenForPresence(userID: String, action: @escaping ((PresenceUpdate) -> Void)) {
+   func listenForPresence(userID: String, action: @escaping ((PresenceUpdate) -> Void)) {
              self.presencePipeline[userID] = .init()
              self.presencePipeline[userID]?.sink(receiveValue: action).store(in: &self.bag)
          }
@@ -460,7 +451,6 @@ final class Gateway {
         
         // cleanup
         deinit {
-            self.heartbeatTimer = nil
             self.bag.invalidateAll()
         }
     }

@@ -83,6 +83,7 @@ extension ServerListView {
         // Form the folders and fix the guild objects
         let guildKeyMap = readyPacket.guilds.generateKeyMap()
         let guildTemp = guildOrder
+            .lazy
             .compactMap { guildKeyMap[$0] }
             .map { readyPacket.guilds[$0] }
         

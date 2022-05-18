@@ -13,6 +13,11 @@ struct Permissions: Decodable, OptionSet {
         self.rawValue = rawValue
     }
     
+    init(_ rawValue: Int64) {
+        self.init(rawValue: rawValue)
+    }
+    
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let stringValue = try container.decode(String.self)

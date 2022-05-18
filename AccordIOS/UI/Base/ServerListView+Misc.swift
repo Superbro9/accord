@@ -69,7 +69,7 @@ extension GatewayD {
     func assignReadStates() {
         guard let readState = self.read_state else { return }
         let stateDict = readState.entries.generateKeyMap()
-        self.guilds.enumerated().forEach { index, guild in
+        guilds.enumerated().forEach { (index, guild) -> Void in
             var guild = guild
             guard var channels = guild.channels else { return }
             channels = channels.map { (channel) -> Channel in

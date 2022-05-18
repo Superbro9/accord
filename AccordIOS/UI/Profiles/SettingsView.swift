@@ -181,7 +181,7 @@ struct SettingsViewRedesign: View {
                 sortByMostRecent = recent
                 pfpShown = profilePictures
                 pastelColors = pastel
-                discordStockSettings = discordSettings
+                //discordStockSettings = discordSettings
             }
         }
     }
