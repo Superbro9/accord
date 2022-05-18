@@ -88,6 +88,7 @@
 		89E9FF2327B0064A00861F05 /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2027B0064A00861F05 /* MessageCellView.swift */; };
 		89E9FF2427B0064A00861F05 /* ChannelViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */; };
 		89E9FF2627B014DD00861F05 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2527B014DD00861F05 /* Images.swift */; };
+		89EFBB192835583100141049 /* ZStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB182835583100141049 /* ZStream.swift */; };
 		89F5A57827B3173800385E06 /* GifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F5A57727B3173800385E06 /* GifManager.swift */; };
 		89F5A57A27B3174000385E06 /* AppKitLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F5A57927B3174000385E06 /* AppKitLink.swift */; };
 		89F5A57E27B318F500385E06 /* AsyncMarkdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F5A57C27B318F500385E06 /* AsyncMarkdown.swift */; };
@@ -178,6 +179,7 @@
 		89E9FF2027B0064A00861F05 /* MessageCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewViewModel.swift; sourceTree = "<group>"; };
 		89E9FF2527B014DD00861F05 /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
+		89EFBB182835583100141049 /* ZStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZStream.swift; sourceTree = "<group>"; };
 		89F5A57727B3173800385E06 /* GifManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifManager.swift; sourceTree = "<group>"; };
 		89F5A57927B3174000385E06 /* AppKitLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppKitLink.swift; sourceTree = "<group>"; };
 		89F5A57C27B318F500385E06 /* AsyncMarkdown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncMarkdown.swift; sourceTree = "<group>"; };
@@ -390,6 +392,7 @@
 				89E9FEC627AFFD0700861F05 /* Gateway+MessageHandle.swift */,
 				89E9FEB827AFFD0600861F05 /* Socket.swift */,
 				89E9FEC227AFFD0600861F05 /* GatewayEvent.swift */,
+				89EFBB182835583100141049 /* ZStream.swift */,
 			);
 			path = Gateway;
 			sourceTree = "<group>";
@@ -584,6 +587,7 @@
 			files = (
 				89E9FEF327AFFE8C00861F05 /* PopoverProfileView.swift in Sources */,
 				89C209AC27DE9DB900A2994E /* PinsView2.swift in Sources */,
+				89EFBB192835583100141049 /* ZStream.swift in Sources */,
 				89E9FEA427AFFC3500861F05 /* Keypath++.swift in Sources */,
 				89E9FE6227AFF98200861F05 /* AccordAlert.swift in Sources */,
 				89E9FEA527AFFC3500861F05 /* NSColor++.swift in Sources */,

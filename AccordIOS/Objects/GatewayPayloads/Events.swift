@@ -19,7 +19,7 @@ final class GuildMemberChunk: Decodable {
 }
 
 final class Presence: Decodable {
-    // var user: User?
+     var user: User?
     // var guild_id: String
     var status: UserStatus?
     @IgnoreFailure
@@ -63,3 +63,7 @@ final class GatewayDeletedMessage: Decodable {
 final class DeletedMessage: Decodable {
     var id: String
 }
+
+final class GatewayEventContent<T: Decodable>: Decodable {
+     var d: T
+ }
