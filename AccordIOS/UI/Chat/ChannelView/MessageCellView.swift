@@ -11,6 +11,13 @@ import Combine
 import Foundation
 import SwiftUI
 
+fileprivate var encoder: ISO8601DateFormatter = {
+    let encoder = ISO8601DateFormatter()
+    encoder.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return encoder
+}()
+
+
 struct MessageCellView: View, Equatable {
     
     static func == (lhs: MessageCellView, rhs: MessageCellView) -> Bool {
@@ -23,6 +30,7 @@ struct MessageCellView: View, Equatable {
     var pronouns: String?
     var avatar: String?
     var guildID: String?
+    var permissions: Permissions
     @Binding var role: String?
     @Binding var replyRole: String?
     @Binding var replyingTo: Message?
@@ -36,17 +44,34 @@ struct MessageCellView: View, Equatable {
     var gifPfp: Bool = false
     
     var editingTextField: some View {
-             TextField("Edit your message", text: self.$editedText, onEditingChanged: { _ in }) {
-                 message.edit(now: self.editedText)
-                 self.editing = false
-                 self.editedText = ""
-             }
-             .textFieldStyle(RoundedBorderTextFieldStyle())
-             .onAppear {
-                 self.editedText = message.content
-             }
-         }
-
+        TextField("Edit your message", text: self.$editedText, onEditingChanged: { _ in }) {
+            message.edit(now: self.editedText)
+            self.editing = false
+            self.editedText = ""
+        }
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .onAppear {
+            self.editedText = message.content
+        }
+    }
+    
+    func timeout(time: String) {
+        let url = URL(string: "https://discord.com/api/v9/guilds/")?
+            .appendingPathComponent(guildID!)
+            .appendingPathComponent("members")
+            .appendingPathComponent(message.author!.id)
+        Request.ping(url: url, headers: Headers(
+            userAgent: discordUserAgent,
+            token: AccordCoreVars.token,
+            bodyObject: ["communication_disabled_until":time],
+            type: .PATCH,
+            discordHeaders: true,
+            referer: "https://discord.com/channels/\(guildID!)/\(self.message.channel_id)",
+            json: true
+        ))
+    }
+    
+    
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -173,26 +198,30 @@ struct MessageCellView: View, Equatable {
                 Spacer()
             }
             
-            LazyVGrid.init(columns: Array.init(repeating: GridItem(.flexible(minimum: 45, maximum: 55), spacing: 4), count: 4), alignment: .leading, spacing: 4, content: {
-                ForEach(message.reactions ?? [], id: \.identifier) { reaction in
-                    HStack(spacing: 4) {
-                        if let id = reaction.emoji.id {
-                            Attachment(cdnURL + "/emojis/\(id).png?size=16")
-                                .equatable()
-                                .frame(width: 16, height: 16)
-                        } else if let name = reaction.emoji.name {
-                            Text(name)
-                                .frame(width: 16, height: 16)
+            if message.reactions?.isEmpty == false {
+                LazyVGrid.init(columns: Array.init(repeating: GridItem(.flexible(minimum: 45, maximum: 55), spacing: 4), count: 4), alignment: .leading, spacing: 4, content: {
+                    ForEach(message.reactions ?? [], id: \.identifier) { reaction in
+                        HStack(spacing: 4) {
+                            if let id = reaction.emoji.id {
+                                Attachment(cdnURL + "/emojis/\(id).png?size=16")
+                                    .equatable()
+                                    .frame(width: 16, height: 16)
+                            } else if let name = reaction.emoji.name {
+                                Text(name)
+                                    .frame(width: 16, height: 16)
+                            }
+                            Text(String(reaction.count))
+                                .fontWeight(Font.Weight.medium)
                         }
-                        Text(String(reaction.count))
-                            .fontWeight(Font.Weight.medium)
+                        .padding(4)
+                        .frame(minWidth: 45, maxWidth: 55)
+                        .background(Color(NSColor.windowBackgroundColor))
+                        .cornerRadius(4)
                     }
-                    .padding(4)
-                    .frame(minWidth: 45, maxWidth: 55)
-                    .cornerRadius(4)
-                }
-            })
-            .padding(.leading, 41)
+                })
+                .padding(.leading, 41)
+            }
+            
             ForEach(message.embeds ?? [], id: \.id) { embed in
                 EmbedView(embed: embed)
                     .equatable()
@@ -215,15 +244,34 @@ struct MessageCellView: View, Equatable {
                 replyingTo = message
             }
             Button("Edit") {
-                 self.editing.toggle()
-            }.disabled(message.author?.id != AccordCoreVars.user?.id)
-            Button("Delete") { [weak message] in
+                self.editing.toggle()
+            }
+            .if(message.author?.id != AccordCoreVars.user?.id, transform: { $0.hidden() })
+                Button("Delete") { [weak message] in
                 DispatchQueue.global().async {
                     message?.delete()
                 }
-            }.disabled(message.author?.id != AccordCoreVars.user?.id)
-            Divider()
-            Button("Show profile") {
+            }
+            .if(message.author?.id != AccordCoreVars.user?.id && !self.permissions.contains(.manageMessages),
+                transform: { $0.hidden() })
+                Button(message.pinned == false ? "Pin" : "Unpin") {
+                let url = URL(string: rootURL)?
+                    .appendingPathComponent("channels")
+                    .appendingPathComponent(message.channel_id)
+                    .appendingPathComponent("pins")
+                    .appendingPathComponent(message.id)
+                Request.ping(url: url, headers: Headers(
+                    userAgent: discordUserAgent,
+                    token: AccordCoreVars.token,
+                    type: message.pinned == false ? .PUT : .DELETE,
+                    discordHeaders: true,
+                    referer: "https://discord.com/channels/\(guildID ?? "@me")/\(self.message.channel_id)"
+                ))
+                message.pinned?.toggle()
+            }
+            .if(!(self.permissions.contains(.manageMessages) || guildID == "@me" || guildID == nil), transform: { $0.hidden() })
+                Divider()
+                Button("Show profile") {
                 popup.toggle()
             }
             Divider()
@@ -254,6 +302,77 @@ struct MessageCellView: View, Equatable {
                     UIPasteboard.general.string = "\(author.username)#\(author.discriminator)"
                 }
             }
+            if let author = message.author, let guildID = guildID, guildID != "@me", permissions.contains(.moderateMembers)
+                || permissions.contains(.banMembers)
+                || permissions.contains(.kickMembers) {
+                Divider()
+                Menu("Moderation") {
+                    Button("Ban") {
+                        let url = URL(string: rootURL)?
+                            .appendingPathComponent("guilds")
+                            .appendingPathComponent(guildID)
+                            .appendingPathComponent("bans")
+                            .appendingPathComponent(author.id)
+                        Request.ping(url: url, headers: Headers(
+                            userAgent: discordUserAgent,
+                            token: AccordCoreVars.token,
+                            bodyObject: ["delete_message_days":1],
+                            type: .PUT,
+                            discordHeaders: true,
+                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
+                        ))
+                    }
+                    .disabled(!permissions.contains(.banMembers))
+                    Button("Kick") {
+                        let url = URL(string: rootURL)?
+                            .appendingPathComponent("guilds")
+                            .appendingPathComponent(guildID)
+                            .appendingPathComponent("members")
+                            .appendingPathComponent(author.id)
+                        Request.ping(url: url, headers: Headers(
+                            userAgent: discordUserAgent,
+                            token: AccordCoreVars.token,
+                            type: .DELETE,
+                            discordHeaders: true,
+                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
+                        ))
+                    }
+                    .disabled(!permissions.contains(.kickMembers))
+                    Menu("Timeout") {
+                        Button("60 seconds") {
+                            let date = Date() + 60
+                            let encoded = encoder.string(from: date)
+                            self.timeout(time: encoded)
+                        }
+                        Button("5 minutes") {
+                            let date = Date() + 60 * 5
+                            let encoded = encoder.string(from: date)
+                            self.timeout(time: encoded)
+                        }
+                        Button("10 minutes") {
+                            let date = Date() + 60 * 10
+                            let encoded = encoder.string(from: date)
+                            self.timeout(time: encoded)
+                        }
+                        Button("1 hour") {
+                            let date = Date() + 60 * 60
+                            let encoded = encoder.string(from: date)
+                            self.timeout(time: encoded)
+                        }
+                        Button("1 day") {
+                            let date = Date() + 60 * 60 * 24
+                            let encoded = encoder.string(from: date)
+                            self.timeout(time: encoded)
+                        }
+                        Button("1 week") {
+                            let date = Date() + 60 * 60 * 24 * 7
+                            let encoded = encoder.string(from: date)
+                            self.timeout(time: encoded)
+                        }
+                    }
+                    .disabled(!permissions.contains(.moderateMembers))
+                }
+            }
             if !message.attachments.isEmpty {
                 Divider()
                 ForEach(message.attachments, id: \.url) { attachment in
@@ -269,7 +388,7 @@ struct MessageCellView: View, Equatable {
                         }
                     }
                 }
-
+                
             }
         }
         .id(message.id)

@@ -123,7 +123,7 @@ struct ChatControls: View {
                     if let range = viewModel?.textFieldContents.range(of: ":") {
                         viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
                     }
-                    viewModel?.textFieldContents.append("<\((emoji.animated ?? false) ? "a" : ""):\(emoji.name):\(emoji.id)>")
+                    viewModel?.textFieldContents.append("<\((emoji.animated ?? false) ? "a" : ""):\(emoji.name):\(emoji.id)> ")
                     viewModel?.matchedEmoji.removeAll()
                 }, label: {
                     HStack {
@@ -155,7 +155,7 @@ struct ChatControls: View {
                 if let range = viewModel?.textFieldContents.range(of: "#") {
                     viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
                 }
-                viewModel?.textFieldContents.append("<#\(channel.id)>")
+                viewModel?.textFieldContents.append("<#\(channel.id)> ")
             }) {
                 HStack {
                     Text(channel.name ?? "Unknown Channel")

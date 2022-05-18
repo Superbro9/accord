@@ -49,6 +49,8 @@ struct ChannelView: View, Equatable {
     
     @State private var cancellable = Set<AnyCancellable>()
     
+    private var permissions: Permissions
+    
     // MARK: - init
     init(_ channel: Channel, _ guildName: String? = nil) {
         guildID = channel.guild_id ?? "@me"
@@ -56,6 +58,8 @@ struct ChannelView: View, Equatable {
         channelName = channel.name ?? channel.recipients?.first?.username ?? "Unknown channel"
         self.guildName = guildName ?? "Direct Messages"
         _viewModel = StateObject(wrappedValue: ChannelViewViewModel(channelID: channel.id, guildID: channel.guild_id ?? "@me"))
+        self.permissions = channel.permission_overwrites?.allAllowed(guildID: guildID) ?? .init()
+        print(self.permissions.contains(.manageMessages))
         UITableView.appearance().showsVerticalScrollIndicator = false
     }
     
@@ -69,6 +73,7 @@ struct ChannelView: View, Equatable {
                     pronouns: viewModel.pronouns[author.id],
                     avatar: viewModel.avatars[author.id],
                     guildID: guildID,
+                    permissions: permissions,
                     role: $viewModel.roles[author.id],
                     replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
                     replyingTo: $replyingTo
