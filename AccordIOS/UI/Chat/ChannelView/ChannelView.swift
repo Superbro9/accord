@@ -34,6 +34,7 @@ struct ChannelView: View, Equatable {
     // Mention users in replies
     @State var mention: Bool = true
     @State var replyingTo: Message?
+    @State var mentionUser: Bool = true
     
     @State var pins: Bool = false
     @State var mentions: Bool = false

@@ -303,7 +303,6 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
     }
 
     deinit {
-        print("Closing \(channelID)")
         SlashCommandStorage.commands[guildID]?.removeAll()
     }
 }
