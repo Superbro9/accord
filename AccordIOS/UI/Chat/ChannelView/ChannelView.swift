@@ -166,7 +166,7 @@ struct ChannelView: View, Equatable {
                     Image(systemName: "pin.fill")
                         .rotationEffect(.degrees(45))
                 }
-                .sheet(isPresented: $pins) {
+                .popover(isPresented: $pins) {
                     PinsView(guildID: guildID, channelID: channelID, replyingTo: Binding.constant(nil))
                         .frame(width: 500, height: 700)
                 }
@@ -176,7 +176,7 @@ struct ChannelView: View, Equatable {
                 }) {
                     Image(systemName: "bell.badge.fill")
                 }
-                .sheet(isPresented: $mentions) {
+                .popover(isPresented: $mentions) {
                     MentionsView(replyingTo: Binding.constant(nil))
                         .frame(width: 500, height: 700)
                 }
@@ -199,19 +199,26 @@ struct ChannelView: View, Equatable {
 struct MemberListView: View {
     @Binding var list: [OPSItems]
     var body: some View {
-        List(list.compactMap(\.member), id: \.user.id) { ops in
-            HStack {
-                Attachment(pfpURL(ops.user.id, ops.user.avatar, discriminator: ops.user.discriminator, "24"))
-                    .equatable()
-                    .frame(width: 33, height: 33)
-                    .clipShape(Circle())
-                VStack(alignment: .leading) {
-                    Text(ops.nick ?? ops.user.username)
-                        .fontWeight(.medium)
-                        .lineLimit(0)
-                    if let presence = ops.presence?.activities.first?.state {
-                        Text(presence).foregroundColor(.secondary)
+        List(list, id: \.id) { ops in
+            if let group = ops.group {
+                Text(group.id == "offline" ? "Offline" : group.id == "online" ? "Online" : roleNames[group.id ?? ""] ?? "")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .padding([.top])
+            } else {
+                HStack {
+                    Attachment(pfpURL(ops.member?.user.id ?? "", ops.member?.user.avatar ?? "", discriminator: ops.member?.user.discriminator ?? "", "24"))
+                        .equatable()
+                        .frame(width: 33, height: 33)
+                        .clipShape(Circle())
+                    VStack(alignment: .leading) {
+                        Text(ops.member?.nick ?? ops.member?.user.username ?? "")
+                            .fontWeight(.medium)
                             .lineLimit(0)
+                        if let presence = ops.member?.presence?.activities.first?.state {
+                            Text(presence).foregroundColor(.secondary)
+                                .lineLimit(0)
+                        }
                     }
                 }
             }
