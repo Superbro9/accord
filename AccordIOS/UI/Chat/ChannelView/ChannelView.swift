@@ -66,14 +66,14 @@ struct ChannelView: View, Equatable {
     var messagesView: some View {
         ForEach(viewModel.messages, id: \.identifier) { message in
             if let author = message.author {
-                MessageCellView (
+                MessageCellView(
                     message: message,
                     nick: viewModel.nicks[author.id],
                     replyNick: viewModel.nicks[message.referenced_message?.author?.id ?? ""],
                     pronouns: viewModel.pronouns[author.id],
                     avatar: viewModel.avatars[author.id],
                     guildID: guildID,
-                    
+                    permissions: permissions,
                     role: $viewModel.roles[author.id],
                     replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
                     replyingTo: $replyingTo

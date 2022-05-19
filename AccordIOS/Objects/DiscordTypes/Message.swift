@@ -24,6 +24,7 @@ final class Message: Decodable, Equatable, Identifiable, Hashable {
     var mentions: [User?]
     var pinned: Bool?
     var timestamp: String
+    var processedTimestamp: String?
     var type: MessageType
     var attachments: [AttachedFiles]
     var referenced_message: Reply?

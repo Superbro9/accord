@@ -129,7 +129,7 @@ final class Gateway {
                 return print(error)
             }
             guard let data = data,
-                  let decompressedData = try? self?.decompressor.decompress(data: data),
+                  let decompressedData = self?.compress == true ? try? self?.decompressor.decompress(data: data) : data,
                   let hello = try? JSONSerialization.jsonObject(with: decompressedData, options: []) as? [String: Any],
                   let helloD = hello["d"] as? [String: Any],
                   let interval = helloD["heartbeat_interval"] as? Int else {

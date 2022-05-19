@@ -189,24 +189,6 @@ public final class Markdown {
 //    }
 //}
 
-private extension UIFont {
-    var bold: UIFont {
-        let font = UIFont.boldSystemFont(ofSize: 12)
-        return font
-    }
-
-    var italic: UIFont {
-        let font = UIFont.systemFont(ofSize: 12)
-        let descriptor = font.fontDescriptor.withSymbolicTraits([.traitItalic])
-        return UIFont(descriptor: descriptor!, size: UIFont.systemFontSize)
-    }
-
-    var boldItalic: UIFont {
-        let font = UIFont.boldSystemFont(ofSize: 12)
-        return font
-    }
-}
-
 extension Array where Element == String {
     func replaceAllOccurences(of original: String, with string: String) -> [String] {
         map { $0.replacingOccurrences(of: original, with: string) }

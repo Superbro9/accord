@@ -52,6 +52,8 @@ struct SettingsViewRedesign: View {
     var showHiddenChannels: Bool = false
     @AppStorage("MusicPlatform")
     var selectedPlatform: Platforms = Platforms.appleMusic
+    @AppStorage("CompressGateway")
+    var compress: Bool = false
     
     @State var user: User? = AccordCoreVars.user
     @State var loading: Bool = false
@@ -137,6 +139,7 @@ struct SettingsViewRedesign: View {
                         SettingsToggleView(toggled: $metalRenderer, title: "Enable the Metal Renderer for the chat view", detail: "Experimental")
                         SettingsToggleView(toggled: $gifPfp, title: "Enable Gif Profile Pictures", detail: "Experimental")
                         SettingsToggleView(toggled: $showHiddenChannels, title: "Show hidden channels", detail: "Please don't use this")
+                        SettingsToggleView(toggled: $compress, title: "Enable Gateway Stream Compression", detail: "Recommended")
                     }
                     .disabled(false)
                 }
