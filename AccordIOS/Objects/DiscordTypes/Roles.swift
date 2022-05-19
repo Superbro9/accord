@@ -25,18 +25,18 @@ final class RoleManager {
     }
     
     final class func arrangeRoleNames(guilds: [Guild]) -> [String: String] {
-          let value: [String: String] = guilds
-              .compactMap(\.roles)
-              .joined()
-              .sorted(by: { $0.position > $1.position })
-              .compactMap { role -> [String: String]? in
-                  return [role.id: role.name]
-              }
-              .reduce(into: [:]) { result, next in
-                  result.merge(next) { _, rhs in rhs }
-              }
-          return value
-      }
+           let value: [String: String] = guilds
+               .compactMap(\.roles)
+               .joined()
+               .sorted(by: { $0.position > $1.position })
+               .compactMap { role -> [String: String]? in
+                   return [role.id: role.name]
+               }
+               .reduce(into: [:]) { result, next in
+                   result.merge(next) { _, rhs in rhs }
+               }
+           return value
+       }
 }
 
 struct Role: Codable {
