@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct SettingsViewRedesign: View {
+struct SettingsView: View {
     
     @AppStorage("pfpShown")
     var profilePictures: Bool = pfpShown
@@ -51,7 +51,7 @@ struct SettingsViewRedesign: View {
     @AppStorage("ShowHiddenChannels")
     var showHiddenChannels: Bool = false
     @AppStorage("MusicPlatform")
-    var selectedPlatform: Platforms = Platforms.appleMusic
+    var selectedPlatform: String = "appleMusic"
     @AppStorage("CompressGateway")
     var compress: Bool = false
     
@@ -64,10 +64,11 @@ struct SettingsViewRedesign: View {
     var body: some View {
         List {
             LazyVStack(alignment: .leading) {
-                Text("Accord Settings")
+                Text("Settings")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.leading, 20)
+#if false
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         VStack(alignment: .leading) {
@@ -78,10 +79,10 @@ struct SettingsViewRedesign: View {
                         }
                         .padding(.bottom, 10)
                         VStack(alignment: .leading) {
-                            Text("Phone number")
+                            Text("MFA enabled")
                                 .font(.title3)
                                 .fontWeight(.bold)
-                            Text("not done yet, placeholder")
+                            Text(user?.mfa_enabled ?? false ? "Yes" : "No")
                         }
                         .padding(.bottom, 10)
                         Spacer()
@@ -129,6 +130,7 @@ struct SettingsViewRedesign: View {
                 .cornerRadius(15)
                 .padding()
                 .disabled(true)
+#endif
                 Section {
                     Group {
                         SettingsToggleView(toggled: $pronounDB, title: "Enable PronounDB integration")
@@ -141,7 +143,27 @@ struct SettingsViewRedesign: View {
                         SettingsToggleView(toggled: $showHiddenChannels, title: "Show hidden channels", detail: "Please don't use this")
                         SettingsToggleView(toggled: $compress, title: "Enable Gateway Stream Compression", detail: "Recommended")
                     }
-                    .disabled(false)
+                    
+                    HStack(alignment: .top) {
+                        Text("Music platform")
+                            .font(.title3)
+                            .fontWeight(.medium)
+                            .padding()
+                        Spacer()
+                        Menu("Select your platform") {
+                            Button("Amazon Music", action: { self.selectedPlatform = Platforms.amazonMusic.rawValue })
+                            Button("Apple Music", action: { self.selectedPlatform = Platforms.appleMusic.rawValue })
+                            Button("Deezer", action: { self.selectedPlatform = Platforms.deezer.rawValue })
+                            Button("iTunes", action: { self.selectedPlatform = Platforms.itunes.rawValue })
+                            Button("Napster", action: { self.selectedPlatform = Platforms.napster.rawValue })
+                            Button("Pandora", action: { self.selectedPlatform = Platforms.pandora.rawValue })
+                            Button("Soundcloud", action: { self.selectedPlatform = Platforms.soundcloud.rawValue })
+                            Button("Spotify", action: { self.selectedPlatform = Platforms.spotify.rawValue })
+                            Button("Tidal", action: { self.selectedPlatform = Platforms.tidal.rawValue })
+                            Button("Youtube Music", action: { self.selectedPlatform = Platforms.youtubeMusic.rawValue })
+                        }
+                        .padding()
+                    }
                 }
                 .toggleStyle(SwitchToggleStyle())
                 .padding(5)
@@ -186,6 +208,15 @@ struct SettingsViewRedesign: View {
                 pastelColors = pastel
                 //discordStockSettings = discordSettings
             }
+            .toolbar {
+                ToolbarItemGroup {
+                    Toggle(isOn: Binding.constant(false)) {
+                        Image(systemName: "bell.badge.fill")
+                    }
+                    .hidden()
+                }
+            }
+            
         }
     }
 }

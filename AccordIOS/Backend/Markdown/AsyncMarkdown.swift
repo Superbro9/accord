@@ -11,46 +11,48 @@ import SwiftUI
 
 final class AsyncMarkdownModel: ObservableObject {
     
-    init (text: String, font: Bool) {
+    init (text: String) {
         self.markdown = Text(text)
-        self.make(text: text, font: font)
+        self.make(text: text)
     }
     
     @Published var markdown: Text
+    @Published var hasEmojiOnly: Bool = false
+         @Published var loaded: Bool = false
     
-    var loaded = false
     
-    
-    private func make(text: String, font: Bool) {
+    private func make(text: String) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
-            Markdown.markAll(text: text, Storage.usernames, font: font)
+            self.hasEmojiOnly = text.hasEmojisOnly
+                         Markdown.markAll(text: text, Storage.usernames, font: self.hasEmojiOnly)
                 .replaceError(with: Text(text))
                 .receive(on: RunLoop.main)
                 .assign(to: &self.$markdown)
+            DispatchQueue.main.async {
+                             self.loaded = true
+                         }
         }
     }
 }
 
 struct AsyncMarkdown: View, Equatable {
     
-    static func == (lhs: AsyncMarkdown, rhs: AsyncMarkdown) -> Bool {
-        return true
-    }
+    static func == (_ lhs: AsyncMarkdown, _ rhs: AsyncMarkdown) -> Bool {
+             lhs.model.markdown == rhs.model.markdown
+         }
     
     @StateObject var model: AsyncMarkdownModel
-    var font: Bool
     
-    init(_ text: String, font: Bool = false) {
-        _model = StateObject(wrappedValue: AsyncMarkdownModel(text: text, font: font))
-        self.font = font
-    }
+    init(_ text: String) {
+             _model = StateObject(wrappedValue: AsyncMarkdownModel(text: text))
+         }
     
     var body: some View {
         model.markdown
-            .font(self.font ? .system(size: 48) : .chatTextFont)
+            .font(self.model.hasEmojiOnly ? .system(size: 48) : .chatTextFont)
             .animation(nil)
             .fixedSize(horizontal: false, vertical: true)
-            .if(model.loaded && self.font, transform: { $0.hidden() })
+            .if(!model.loaded && model.hasEmojiOnly, transform: { $0.hidden() })
     }
 }

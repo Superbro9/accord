@@ -339,7 +339,9 @@
 			children = (
 				89E9FE9A27AFFC2400861F05 /* PlusPlus */,
 				89E9FEAB27AFFC4D00861F05 /* Shapes */,
+				89F5A57927B3174000385E06 /* AppKitLink.swift */,
 				89E9FEAF27AFFC8500861F05 /* ImageProcessing.swift */,
+				89E9FEB627AFFD0600861F05 /* Keychain.swift */,
 				89E9FEAE27AFFC8500861F05 /* UserNotifications.swift */,
 				89E9FEB027AFFC8500861F05 /* Queues.swift */,
 				89BBFC2827E3A26B00B3D122 /* Regex.swift */,
@@ -379,7 +381,7 @@
 				89E9FEE127AFFD3B00861F05 /* Gateway */,
 				89F5A57B27B318F500385E06 /* Markdown */,
 				89E9FEE527AFFDB500861F05 /* Networking */,
-				89E9FEE627AFFDEC00861F05 /* Utils */,
+				89E9FEE627AFFDEC00861F05 /* Media */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -401,22 +403,20 @@
 			children = (
 				89E9FEB727AFFD0600861F05 /* Core.swift */,
 				89E9FEC127AFFD0600861F05 /* MentionProtocol.swift */,
-				89E9FF2527B014DD00861F05 /* Images.swift */,
 				89E9FEB527AFFD0600861F05 /* Request.swift */,
 				89E9FEBF27AFFD0600861F05 /* Songlink.swift */,
-				89E9FEC427AFFD0600861F05 /* RegisterImages.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
 		};
-		89E9FEE627AFFDEC00861F05 /* Utils */ = {
+		89E9FEE627AFFDEC00861F05 /* Media */ = {
 			isa = PBXGroup;
 			children = (
 				89F5A57727B3173800385E06 /* GifManager.swift */,
-				89E9FEB627AFFD0600861F05 /* Keychain.swift */,
-				89F5A57927B3174000385E06 /* AppKitLink.swift */,
+				89E9FF2527B014DD00861F05 /* Images.swift */,
+				89E9FEC427AFFD0600861F05 /* RegisterImages.swift */,
 			);
-			path = Utils;
+			path = Media;
 			sourceTree = "<group>";
 		};
 		89E9FEE727AFFE3200861F05 /* UI */ = {
