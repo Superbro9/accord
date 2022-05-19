@@ -40,8 +40,6 @@ struct MessageCellView: View, Equatable {
 
     @AppStorage("GifProfilePictures")
     var gifPfp: Bool = false
-    
-    private let leftPadding: CGFloat = 42.5
 
     var editingTextField: some View {
         TextField("Edit your message", text: self.$editedText, onEditingChanged: { _ in }) {
@@ -94,22 +92,17 @@ struct MessageCellView: View, Equatable {
                 .cornerRadius(4)
             }
         })
-        .padding(.leading, leftPadding)
+        .padding(.leading, 41)
     }
     
     private var stickerView: some View {
-        ForEach(message.sticker_items!, id: \.id) { sticker in
-                     if sticker.format_type == .lottie {
-                         GifView.init(url: "https://cdn.discordapp.com/stickers/\(sticker.id).json")
-                             .frame(width: 160, height: 160)
-                             .cornerRadius(3)
-                             .padding(.leading, leftPadding)
-                     } else {
-                         Attachment("https://media.discordapp.net/stickers/\(sticker.id).png?size=160")
-                             .equatable()
-                             .frame(width: 160, height: 160)
-                             .cornerRadius(3)
-                             .padding(.leading, leftPadding)
+        ForEach(message.sticker_items ?? [], id: \.id) { sticker in
+            Attachment("https://media.discordapp.net/stickers/\(sticker.id).png?size=160")
+                .equatable()
+                .frame(width: 160, height: 160)
+                .cornerRadius(3)
+                .padding(.leading, 41)
+        }
     }
     
     private var authorText: some View {
@@ -422,7 +415,7 @@ struct MessageCellView: View, Equatable {
                 }, icon: {
                     Image(systemName: "arrow.forward").foregroundColor(.green)
                 })
-                .padding(.leading, leftPadding)
+                .padding(.leading, 41)
             case .recipientRemove:
                 Label(title: {
                     Text(message.author?.username ?? "Unknown User").fontWeight(.semibold)
@@ -430,7 +423,7 @@ struct MessageCellView: View, Equatable {
                 }, icon: {
                     Image(systemName: "arrow.backward").foregroundColor(.red)
                 })
-                .padding(.leading, leftPadding)
+                .padding(.leading, 41)
             case .channelNameChange:
                 Label(title: {
                     Text(message.author?.username ?? "Unknown User").fontWeight(.semibold)
@@ -438,7 +431,7 @@ struct MessageCellView: View, Equatable {
                 }, icon: {
                     Image(systemName: "pencil")
                 })
-                .padding(.leading, leftPadding)
+                .padding(.leading, 41)
             case .guildMemberJoin:
                 Label(title: {
                     (Text("Welcome, ")
@@ -447,7 +440,7 @@ struct MessageCellView: View, Equatable {
                 }, icon: {
                     Image(systemName: "arrow.forward").foregroundColor(.green)
                 })
-                .padding(.leading, leftPadding)
+                .padding(.leading, 41)
             default:
                 HStack(alignment: .top) { [unowned message] in
                     if !(message.isSameAuthor && message.referenced_message == nil) {
@@ -457,25 +450,23 @@ struct MessageCellView: View, Equatable {
                             .popover(isPresented: $popup, content: {
                                 PopoverProfileView(user: message.author)
                             })
-                            .padding(.trailing, 1.5)
                     }
                     VStack(alignment: .leading) {
                         if message.isSameAuthor, message.referenced_message == nil {
                             if !message.content.isEmpty {
                                 if self.editing {
                                     editingTextField
-                                        .padding(.leading, leftPadding)
+                                        .padding(.leading, 41)
                                 } else {
                                     AsyncMarkdown(message.content)
                                         .equatable()
-                                        .padding(.leading, leftPadding)
+                                        .padding(.leading, 41)
                                 }
                             } else {
                                 Spacer().frame(height: 2)
                             }
                         } else {
                             authorText
-                            Spacer().frame(height: 1.3)
                             if !message.content.isEmpty {
                                 if self.editing {
                                     editingTextField
@@ -496,11 +487,11 @@ struct MessageCellView: View, Equatable {
             ForEach(message.embeds ?? [], id: \.id) { embed in
                 EmbedView(embed: embed)
                     .equatable()
-                    .padding(.leading, leftPadding)
+                    .padding(.leading, 41)
             }
             if !message.attachments.isEmpty {
                 AttachmentView(media: message.attachments)
-                    .padding(.leading, leftPadding)
+                    .padding(.leading, 41)
                     .padding(.top, 5)
             }
             if message.reactions?.isEmpty == false {

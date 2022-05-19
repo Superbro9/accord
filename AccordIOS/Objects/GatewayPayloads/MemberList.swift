@@ -32,6 +32,7 @@ final class OPSItems: Codable {
 
          init(_ user: User) {
              self.member = GuildMember(user: user)
+             print(self.member)
          }
     
     var member: GuildMember?
