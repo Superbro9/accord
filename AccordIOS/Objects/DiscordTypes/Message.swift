@@ -22,7 +22,6 @@ final class Message: Decodable, Equatable, Identifiable, Hashable {
     var embeds: [Embed]?
     var mention_everyone: Bool?
     var mentions: [User?]
-    var user_mentioned: Bool?
     var pinned: Bool?
     var timestamp: String
     var processedTimestamp: String?

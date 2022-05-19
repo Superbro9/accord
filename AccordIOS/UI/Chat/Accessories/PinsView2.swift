@@ -15,11 +15,11 @@ struct PinsView: View {
     @Binding var replyingTo: Message?
     @State var pins: [Message] = []
     @State var bag = Set<AnyCancellable>()
-
+    
     @Environment(\.presentationMode) private var presentationMode
-
+    
     var body: some View {
-        List(pins, id: \.id) { message in
+        List($pins, id: \.id) { $message in
             MessageCellView(
                 message: message,
                 nick: nil,
@@ -33,6 +33,7 @@ struct PinsView: View {
                 replyingTo: $replyingTo
             )
         }
+        .scaleEffect(x: -1.0, y: 1.0)
         .onAppear(perform: {
             messageFetchQueue.async {
                 // https://discord.com/api/v9/channels/831692717397770272/pins
@@ -51,6 +52,8 @@ struct PinsView: View {
                 }
                 .store(in: &bag)
             }
+            print(channelID)
+            print(guildID)
         })
     }
 }
