@@ -253,6 +253,7 @@ final class LoginViewViewModel: ObservableObject {
     func login(_ email: String, _ password: String, _: String) throws {
         Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/login"), headers: Headers(
             userAgent: discordUserAgent,
+            contentType: "application/json",
             bodyObject: [
                 "email": email,
                 "password": password,
