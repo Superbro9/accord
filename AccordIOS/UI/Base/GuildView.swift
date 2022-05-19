@@ -34,19 +34,21 @@ struct GuildView: View {
                     }
                 }
                 Text(guild.name ?? "Unknown Guild")
-                    .fontWeight(.medium)
+                    .fontWeight(.semibold)
+                                         .font(.system(size: 13))
             }
             if let banner = guild.banner {
-                Attachment(cdnURL + "/banners/\(guild.id)/\(banner).png")
+                Attachment(cdnURL + "/banners/\(guild.id)/\(banner).png", size: nil)
                     .equatable()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .cornerRadius(10)
             }
             ForEach(guild.channels ?? .init(), id: \.id) { channel in
                 if channel.type == .section {
-                    Text(channel.name ?? "Unknown channel")
+                    Text(channel.name?.uppercased() ?? "")
+                                             .fontWeight(.bold)
                         .foregroundColor(Color.secondary)
-                        .font(.subheadline)
+                        .font(.system(size: 10))
                 } else {
                     NavigationLink(
                         destination: NavigationLazyView(ChannelView(channel, guild.name).equatable()),

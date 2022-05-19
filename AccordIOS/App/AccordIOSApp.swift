@@ -36,7 +36,7 @@ struct AccordApp: App {
                             SearchView()
                         }
                         .onAppear {
-                            concurrentQueue.async {
+                            DispatchQueue.global().async {
                                 NetworkCore.shared = NetworkCore()
                             }
                             DispatchQueue.global(qos: .background).async {
