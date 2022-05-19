@@ -23,33 +23,35 @@ public final class Markdown {
     fileprivate static let blankCharacter = "‎" // Not an empty string
 
     /***
-
+     
      Overengineered processing for Markdown using Combine
+
 
                         +------------------------------+
                         |  Call the Markdown.markAll   |
-        +--->----->-----|  function and subscribe to   |
+        +---------------|  function and subscribe to   |
         |               |  the publisher               |
-        ^               +------------------------------+
+        |               +------------------------------+
         |                               |
      Combine the final                  |                     \*.+\*|~~.+~~|`{1,3}.+`{1,3}|([^*~\s]+)+
      result in AnyPublisher             |                                         |
         |                               |                                         |
-        ^                       Split text by `\n`                                |
+        |                       Split text by `\n`                                |
         |                               |                        +----Split text with custom regex---+
-        ^                               |                        |                                   |
+        |                               |                        |                                   |
         |                               |                        |                                   |
      +-------------------------------+  |        +------------------------------+                    |
-     |  Collect the markLine         |  |--->----| Call the Markdown.markLine   |                    |
+     |  Collect the markLine         |  |--------| Call the Markdown.markLine   |                    |
      |  publishers and combine them  |           | function for each split line |                    |
      |  with `\n`                    |           +------------------------------+                    |
      +-------------------------------+                                                               |
                          |                                                                           |
-                         ^                     +---------------------------------+      +-------------------------------+
+                         |                     +---------------------------------+      +-------------------------------+
                          |                     | Collect the markWord publishers |      |  Call the Markdown.markWord   |
-                         +------<---------<----| and combine them using          |---<--|  function for each component  |
+                         +---------------------| and combine them using          |------|  function for each component  |
                                                | reduce(Text(""), +)             |      +-------------------------------+
                                                +---------------------------------+
+
 
      ***/
     

@@ -481,22 +481,20 @@ struct MessageCellView: View, Equatable {
                 }
 
             }
-            if message.sticker_items?.isEmpty == false {
-                stickerView
-            }
+            
+            stickerView
             ForEach(message.embeds ?? [], id: \.id) { embed in
                 EmbedView(embed: embed)
                     .equatable()
                     .padding(.leading, 41)
             }
-            if !message.attachments.isEmpty {
-                AttachmentView(media: message.attachments)
-                    .padding(.leading, 41)
-                    .padding(.top, 5)
-            }
+            stickerView
+            AttachmentView(media: message.attachments)
+                .padding(.leading, 41)
+                .padding(.top, 5)
             if message.reactions?.isEmpty == false {
-                reactionsGrid
-            }
+                             reactionsGrid
+                         }
         }
         .contextMenu { contextMenuContent }
         .id(message.id)

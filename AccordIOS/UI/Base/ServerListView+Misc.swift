@@ -9,21 +9,26 @@ import Foundation
 
 extension ServerListView {
     static func fastIndexGuild(_ guild: String, array: [Guild]) -> Int? {
-        array[indexOf: guild]
+        let messageDict = array.generateKeyMap()
+        return messageDict[guild]
     }
 
     func fastIndexChannels(_ channel: String, array: [Channel]) -> Int? {
-        array[indexOf: channel]
+        let messageDict = array.generateKeyMap()
+        return messageDict[channel]
     }
 
     func fastIndexEntries(_ entry: String, array: [ReadStateEntry]) -> Int? {
-        array[indexOf: entry]
+        let messageDict = array.generateKeyMap()
+        return messageDict[entry]
     }
 
     func assignPrivateReadStates(_ entries: [ReadStateEntry]) {
              let privateReadStateDict = entries.generateKeyMap()
-        Self.privateChannels.enumerated().forEach {
-                     Self.privateChannels[$0].read_state = entries[$1.id, privateReadStateDict]
+        for (i, channel) in Self.privateChannels.enumerated() {
+            if let index = privateReadStateDict[channel.id] {
+                Self.privateChannels[i].read_state = entries[index]
+            }
         }
         print("Binded to private channels")
         Self.readStates.removeAll()
@@ -82,7 +87,10 @@ extension GatewayD {
                         channel.type == .guild_private_thread else {
                             continue
                 }
-                channels[index].read_state = readState.entries[channel.id, stateDict]
+                guard let at = stateDict[channel.id] else {
+                    continue
+                }
+                channels[index].read_state = readState.entries[at]
             }
             guild.channels = channels
             self.guilds[index] = guild

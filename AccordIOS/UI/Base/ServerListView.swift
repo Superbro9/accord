@@ -138,7 +138,6 @@ struct ServerListView: View {
                         ZStack(alignment: .bottomTrailing) {
                             Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
                                 .scaledToFit()
-                                .clipShape(Circle())
                                 .frame(width: 24, height: 24)
                             statusIndicator
                         }
@@ -225,7 +224,7 @@ struct ServerListView: View {
                                                 empty: true
                                             )
                                             Request.ping(url: URL(string: "\(rootURL)/channels/\(channel.id)"), headers: headers)
-                                            guard let index = ServerListView.privateChannels[indexOf: channel.id] else { return }
+                                            guard let index = ServerListView.privateChannels.generateKeyMap()[channel.id] else { return }
                                                                                  ServerListView.privateChannels.remove(at: index)
                                         }
                                         Button("Mark as read") {

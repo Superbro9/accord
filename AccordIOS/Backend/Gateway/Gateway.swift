@@ -50,16 +50,6 @@ final class Gateway {
         }
     }
     
-    func closeMessageHandler(_ message: String?) {
-             guard let message = message?.lowercased() else {
-                 return
-             }
-
-             if message.contains("Not authenticated") || message.contains("Authentication failed") {
-                 logOut()
-             }
-         }
-    
     private let socketEndpoint: NWEndpoint
     internal let compress: Bool
     
@@ -180,8 +170,7 @@ final class Gateway {
     
     private func listen() {
         guard connection?.state != .cancelled else { return }
-        connection?.receiveMessage { [weak self] data, context, _, error in
-                     guard let self = self else { return }
+        connection?.receiveMessage { data, context, _, error in
             if let error = error {
                 print(error)
             } else {
@@ -194,7 +183,6 @@ final class Gateway {
                 if info.opcode == .close {
                     if let closeMessage = String(data: data, encoding: .utf8) {
                         print("Closed with \(closeMessage)")
-                        self.closeMessageHandler(closeMessage)
                     } else {
                         print("Closed with unknown close code")
                     }
@@ -311,7 +299,12 @@ final class Gateway {
                     case .close:
                         if let closeMessage = String(data: data, encoding: .utf8) {
                             print("Closed with #\(closeMessage)#")
-                            self?.closeMessageHandler(closeMessage)
+                            switch closeMessage {
+                            case "Authentication failed.":
+                                logOut()
+                                UIApplication.shared.restart()
+                            default: break
+                            }
                         } else {
                             print("Closed with unknown close code")
                         }
