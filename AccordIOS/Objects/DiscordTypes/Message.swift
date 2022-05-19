@@ -83,6 +83,7 @@ final class Reply: Codable, Equatable, Identifiable, Hashable {
     var mention_everyone: Bool?
     var mentions: [User?]
     var nonce: Int?
+    var user_mentioned: Bool?
     var pinned: Bool?
     var timestamp: Date
     var tts: Bool

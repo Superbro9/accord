@@ -353,6 +353,7 @@
 			isa = PBXGroup;
 			children = (
 				89E9FEA227AFFC3500861F05 /* Combine++.swift */,
+				89A54FD927D93AAA003142A0 /* Collection++.swift */,
 				89E9FE9B27AFFC3500861F05 /* Extensions.swift */,
 				89E9FE9C27AFFC3500861F05 /* Keypath++.swift */,
 				89E9FE9E27AFFC3500861F05 /* Networking++.swift */,
@@ -360,7 +361,6 @@
 				89E9FE9F27AFFC3500861F05 /* Operators++.swift */,
 				89E9FEA027AFFC3500861F05 /* Print++.swift */,
 				89E9FEA127AFFC3500861F05 /* SwiftUI++.swift */,
-				89A54FD927D93AAA003142A0 /* Collection++.swift */,
 				89BBFC2627E3A24700B3D122 /* String++.swift */,
 			);
 			path = PlusPlus;
