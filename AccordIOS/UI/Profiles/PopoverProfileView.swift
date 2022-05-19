@@ -10,6 +10,42 @@ import SwiftUI
 struct PopoverProfileView: View {
     var user: User?
     @State var hovered: Int?
+    
+    struct PopoverProfileViewButton: View {
+        
+        var label: String
+        var symbolName: String
+        @State var hovered: Int? = nil
+        var action: (() -> Void)
+        
+        var body: some View {
+            Button(action: action, label: {
+                VStack {
+                    Image(systemName: symbolName)
+                        .imageScale(.medium)
+                    Text(label)
+                        .font(.subheadline)
+                }
+                .padding(4)
+                .frame(width: 60, height: 45)
+                .background(hovered == 1 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
+            })
+            .buttonStyle(BorderlessButtonStyle())
+            .onHover(perform: { hover in
+                switch hover {
+                case true:
+                    withAnimation {
+                        hovered = 1
+                    }
+                case false:
+                    withAnimation {
+                        hovered = nil
+                    }
+                }
+            })
+        }
+    }
+    
     var body: some View {
         ZStack(alignment: .top) {
             VStack {
@@ -18,7 +54,7 @@ struct PopoverProfileView: View {
                         .equatable()
                         .frame(height: 100)
                 } else {
-                    Color(UIColor.black).frame(height: 100).opacity(0.75)
+                    Color(UIColor.systemBackground).frame(height: 100).opacity(0.75)
                 }
                 Spacer()
             }
@@ -40,86 +76,59 @@ struct PopoverProfileView: View {
                     Text(user?.username ?? "")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(.white)
                     Text("\(user?.username ?? "")#\(user?.discriminator ?? "")")
                         .font(.subheadline)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.secondary)
                     HStack(alignment: .bottom) {
-                        Button(action: {}, label: {
-                            VStack {
-                                Image(systemName: "bubble.right.fill")
-                                    .imageScale(.medium)
-                                Text("Message")
-                                    .font(.subheadline)
-                            }
-                            .padding(4)
-                            .frame(width: 60, height: 45)
-                            .background(hovered == 1 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
-                        })
-                        .buttonStyle(BorderlessButtonStyle())
-                        .onTapGesture {
-                            withAnimation {
-                                hovered = 4
-                            }
-                        }
-                        Button(action: {}, label: {
-                            VStack {
-                                Image(systemName: "phone.fill")
-                                    .imageScale(.large)
-                                Text("Call")
-                                    .font(.subheadline)
-                            }
-                            .padding(4)
-                            .frame(width: 60, height: 45)
-                            .background(hovered == 2 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
-                        })
-                        .buttonStyle(BorderlessButtonStyle())
-                        .onTapGesture {
-                            withAnimation {
-                                hovered = 4
+                        PopoverProfileViewButton(
+                            label: "Message",
+                            symbolName: "bubble.right.fill"
+                        ) {
+                            print("lol creating new channel now")
+                            Request.fetch(Channel.self, url: URL(string: "https://discord.com/api/v9/users/@me/channels"), headers: Headers(
+                                userAgent: discordUserAgent,
+                                token: AccordCoreVars.token,
+                                bodyObject: ["recipients":[user?.id ?? ""]],
+                                type: .POST,
+                                discordHeaders: true,
+                                referer: "https://discord.com/channels/@me",
+                                json: true
+                            )) {
+                                switch $0 {
+                                case .success(let channel):
+                                    print(channel)
+                                    ServerListView.privateChannels.append(channel)
+                                    MentionSender.shared.select(channel: channel)
+                                case .failure(let error):
+                                    AccordApp.error(error, additionalDescription: "Failed to open dm")
+                                }
                             }
                         }
-                        Button(action: {}, label: {
-                            VStack {
-                                Image(systemName: "camera.circle.fill")
-                                    .imageScale(.large)
-                                Text("Video call")
-                                    .font(.subheadline)
-                            }
-                            .padding(4)
-                            .frame(width: 60, height: 45)
-                            .background(hovered == 3 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
-                        })
-                        .buttonStyle(BorderlessButtonStyle())
-                        .onTapGesture {
-                            withAnimation {
-                                hovered = 4
-                            }
+                        PopoverProfileViewButton(
+                            label: "Call",
+                            symbolName: "phone.fill"
+                        ) {
+                            // todo: voice chat
                         }
-                        Button(action: {}, label: {
-                            VStack {
-                                Image(systemName: "person.crop.circle.badge.plus")
-                                    .imageScale(.large)
-                                Text("Add Friend")
-                                    .font(.subheadline)
-                            }
-                            .padding(4)
-                            .frame(width: 60, height: 45)
-                            .background(hovered == 4 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
-                        })
-                        .buttonStyle(BorderlessButtonStyle())
-                        .onTapGesture {
-                            withAnimation {
-                                hovered = 4
-                            }
+                        PopoverProfileViewButton(
+                            label: "Video call",
+                            symbolName: "camera.circle.fill"
+                        ) {
+                            // todo: video call
+                        }
+                        PopoverProfileViewButton(
+                            label: "Add Friend",
+                            symbolName: "person.crop.circle.badge.plus"
+                        ) {
+                            // todo: check add friend
                         }
                     }
                     .transition(AnyTransition.opacity)
                 }
                 .padding()
-                .background(Color(UIColor.black))
+                .background(Color(UIColor.systemBackground))
             }
         }
-        .frame(width: 290, height: 500)
+        .frame(width: 290, height: 250)
     }
 }
