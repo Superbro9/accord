@@ -22,7 +22,12 @@ struct EmbedView: View, Equatable {
             if let color = embed?.color {
                 RoundedRectangle(cornerRadius: 1)
                                     .fill(Color(int: color))
-                                    .frame(width: 3)
+                                    .frame(width: 4)
+                                                         .padding(.trailing, 5)
+                                                 } else {
+                                                     RoundedRectangle(cornerRadius: 1)
+                                                         .fill(Color.black)
+                                                         .frame(width: 4)
                                     .padding(.trailing, 5)
                     .frame(width: 3)
                     .padding(.trailing, 5)
@@ -30,15 +35,10 @@ struct EmbedView: View, Equatable {
             VStack(alignment: .leading) {
                 if let author = embed?.author {
                     HStack {
-                        if let iconURL = author.proxy_icon_url {
+                        if let iconURL = author.proxy_icon_url ?? author.icon_url {
                             Attachment(iconURL, size: CGSize(width: 24, height: 24))
                                 .equatable()
-                                .frame(width: 20, height: 20)
-                                .clipShape(Circle())
-                        } else if let iconURL = author.icon_url {
-                            Attachment(iconURL, size: CGSize(width: 24, height: 24))
-                                .equatable()
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
                                 .clipShape(Circle())
                         }
                         if let urlString = author.url, let url = URL(string: urlString) {
@@ -46,18 +46,16 @@ struct EmbedView: View, Equatable {
                         } else {
                             Text(author.name)
                                 .fontWeight(.semibold)
-                                                                 .font(.title3)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                 }
                 if let title = embed?.title {
                     Text(title)
                         .fontWeight(.semibold)
-                        .font(.title3)
                 }
                 if let description = embed?.description {
                     AsyncMarkdown(description)
-                                             .lineLimit(2)
                 }
                 if let image = embed?.image {
                     Attachment(image.url, size: CGSize(width: image.width ?? 300, height: image.width ?? 300))
@@ -82,13 +80,15 @@ struct EmbedView: View, Equatable {
                                     .font(.subheadline)
                                 AsyncMarkdown(field.value)
                                     .equatable()
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
                         }
                     }
                 }
             }
-            
+            .padding(.vertical, 5)
+                         Spacer()
         }
-        .padding(.top, 5)
-    }
+        .frame(maxWidth: 400)
+                 .cornerRadius(5)    }
 }

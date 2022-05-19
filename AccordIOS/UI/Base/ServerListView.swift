@@ -174,10 +174,6 @@ struct ServerListView: View {
                             .padding(.horizontal)
                         FolderListView(selectedServer: self.$selectedServer, selection: self.$selection, selectedGuild: self.$selectedGuild, updater: self.viewUpdater)
                             .padding(.trailing, 3.5)
-                        Color.gray
-                            .frame(height: 1)
-                            .opacity(0.75)
-                            .padding(.horizontal)
                     }
                     .padding(.vertical)
                 }
@@ -260,22 +256,6 @@ struct ServerListView: View {
                     let val = UserDefaults.standard.integer(forKey: "AccordChannelIn\(Array(Self.folders.compactMap { $0.guilds }.joined())[0].id)")
                     DispatchQueue.main.async {
                         self.selection = (val != 0 ? val : nil)
-                    }
-                }
-                Request.fetch([Channel].self, url: URL(string: "\(rootURL)/users/@me/channels"), headers: standardHeaders) { completion in
-                    switch completion {
-                    case .success(let channels):
-                        let channels = channels.sorted { $0.last_message_id ?? "" > $1.last_message_id ?? "" }
-                        DispatchQueue.main.async {
-                            Self.privateChannels = channels
-                            DispatchQueue.global().async {
-                                assignPrivateReadStates()
-                                self.viewUpdater.updateView()
-                            }
-                        }
-                        Notifications.privateChannels = Self.privateChannels.map(\.id)
-                    case .failure(let error):
-                        print(error)
                     }
                 }
             }
