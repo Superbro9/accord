@@ -86,6 +86,7 @@ struct ServerListView: View {
     @State var bag = Set<AnyCancellable>()
     @StateObject var viewUpdater = UpdateView()
     @State var iconHovered: Bool = false
+    @State var isShowingJoinServerSheet: Bool = false
     
     var dmButton: some View {
         Button(action: {
@@ -113,6 +114,17 @@ struct ServerListView: View {
                     .onHover(perform: { h in withAnimation(Animation.linear(duration: 0.1)) { self.iconHovered = h } })
         }
     }
+    
+    var joinServerButton: some View {
+             Button(action: {
+                 isShowingJoinServerSheet.toggle()
+             }, label: {
+                 Image(systemName: "plus.circle")
+                     .imageScale(.medium)
+                     .frame(width: 45, height: 45)
+                     .cornerRadius(23.5)
+             })
+         }
     
     var onlineButton: some View {
         Button("Offline") {
@@ -197,6 +209,13 @@ struct ServerListView: View {
                             .padding(.horizontal)
                         FolderListView(selectedServer: self.$selectedServer, selection: self.$selection, selectedGuild: self.$selectedGuild, updater: self.viewUpdater)
                             .padding(.trailing, 3.5)
+                        Divider()
+                        joinServerButton
+                            .sheet(isPresented: $isShowingJoinServerSheet) {
+                                JoinServerSheetView(isPresented: $isShowingJoinServerSheet, updater: viewUpdater)
+                                    .frame(width: 300, height: 120)
+                                    .padding()
+                            }
                     }
                     .padding(.vertical)
                 }
