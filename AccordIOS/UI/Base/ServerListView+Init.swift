@@ -25,8 +25,9 @@ extension ServerListView {
                      var c = c
                      if c.recipients?.isEmpty != false {
                          c.recipients = c.recipient_ids?
-                             .compactMap { keys[$0] }
-                             .map { readyPacket.users[$0] }
+                             .compactMap { readyPacket.users[$0, keys] }
+//                             .compactMap { keys[$0] }
+//                             .map { readyPacket.users[$0] }
                      }
                      return c
                  }
@@ -99,8 +100,9 @@ extension ServerListView {
         let guildKeyMap = readyPacket.guilds.generateKeyMap()
         let guildTemp = guildOrder
             .lazy
-            .compactMap { guildKeyMap[$0] }
-            .map { readyPacket.guilds[$0] }
+            .compactMap { readyPacket.guilds[$0, guildKeyMap] }
+//            .compactMap { guildKeyMap[$0] }
+//            .map { readyPacket.guilds[$0] }
         
         // format folders
         let guildDict = guildTemp.generateKeyMap()

@@ -84,6 +84,11 @@ struct ChannelView: View, Equatable {
                 )
                 .equatable()
                 .id(message.identifier)
+#warning("Whats commented out doesnt compile, to use replace it with whats in line 92 to 102")
+                //                .listRowInsets(.init(top: 0, leading: 0, bottom: ((message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 15) - (message.user_mentioned == true ? 3 : 0), trailing: 0))
+                //                .padding(.horizontal, 5)
+                //                .padding(.vertical, message.user_mentioned == true ? 3 : 0)
+                //                .background(message.user_mentioned == true ? Color.yellow.opacity(0.1).cornerRadius(7) : nil)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: (message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 10, trailing: 0))
                 .if(message.mentions.compactMap { $0?.id }.contains(user_id), transform: { view in
                     view
@@ -101,8 +106,8 @@ struct ChannelView: View, Equatable {
                         messageFetchQueue.async {
                             viewModel.loadMoreMessages()
                         }
-                        }
                     }
+                }
             }
         }
         .rotationEffect(.radians(.pi))
@@ -113,7 +118,7 @@ struct ChannelView: View, Equatable {
         HStack {
             ZStack(alignment: .bottom) {
                 List {
-                    Spacer().frame(height: typing.isEmpty && replyingTo == nil ? 65 : 75)
+                    Spacer().frame(height: typing.isEmpty && replyingTo == nil ? 75 : 90)
                     if metalRenderer {
                         messagesView.drawingGroup()
                             .listRowSeparator(.hidden)

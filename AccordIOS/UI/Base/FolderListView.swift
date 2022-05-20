@@ -55,25 +55,41 @@ struct ServerIconCell: View {
     @Binding var selectedServer: Int?
     @Binding var selection: Int?
     @Binding var selectedGuild: Guild?
+    @State var hovering: Bool = false
     @StateObject var updater: ServerListView.UpdateView
     
     func updateSelection(old: Int?, new: Int?) {
+#warning("This might be the issue")
         DispatchQueue.global().async {
             let map = Array(ServerListView.folders.compactMap { $0.guilds }.joined())
             guard let selectedServer = old,
                   let new = new,
-                  let id = map[safe: selectedServer]?.id,
-                  let newID = map[safe: new]?.id else { return }
-            if let selection = selection {
-                             UserDefaults.standard.set(selection, forKey: "AccordChannelIn\(id)")
-                             DispatchQueue.main.async {
-                                 print("deselecting")
-                                 self.selection = nil
-                             }
-                         }
+                  let newID = map[safe: new]?.id else {
+                //                  let id = map[safe: selectedServer]?.id,
+                //                  let newID = map[safe: new]?.id else { return }
+                //            if let selection = selection {
+                //                             UserDefaults.standard.set(selection, forKey: "AccordChannelIn\(id)")
+                DispatchQueue.main.async {
+                    self.selectedServer = new
+                    self.selectedGuild = guild
+                }
+                return
+            }
+            if let selection = selection, let id = map[safe: selectedServer]?.id {
+                UserDefaults.standard.set(selection, forKey: "AccordChannelIn\(id)")
+            }
             DispatchQueue.main.async {
-                if let value = UserDefaults.standard.object(forKey: "AccordChannelIn\(newID)") as? Int {
-                    self.selection = value
+                print("deselecting")
+                self.selection = nil
+                withAnimation(old == 201 ? nil : Animation.linear(duration: 0.1)) {
+                    if let value = UserDefaults.standard.object(forKey: "AccordChannelIn\(newID)") as? Int {
+                        self.selection = value
+                        self.selectedGuild = guild
+                        self.selectedServer = new
+                    } else {
+                        self.selectedGuild = guild
+                        self.selectedServer = new
+                    }
                 }
             }
         }
@@ -84,19 +100,18 @@ struct ServerIconCell: View {
             Button(action: { [weak wss] in
                 wss?.cachedMemberRequest.removeAll()
                 self.updateSelection(old: selectedServer, new: guild.index)
-                selectedServer = guild.index
-                self.selectedGuild = guild
             }) {
                 HStack {
                     RoundedRectangle(cornerRadius: 5)
                         .fill()
                         .foregroundColor(Color.primary)
-                        .frame(width: 5, height: selectedServer == guild.index ? 30 : 5)
-                                                 .animation(Animation.linear(duration: 0.1))
-                                                 .opacity(unreadMessages(guild: guild) || selectedServer == guild.index ? 1 : 0)
+                        .frame(width: 5, height: selectedServer == guild.index || hovering ? 30 : 5)
+                        .animation(Animation.linear(duration: 0.1))
+                        .opacity(unreadMessages(guild: guild) || selectedServer == guild.index ? 1 : 0)
                     GuildListPreview(guild: guild, selectedServer: $selectedServer.animation(), updater: updater)
                 }
             }
+            .onHover(perform: { h in withAnimation(Animation.linear(duration: 0.1)) {self.hovering = h} })
             .buttonStyle(BorderlessButtonStyle())
             if pingCount(guild: guild) != 0 {
                 ZStack {

@@ -110,16 +110,14 @@ extension Gateway {
                 SlashCommandStorage.commands[guildID] = commands.d.application_commands
                     .map { command -> SlashCommandStorage.Command in
                         print(command)
-                        if let index = userKeyMap[command.application_id],
-                           let avatar = commands.d.applications[index].icon
-                        {
+                        if let avatar = commands.d.applications[command.application_id, userKeyMap]?.icon {
                             command.avatar = avatar
                             return command
                         }
                         return command
                     }
             }
-            default: break
-            }
+        default: break
         }
     }
+}

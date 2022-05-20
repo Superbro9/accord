@@ -31,19 +31,19 @@ enum Emotes {
 }
 
 struct GuildHoverAnimation: ViewModifier {
-     var color: Color = Color.accentColor.opacity(0.5)
-     var hasIcon: Bool
-     var frame: CGFloat = 45
+    var color: Color = Color.accentColor.opacity(0.5)
+    var hasIcon: Bool
+    var frame: CGFloat = 45
     var selected: Bool
-     @State var hovered: Bool = false
-     func body(content: Content) -> some View {
-         content
-             .onHover(perform: { res in withAnimation(Animation.linear(duration: 0.1)) { hovered = res } })
-             .frame(width: frame, height: frame)
-             .background(!hasIcon && hovered ? self.color : Color.clear)
-             .cornerRadius(hovered || selected ? 13.5 : 23.5)
-     }
- }
+    @State var hovered: Bool = false
+    func body(content: Content) -> some View {
+        content
+            .onHover(perform: { res in withAnimation(Animation.linear(duration: 0.1)) { hovered = res } })
+            .frame(width: frame, height: frame)
+            .background(!hasIcon && hovered ? self.color : Color.clear)
+            .cornerRadius(hovered || selected ? 13.5 : 23.5)
+    }
+}
 
 func pingCount(guild: Guild) -> Int {
     let intArray = guild.channels!.compactMap { $0.read_state?.mention_count }
@@ -90,19 +90,19 @@ struct ServerListView: View {
         Button(action: {
             selection = nil
             DispatchQueue.global().async {
-                             wss?.cachedMemberRequest.removeAll()
-                             ServerListView.privateChannels = ServerListView.privateChannels.sorted(by: { $0.last_message_id ?? "" > $1.last_message_id ?? "" })
-                         }
-                         selectedServer = 201
+                wss?.cachedMemberRequest.removeAll()
+                ServerListView.privateChannels = ServerListView.privateChannels.sorted(by: { $0.last_message_id ?? "" > $1.last_message_id ?? "" })
+            }
+            selectedServer = 201
         }) {
             Image(systemName: "bubble.right.fill")
-                             .imageScale(.medium)
+                .imageScale(.medium)
                 .frame(width: 45, height: 45)
                 .foregroundColor(.white)
                 .background(selectedServer == 201 ? Color.accentColor.opacity(0.5) : Color(UIColor.systemBackground))
                 .cornerRadius(iconHovered || selectedServer == 201 ? 13.5 : 23.5)
-                                 .if(selectedServer == 201, transform: { $0.foregroundColor(Color.white) })
-                                    .onHover(perform: { h in withAnimation(Animation.linear(duration: 0.1)) { self.iconHovered = h } })
+                .if(selectedServer == 201, transform: { $0.foregroundColor(Color.white) })
+                    .onHover(perform: { h in withAnimation(Animation.linear(duration: 0.1)) { self.iconHovered = h } })
         }
     }
     
@@ -115,42 +115,43 @@ struct ServerListView: View {
     @ViewBuilder
     var statusIndicator: some View {
         Circle()
-                     .foregroundColor({ () -> Color in
-                         switch self.status {
-                         case "online":
-                             return Color.green
-                         case "idle":
-                             return Color.orange
-                         case "dnd":
-                             return Color.red
-                         case "offline":
-                             return Color.gray
-                         default:
-                             return Color.clear
-                         }
-                     }())
-                     .frame(width: 7, height: 7)
+            .foregroundColor({ () -> Color in
+                switch self.status {
+                case "online":
+                    return Color.green
+                case "idle":
+                    return Color.orange
+                case "dnd":
+                    return Color.red
+                case "offline":
+                    return Color.gray
+                default:
+                    return Color.clear
+                }
+            }())
+            .frame(width: 7, height: 7)
     }
     
     var settingsLink: some View {
         NavigationLink(destination: SettingsView(), tag: 0, selection: self.$selection) {
-                    HStack {
-                        ZStack(alignment: .bottomTrailing) {
-                            Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24)
-                            statusIndicator
+            HStack {
+                ZStack(alignment: .bottomTrailing) {
+                    Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
+                        .scaledToFit()
+                        .clipShape(Circle())
+                        .frame(width: 24, height: 24)
+                    statusIndicator
+                }
+                VStack(alignment: .leading) {
+                    if let user = AccordCoreVars.user {
+                        Text(user.username) + Text("#" + user.discriminator).foregroundColor(.secondary)
+                        if let statusText = statusText {
+                            Text(statusText)
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
                         }
-                        VStack(alignment: .leading) {
-                            if let user = AccordCoreVars.user {
-                                Text(user.username) + Text("#" + user.discriminator).foregroundColor(.secondary)
-                                if let statusText = statusText {
-                                    Text(statusText)
-                                        .foregroundColor(.secondary)
-                                        .font(.subheadline)
-                                }
-                            }
-                        }
+                    }
+                }
             }
         }
         .buttonStyle(BorderlessButtonStyle())
@@ -181,7 +182,7 @@ struct ServerListView: View {
                                 }
                             }
                         }
-                                        .buttonStyle(BorderlessButtonStyle())
+                        .buttonStyle(BorderlessButtonStyle())
                         Color.gray
                             .frame(height: 1)
                             .opacity(0.75)
@@ -224,13 +225,15 @@ struct ServerListView: View {
                                                 empty: true
                                             )
                                             Request.ping(url: URL(string: "\(rootURL)/channels/\(channel.id)"), headers: headers)
-                                            guard let index = ServerListView.privateChannels.generateKeyMap()[channel.id] else { return }
-                                                                                 ServerListView.privateChannels.remove(at: index)
+#warning("this might be the issue")
+                                            guard let index = ServerListView.privateChannels[indexOf: channel.id] else { return }
+                                            //guard let index = ServerListView.privateChannels.generateKeyMap()[channel.id] else { return }
+                                            ServerListView.privateChannels.remove(at: index)
                                         }
                                         Button("Mark as read") {
                                             channel.read_state?.mention_count = 0
                                             channel.read_state?.last_message_id = channel.last_message_id
-                                        
+                                            
                                         }
                                     }
                             }
@@ -265,7 +268,7 @@ struct ServerListView: View {
         })
         .onAppear {
             self.selectedGuild = ServerListView.folders.first?.guilds.first
-                         DispatchQueue.global().async {
+            DispatchQueue.global().async {
                 if !Self.folders.isEmpty {
                     let val = UserDefaults.standard.integer(forKey: "AccordChannelIn\(Array(Self.folders.compactMap { $0.guilds }.joined())[0].id)")
                     DispatchQueue.main.async {
