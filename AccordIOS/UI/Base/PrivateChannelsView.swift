@@ -29,8 +29,8 @@ struct PrivateChannelsView: View {
             }
             .contextMenu {
                 Button("Copy Channel ID") {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(channel.id, forType: .string)
+                    UIPasteboard.general.string = ""
+                    UIPasteboard.general.string = channel.id
                 }
                 Button("Close DM") {
                     let headers = Headers(

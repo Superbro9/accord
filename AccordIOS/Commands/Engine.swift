@@ -86,7 +86,7 @@ final class SlashCommands {
                    (200..<300).contains(response.statusCode) {
                     print("Interaction worked!")
                 } else {
-                    AccordApp.error("This interaction failed" as! Error, additionalDescription: "Could not send interaction")
+                    AccordApp.error("This interaction failed" as Error, additionalDescription: "Could not send interaction")
                 }
             case .failure(let error):
                 print(error)
