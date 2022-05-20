@@ -35,7 +35,7 @@ struct GuildView: View {
                 }
                 Text(guild.name ?? "Unknown Guild")
                     .fontWeight(.semibold)
-                                         .font(.system(size: 13))
+                    .font(.system(size: 13))
             }
             if let banner = guild.banner {
                 Attachment(cdnURL + "/banners/\(guild.id)/\(banner).png", size: nil)
@@ -46,9 +46,14 @@ struct GuildView: View {
             ForEach(guild.channels ?? .init(), id: \.id) { channel in
                 if channel.type == .section {
                     Text(channel.name?.uppercased() ?? "")
-                                             .fontWeight(.bold)
+                        .fontWeight(.bold)
                         .foregroundColor(Color.secondary)
                         .font(.system(size: 10))
+                        .onChange(of: self.selection, perform: { [selection] new in
+                            if let selection = selection, new == Int(channel.id) {
+                                self.selection = selection
+                            }
+                        })
                 } else {
                     NavigationLink(
                         destination: NavigationLazyView(ChannelView(channel, guild.name).equatable()),
@@ -102,15 +107,15 @@ struct GuildListPreview: View {
                 .equatable()
                 .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
         } else {
-             if let name = guild.name {
-                 Text(name.components(separatedBy: " ").compactMap({ $0.first }).map(String.init).joined())
-                     .equatable()
-                     .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
-             } else {
-                 Image(systemName: "questionmark")
-                     .equatable()
-                     .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
-             }
-         }
-     }
- }
+            if let name = guild.name {
+                Text(name.components(separatedBy: " ").compactMap({ $0.first }).map(String.init).joined())
+                    .equatable()
+                    .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
+            } else {
+                Image(systemName: "questionmark")
+                    .equatable()
+                    .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
+            }
+        }
+    }
+}

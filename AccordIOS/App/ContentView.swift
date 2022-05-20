@@ -93,9 +93,6 @@ struct ContentView: View {
                         }
                     }
                 }
-                .onDisappear {
-                    print("uh bye")
-                }
         } else {
             serverListView
         }
