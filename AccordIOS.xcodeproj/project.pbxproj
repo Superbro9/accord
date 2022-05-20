@@ -87,6 +87,8 @@
 		89E9FF2327B0064A00861F05 /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2027B0064A00861F05 /* MessageCellView.swift */; };
 		89E9FF2427B0064A00861F05 /* ChannelViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */; };
 		89E9FF2627B014DD00861F05 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2527B014DD00861F05 /* Images.swift */; };
+		89EF263D2837EF4E007A3BEC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF263C2837EF4E007A3BEC /* Reachability.swift */; };
+		89EF263F2837FBF9007A3BEC /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF263E2837FBF9007A3BEC /* ProfileEditingView.swift */; };
 		89EFBB192835583100141049 /* ZStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB182835583100141049 /* ZStream.swift */; };
 		89EFBB1B2835822D00141049 /* ServerListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB1A2835822D00141049 /* ServerListViewCell.swift */; };
 		89F5A57827B3173800385E06 /* GifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F5A57727B3173800385E06 /* GifManager.swift */; };
@@ -178,6 +180,8 @@
 		89E9FF2027B0064A00861F05 /* MessageCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		89E9FF2127B0064A00861F05 /* ChannelViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewViewModel.swift; sourceTree = "<group>"; };
 		89E9FF2527B014DD00861F05 /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
+		89EF263C2837EF4E007A3BEC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		89EF263E2837FBF9007A3BEC /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
 		89EFBB182835583100141049 /* ZStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZStream.swift; sourceTree = "<group>"; };
 		89EFBB1A2835822D00141049 /* ServerListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerListViewCell.swift; sourceTree = "<group>"; };
 		89F5A57727B3173800385E06 /* GifManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifManager.swift; sourceTree = "<group>"; };
@@ -377,6 +381,7 @@
 		89E9FEB427AFFCE000861F05 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				89EF263B2837EF4E007A3BEC /* Reachability */,
 				89BBFC2327E3A1A700B3D122 /* Voice */,
 				89E9FEE127AFFD3B00861F05 /* Gateway */,
 				89F5A57B27B318F500385E06 /* Markdown */,
@@ -444,6 +449,7 @@
 			children = (
 				8934607D27B1ACCC00BD681F /* SettingsView.swift */,
 				89E9FEF027AFFE8C00861F05 /* PopoverProfileView.swift */,
+				89EF263E2837FBF9007A3BEC /* ProfileEditingView.swift */,
 			);
 			path = Profiles;
 			sourceTree = "<group>";
@@ -504,6 +510,14 @@
 				89E9FF2027B0064A00861F05 /* MessageCellView.swift */,
 			);
 			path = ChannelView;
+			sourceTree = "<group>";
+		};
+		89EF263B2837EF4E007A3BEC /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				89EF263C2837EF4E007A3BEC /* Reachability.swift */,
+			);
+			path = Reachability;
 			sourceTree = "<group>";
 		};
 		89F5A57B27B318F500385E06 /* Markdown */ = {
@@ -608,6 +622,7 @@
 				89E9FEB327AFFC8500861F05 /* Queues.swift in Sources */,
 				89E9FEEA27AFFE6800861F05 /* SearchView.swift in Sources */,
 				89E9FECB27AFFD0700861F05 /* Request.swift in Sources */,
+				89EF263D2837EF4E007A3BEC /* Reachability.swift in Sources */,
 				8934607E27B1ACCC00BD681F /* SettingsView.swift in Sources */,
 				89E9FEDA27AFFD0700861F05 /* RegisterImages.swift in Sources */,
 				89E9FE9227AFFBD100861F05 /* Models.swift in Sources */,
@@ -669,6 +684,7 @@
 				89E9FE9427AFFBD100861F05 /* Storage.swift in Sources */,
 				89E9FECD27AFFD0700861F05 /* Core.swift in Sources */,
 				89E9FECC27AFFD0700861F05 /* Keychain.swift in Sources */,
+				89EF263F2837FBF9007A3BEC /* ProfileEditingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

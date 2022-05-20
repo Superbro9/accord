@@ -10,50 +10,10 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @AppStorage("pfpShown")
-    var profilePictures: Bool = pfpShown
-    @AppStorage("sortByMostRecent")
-    var recent: Bool = sortByMostRecent
-    @AppStorage("darkMode")
-    var dark: Bool = darkMode
-    @AppStorage("proxyIP")
-    var proxyIP: String = ""
-    @AppStorage("proxyPort")
-    var proxyPort: String = ""
-    @AppStorage("proxyEnabled")
-    var proxyEnable: Bool = proxyEnabled
-    @AppStorage("pastelColors")
-    var pastel: Bool = pastelColors
-    @AppStorage("discordStockSettings")
-    var discordSettings: Bool = pastelColors
-    @AppStorage("enableSuffixRemover")
-    var suffixes: Bool = false
-    @AppStorage("pronounDB")
-    var pronounDB: Bool = false
-    @AppStorage("AppleMusicRPC")
-    var appleMusicRPC: Bool = false
-    @AppStorage("XcodeRPC")
-    var xcodeRPC: Bool = false
-    @AppStorage("DiscordDesktopRPCEnabled")
-    var ddRPC: Bool = false
-    @AppStorage("VSCodeRPCEnabled")
-    var vsRPC: Bool = false
-    @AppStorage("MentionsMenuBarItemEnabled")
-    var menuBarItem: Bool = false
-    @AppStorage("MetalRenderer")
-    var metalRenderer: Bool = false
-    @AppStorage("Nitroless")
-    var nitrolessEnabled: Bool = false
-    @AppStorage("SilentTyping")
-    var silentTyping: Bool = false
-    @AppStorage("GifProfilePictures")
-    var gifPfp: Bool = false
-    @AppStorage("ShowHiddenChannels")
-    var showHiddenChannels: Bool = false
+    
     @AppStorage("MusicPlatform")
     var selectedPlatform: String = "appleMusic"
-    @AppStorage("CompressGateway")
-    var compress: Bool = false
+    
     
     @State var user: User? = AccordCoreVars.user
     @State var loading: Bool = false
@@ -64,85 +24,26 @@ struct SettingsView: View {
     var body: some View {
         List {
             LazyVStack(alignment: .leading) {
-                Text("Settings")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.leading, 20)
-#if false
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading) {
-                        VStack(alignment: .leading) {
-                            Text("Email")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            Text(user?.email ?? "No email found")
-                        }
-                        .padding(.bottom, 10)
-                        VStack(alignment: .leading) {
-                            Text("MFA enabled")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            Text(user?.mfa_enabled ?? false ? "Yes" : "No")
-                        }
-                        .padding(.bottom, 10)
-                        Spacer()
-                    }
-                    .padding()
-                    Divider()
-                    VStack(alignment: .leading) {
-                        Text("Bio")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                        TextEditor(text: $bioText)
-                            .frame(height: 75)
-                        Text("Username")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                        TextField("username", text: $username)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        Spacer()
-                    }
-                    .frame(idealWidth: 250, idealHeight: 200)
-                    .padding()
-                    Divider()
-                    VStack(alignment: .leading) {
-                        Attachment(cdnURL + "/avatars/\(user?.id ?? "")/\(user?.avatar ?? "").png")
-                            .equatable()
-                            .clipShape(Circle())
-                            .frame(width: 45, height: 45)
-                            .shadow(radius: 5)
-                        Text(user?.username ?? "Unknown User")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("\(user?.username ?? "Unknown User")#\(user?.discriminator ?? "0000")")
-                            .font(.subheadline)
-                            .foregroundColor(Color.secondary)
-                        Divider()
-                        Text(bioText)
-                        Spacer()
-                    }
-                    .frame(idealWidth: 200, idealHeight: 200)
-                    .padding()
-                    Spacer()
-                }
-                .padding(5)
-                .background(Color.black.opacity(colorScheme == .dark ? 0.25 : 0.10))
-                .cornerRadius(15)
-                .padding()
-                .disabled(true)
-#endif
                 Section {
                     Group {
-                        SettingsToggleView(toggled: $pronounDB, title: "Enable PronounDB integration")
-                        SettingsToggleView(toggled: $dark, title: "Always dark mode")
-                        SettingsToggleView(toggled: $menuBarItem, title: "Enable the mentions menu bar popup")
-                        SettingsToggleView(toggled: $nitrolessEnabled, title: "Enable Nitroless support")
-                        SettingsToggleView(toggled: $silentTyping, title: "Enable silent typing")
-                        SettingsToggleView(toggled: $metalRenderer, title: "Enable the Metal Renderer for the chat view", detail: "Experimental")
-                        SettingsToggleView(toggled: $gifPfp, title: "Enable Gif Profile Pictures", detail: "Experimental")
-                        SettingsToggleView(toggled: $showHiddenChannels, title: "Show hidden channels", detail: "Please don't use this")
-                        SettingsToggleView(toggled: $compress, title: "Enable Gateway Stream Compression", detail: "Recommended")
+                        SettingsToggleView(key: "pfpShown", title: "Show profile pictures")
+                        SettingsToggleView(key: "discordStockSettings", title: "Use stock discord settings")
+                        SettingsToggleView(key: "sortByMostRecent", title: "Sort servers by recent messages")
+                        SettingsToggleView(key: "enableSuffixRemover", title: "Enable useless suffix remover")
                     }
+                    .disabled(true)
+                    Group {
+                        SettingsToggleView(key: "pronounDB", title: "Enable PronounDB integration")
+                        SettingsToggleView(key: "darkMode", title: "Always dark mode")
+                        SettingsToggleView(key: "MentionsMenuBarItemEnabled", title: "Enable the mentions menu bar popup")
+                        SettingsToggleView(key: "Nitroless", title: "Enable Nitroless support")
+                        SettingsToggleView(key: "SilentTyping", title: "Enable silent typing")
+                        SettingsToggleView(key: "MetalRenderer", title: "Enable the Metal Renderer for the chat view", detail: "Experimental")
+                        SettingsToggleView(key: "GifProfilePictures", title: "Enable Gif Profile Pictures", detail: "Experimental")
+                        SettingsToggleView(key: "ShowHiddenChannels", title: "Show hidden channels", detail: "Please don't use this")
+                        SettingsToggleView(key: "CompressGateway", title: "Enable Gateway Stream Compression", detail: "Recommended")
+                    }
+
                     
                     HStack(alignment: .top) {
                         Text("Music platform")
@@ -201,13 +102,6 @@ struct SettingsView: View {
                     .padding(.leading, 20)
                     .foregroundColor(.secondary)
             }
-            .onDisappear {
-                darkMode = dark
-                sortByMostRecent = recent
-                pfpShown = profilePictures
-                pastelColors = pastel
-                //discordStockSettings = discordSettings
-            }
             .toolbar {
                 ToolbarItemGroup {
                     Toggle(isOn: Binding.constant(false)) {
@@ -237,9 +131,10 @@ extension FileManager {
 }
 
 struct SettingsToggleView: View {
-    @Binding var toggled: Bool
+    var key: String
     var title: String
     var detail: String?
+    @State var toggled: Bool = false
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -254,7 +149,13 @@ struct SettingsToggleView: View {
             .padding()
             Spacer()
             Toggle(isOn: $toggled) {}
+                .onChange(of: self.toggled, perform: { _ in
+                    UserDefaults.standard.set(self.toggled, forKey: key)
+                })
                 .padding()
+                .onAppear {
+                    self.toggled = UserDefaults.standard.bool(forKey: self.key)
+                }
         }
     }
 }

@@ -83,7 +83,7 @@ struct ChannelView: View, Equatable {
                     replyingTo: $replyingTo
                 )
                 .equatable()
-                .id(message.identifier)
+                .id(message.id)
                 ///b  #warning("Whats commented out doesnt compile, to use replace it with whats in line 92 to 102")
                 //                .listRowInsets(.init(top: 3.5, leading: 0, bottom: ((message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 13) - (message.user_mentioned == true ? 3 : 0), trailing: 0))
                 //                .padding(.horizontal, 5)

@@ -234,7 +234,11 @@ struct ChatControls: View {
         HStack { [unowned viewModel] in
             ZStack(alignment: .trailing) {
                 VStack {
-                    if !(viewModel.matchedUsers.isEmpty) || !(viewModel.matchedEmoji.isEmpty) || !(viewModel.matchedChannels.isEmpty) || !(viewModel.matchedCommands.isEmpty) {
+                    if !(viewModel.matchedUsers.isEmpty) ||
+                        !(viewModel.matchedEmoji.isEmpty) ||
+                        !(viewModel.matchedChannels.isEmpty) ||
+                        !(viewModel.matchedCommands.isEmpty) &&
+                        !viewModel.textFieldContents.isEmpty {
                         VStack {
                             matchedUsersView
                             matchedCommandsView
@@ -269,7 +273,7 @@ struct ChatControls: View {
                             }
                         }
                         textQueue.async {
-                            viewModel?.checkText(guildID: guildID)
+                            viewModel?.checkText(guildID: guildID, channelID: channelID)
                         }
                     }
                 }

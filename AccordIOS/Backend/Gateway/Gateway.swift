@@ -102,6 +102,7 @@ final class Gateway {
     
     internal var decompressor = ZStream()
     
+    public var presences: [Activity] = []
     
     init (
         url: URL = Gateway.gatewayURL,
@@ -352,19 +353,26 @@ final class Gateway {
                 }
             }
         }
+    
+    func updatePresence(status: String, since: Int, @ActivityBuilder _ activities: () -> [Activity]) throws {
+        try self.updatePresence(status: status, since: since, activities: activities())
+    }
+    
+    func updatePresence(status: String, since: Int, activities: [Activity]) throws {
+        self.presences = activities
+        print(activities.map(\.dictValue))
         
-        func updatePresence(status: String, since: Int, @ActivityBuilder _ activities: () -> [Activity]) throws {
-            let packet: [String: Any] = [
-                "op": 3,
-                "d": [
-                    "status": status,
-                    "since": since,
-                    "activities": activities().map(\.dictValue),
-                    "afk": false,
-                ],
-            ]
-            try send(json: packet)
-        }
+        let packet: [String: Any] = [
+            "op": 3,
+            "d": [
+                "status": status,
+                "since": since,
+                "activities": activities.map(\.dictValue),
+                "afk": false,
+            ],
+        ]
+        try send(json: packet)
+    }
         
         func reconnect(session_id: String? = nil, seq: Int? = nil) throws {
             let packet: [String: Any] = [
@@ -417,7 +425,6 @@ final class Gateway {
                 ],
             ]
             try send(json: packet)
-            print("sent packet")
         }
         
        func getMembers(ids: [String], guild: String) throws {

@@ -6,6 +6,8 @@
 	<true/>
 	<key>CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION</key>
 	<true/>
+	<key>NSUserActivityTypes</key>
+	<string>INSendMessageIntent</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

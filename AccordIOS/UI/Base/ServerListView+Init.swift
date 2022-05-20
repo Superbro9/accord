@@ -63,14 +63,16 @@ extension ServerListView {
         // Set presence
         Activity.current = Activity(
             emoji: StatusEmoji(
-                name: readyPacket.user_settings?.custom_status?.emoji_name ?? "",
-                id: readyPacket.user_settings?.custom_status?.emoji_id ?? "",
+                name: readyPacket.user_settings?.custom_status?.emoji_name ?? Array(Emotes.emotes.values.joined())[readyPacket.user_settings?.custom_status?.emoji_id ?? ""]?.name,
+                id: readyPacket.user_settings?.custom_status?.emoji_id,
                 animated: false
             ),
             name: "Custom Status",
-            type: 4
+            type: 4,
+            state: readyPacket.user_settings?.custom_status?.text
         )
-        self.statusText = readyPacket.user_settings?.custom_status?.text 
+        wss?.presences.append(Activity.current!)
+        self.statusText = readyPacket.user_settings?.custom_status?.text
         
         // Save the emotes for easy access
         Emotes.emotes = readyPacket.guilds
@@ -99,7 +101,6 @@ extension ServerListView {
         // Form the folders and fix the guild objects
         let guildKeyMap = readyPacket.guilds.generateKeyMap()
         let guildTemp = guildOrder
-            .lazy
             .compactMap { readyPacket.guilds[$0, guildKeyMap] }
 //            .compactMap { guildKeyMap[$0] }
 //            .map { readyPacket.guilds[$0] }

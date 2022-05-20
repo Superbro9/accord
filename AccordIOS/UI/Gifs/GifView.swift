@@ -26,6 +26,7 @@ struct GifView: View {
             } else {
                 Image(uiImage: animatedImages[value])
                     .resizable()
+                    .scaledToFit()
                     .frame(width: 160, height: 160)
             }
         }
