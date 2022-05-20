@@ -45,8 +45,6 @@ extension Slice where Base: Sequence {
         return self.base
     }
 }
-
-#warning("this might be the issue")
 extension Array where Element: Identifiable {
      subscript(id: Self.Element.ID, keyMap: [Self.Element.ID:Int]? = nil) -> Self.Element? {
          get {

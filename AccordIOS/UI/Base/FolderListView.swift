@@ -59,16 +59,11 @@ struct ServerIconCell: View {
     @StateObject var updater: ServerListView.UpdateView
     
     func updateSelection(old: Int?, new: Int?) {
-#warning("This might be the issue")
         DispatchQueue.global().async {
             let map = Array(ServerListView.folders.compactMap { $0.guilds }.joined())
             guard let selectedServer = old,
                   let new = new,
                   let newID = map[safe: new]?.id else {
-                //                  let id = map[safe: selectedServer]?.id,
-                //                  let newID = map[safe: new]?.id else { return }
-                //            if let selection = selection {
-                //                             UserDefaults.standard.set(selection, forKey: "AccordChannelIn\(id)")
                 DispatchQueue.main.async {
                     self.selectedServer = new
                     self.selectedGuild = guild

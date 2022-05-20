@@ -225,9 +225,7 @@ struct ServerListView: View {
                                                 empty: true
                                             )
                                             Request.ping(url: URL(string: "\(rootURL)/channels/\(channel.id)"), headers: headers)
-#warning("this might be the issue")
                                             guard let index = ServerListView.privateChannels[indexOf: channel.id] else { return }
-                                            //guard let index = ServerListView.privateChannels.generateKeyMap()[channel.id] else { return }
                                             ServerListView.privateChannels.remove(at: index)
                                         }
                                         Button("Mark as read") {
