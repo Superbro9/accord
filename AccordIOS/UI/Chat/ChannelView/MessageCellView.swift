@@ -138,7 +138,7 @@ struct MessageCellView: View, Equatable {
                         .fontWeight(.medium)
                 }
                 .padding(4)
-                .background(Color(NSColor.windowBackgroundColor))
+                .background(Color(uiColor: .systemBackground))
                 .cornerRadius(4)
             })
             .padding(.leading, leftPadding)
@@ -398,36 +398,37 @@ struct MessageCellView: View, Equatable {
                      }
                  }
              }
-    
-    private var replyView: some View {
-        HStack {
-                    RoundedRectangle(cornerRadius: 5)
-                        .trim(from: 0.5, to: 0.75)
-                        .stroke(.gray.opacity(0.4), lineWidth: 2)
-                        .frame(width: 53, height: 20)
-                        .padding(.bottom, -15)
-                        .padding(.trailing, -30)
-            Attachment(pfpURL(message.referenced_message?.author?.id, message.referenced_message?.author?.avatar, discriminator: message.referenced_message?.author?.discriminator ?? "0005", "16"))
-                .equatable()
-                .frame(width: 15, height: 15)
-                .clipShape(Circle())
-            Text(replyNick ?? message.referenced_message?.author?.username ?? "")
-                .font(.subheadline)
-                .foregroundColor({ () -> Color in
-                    if let replyRole = replyRole, let color = roleColors[replyRole]?.0, !message.isSameAuthor {
-                        return Color(int: color)
-                    }
-                    return Color.primary
-                }())
-                .fontWeight(.semibold)
-            Text(message.referenced_message?.content ?? "Error")
-                .font(.subheadline)
-                .lineLimit(0)
-                .foregroundColor(.secondary)
-        }
-        .padding(.bottom, -3)
+         }
+             
+             private var replyView: some View {
+                 HStack {
+                     RoundedRectangle(cornerRadius: 5)
+                         .trim(from: 0.5, to: 0.75)
+                         .stroke(.gray.opacity(0.4), lineWidth: 2)
+                         .frame(width: 53, height: 20)
+                         .padding(.bottom, -15)
+                         .padding(.trailing, -30)
+                     Attachment(pfpURL(message.referenced_message?.author?.id, message.referenced_message?.author?.avatar, discriminator: message.referenced_message?.author?.discriminator ?? "0005", "16"))
+                         .equatable()
+                         .frame(width: 15, height: 15)
+                         .clipShape(Circle())
+                     Text(replyNick ?? message.referenced_message?.author?.username ?? "")
+                         .font(.subheadline)
+                         .foregroundColor({ () -> Color in
+                             if let replyRole = replyRole, let color = roleColors[replyRole]?.0, !message.isSameAuthor {
+                                 return Color(int: color)
+                             }
+                             return Color.primary
+                         }())
+                         .fontWeight(.semibold)
+                     Text(message.referenced_message?.content ?? "Error")
+                         .font(.subheadline)
+                         .lineLimit(0)
+                         .foregroundColor(.secondary)
+                 }
+                 .padding(.bottom, -3)
                  .padding(.leading, 15)
-    }
+             }
     
     private var interactionView: some View {
         HStack {

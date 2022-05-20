@@ -46,12 +46,13 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                 ])
                 if channel.owner_id == user_id {
                     self.permissions.insert(.kickMembers)
-                } else {
-                    self.permissions = channel.permission_overwrites?.allAllowed(guildID: self.guildID) ?? .init()
                 }
+            } else {
+                self.permissions = channel.permission_overwrites?.allAllowed(guildID: self.guildID) ?? .init()
             }
-            self.connect()
         }
+        connect()
+    }
 
     func connect() {
         wss.messageSubject
@@ -288,18 +289,18 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
         }
     }
 
-    func performSecondStageLoad() {
-        var allUserIDs: [String] = Array(NSOrderedSet(array: messages.compactMap { $0.author?.id })) as! [String]
-        // getCachedMemberChunk()
-        for (index, item) in allUserIDs.enumerated {
-            if Array(wss.cachedMemberRequest.keys).contains("\(guildID)$\(item)"), [Int](allUserIDs.indices).contains(index) {
-                allUserIDs.remove(at: index)
+        func performSecondStageLoad() {
+            var allUserIDs: [String] = Array(NSOrderedSet(array: messages.compactMap { $0.author?.id })) as! [String]
+            // getCachedMemberChunk()
+            for (index, item) in allUserIDs.enumerated {
+                if Array(wss.cachedMemberRequest.keys).contains("\(guildID)$\(item)"), [Int](allUserIDs.indices).contains(index) {
+                    allUserIDs.remove(at: index)
+                }
+            }
+            if !(allUserIDs.isEmpty) {
+                try? wss.getMembers(ids: allUserIDs, guild: guildID)
             }
         }
-        if !(allUserIDs.isEmpty) {
-            try? wss.getMembers(ids: allUserIDs, guild: guildID)
-        }
-    }
 
     func loadMoreMessages() {
         RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/messages?before=\(messages.last?.id ?? "")&limit=50"), headers: Headers(
