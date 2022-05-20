@@ -110,6 +110,7 @@ struct ChannelView: View, Equatable {
                 }
             }
         }
+        .offset(x: 0, y: -1)
         .rotationEffect(.radians(.pi))
         .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
     }

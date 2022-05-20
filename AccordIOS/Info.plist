@@ -4,6 +4,12 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>CFBundleTypeRole</key>
+	<string></string>
+	<key>CFBundleURLName</key>
+	<string></string>
+	<key>CFBundleURLSchemes</key>
+	<string></string>
 	<key>CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION</key>
 	<true/>
 	<key>NSUserActivityTypes</key>
