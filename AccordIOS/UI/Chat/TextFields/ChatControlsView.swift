@@ -23,6 +23,7 @@ struct ChatControls: View {
     @Binding var chatText: String
     @Binding var replyingTo: Message?
     @Binding var mentionUser: Bool
+    @Binding var permissions: Permissions
     @State var nitroless = false
     @State var emotes = false
     @State var showImagePicker: Bool = false
@@ -34,6 +35,12 @@ struct ChatControls: View {
     @State var typing: Bool = false
     weak var textField: UITextField?
     @AppStorage("Nitroless") var nitrolessEnabled: Bool = false
+    
+    var textFieldText: String {
+             self.permissions.contains(.sendMessages) ?
+             viewModel.percent ?? chatText :
+             "You do not have permission to speak in this channel"
+         }
     
     private func send() {
         messageSendQueue.async { [weak viewModel] in
@@ -168,7 +175,7 @@ struct ChatControls: View {
     }
     
     var montereyTextField: some View {
-        TextField(viewModel.percent ?? chatText, text: $viewModel.textFieldContents)
+        TextField(textFieldText, text: $viewModel.textFieldContents)
             .focused($focusedField, equals: .mainTextField)
             .onSubmit {
                 typing = false
@@ -180,12 +187,6 @@ struct ChatControls: View {
     }
     
     var fileImportButton: some View {
-//        Button(action: {
-//            showImagePicker.toggle()
-//        }) {
-//            Image(systemName: "plus.circle.fill")
-//        }
-//        .buttonStyle(.bordered)
         Menu {
             Button {
                 showImagePicker.toggle()
@@ -262,6 +263,7 @@ struct ChatControls: View {
                             }
                         }
                     }
+                    .disabled(!self.permissions.contains(.sendMessages))
                     .onReceive(viewModel.$textFieldContents) { [weak viewModel] _ in
                         if !typing, viewModel?.textFieldContents != "" {
                             messageSendQueue.async {
@@ -315,23 +317,3 @@ extension Array where Element: Hashable {
         self = removingDuplicates()
     }
 }
-
-
-/*
- if AccordCoreVars.plugins != [] {
-     ForEach(AccordCoreVars.plugins.enumerated().reversed().reversed(), id: \.offset) { offset, plugin in
-         if pluginPoppedUp.indices.contains(offset) {
-             Button(action: {
-                 pluginPoppedUp[offset].toggle()
-             }) {
-                 Image(systemName: plugin.symbol)
-             }
-             .buttonStyle(BorderlessButtonStyle())
-             .popover(isPresented: $pluginPoppedUp[offset], content: {
-                 NSViewWrapper(plugin.body ?? NSView())
-                     .frame(width: 200, height: 200)
-             })
-         }
-     }
- }
- */

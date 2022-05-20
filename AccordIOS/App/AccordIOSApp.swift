@@ -10,21 +10,25 @@ import Foundation
 import SwiftUI
 import UserNotifications
 
+var allowReconnection: Bool = false
 var reachability: Reachability? = {
      var reachability = try? Reachability()
      reachability?.whenReachable = { status in
          concurrentQueue.async {
-             if wss?.connection?.state != .preparing {
+             if wss?.connection?.state != .preparing && allowReconnection {
                  wss?.reset()
              }
          }
      }
-     reachability?.whenUnreachable = {
-         print($0, "unreachable")
-     }
-     try? reachability?.startNotifier()
-     return reachability
- }()
+    reachability?.whenUnreachable = {
+        print($0, "unreachable")
+    }
+    try? reachability?.startNotifier()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        allowReconnection = true
+    }
+    return reachability
+}()
 
 @main
 struct AccordApp: App {

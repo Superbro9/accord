@@ -92,6 +92,7 @@
 		89EF26412837FEB6007A3BEC /* JoinServerSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF26402837FEB6007A3BEC /* JoinServerSheetView.swift */; };
 		89EF26432838008F007A3BEC /* DMButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF26422838008F007A3BEC /* DMButton.swift */; };
 		89EF26452838011C007A3BEC /* PrivateChannelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF26442838011C007A3BEC /* PrivateChannelsView.swift */; };
+		89EF264728381464007A3BEC /* PermissionOverwrites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF264628381464007A3BEC /* PermissionOverwrites.swift */; };
 		89EFBB192835583100141049 /* ZStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB182835583100141049 /* ZStream.swift */; };
 		89EFBB1B2835822D00141049 /* ServerListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB1A2835822D00141049 /* ServerListViewCell.swift */; };
 		89F5A57827B3173800385E06 /* GifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F5A57727B3173800385E06 /* GifManager.swift */; };
@@ -188,6 +189,7 @@
 		89EF26402837FEB6007A3BEC /* JoinServerSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinServerSheetView.swift; sourceTree = "<group>"; };
 		89EF26422838008F007A3BEC /* DMButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMButton.swift; sourceTree = "<group>"; };
 		89EF26442838011C007A3BEC /* PrivateChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateChannelsView.swift; sourceTree = "<group>"; };
+		89EF264628381464007A3BEC /* PermissionOverwrites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionOverwrites.swift; sourceTree = "<group>"; };
 		89EFBB182835583100141049 /* ZStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZStream.swift; sourceTree = "<group>"; };
 		89EFBB1A2835822D00141049 /* ServerListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerListViewCell.swift; sourceTree = "<group>"; };
 		89F5A57727B3173800385E06 /* GifManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifManager.swift; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 				89E9FE6D27AFFAAF00861F05 /* User.swift */,
 				89E9FE6827AFFAAF00861F05 /* Reaction.swift */,
 				89A54FDB27D93DB6003142A0 /* Permissions.swift */,
+				89EF264628381464007A3BEC /* PermissionOverwrites.swift */,
 			);
 			path = DiscordTypes;
 			sourceTree = "<group>";
@@ -616,6 +619,7 @@
 				89E9FEA527AFFC3500861F05 /* NSColor++.swift in Sources */,
 				89E9FE9827AFFC0700861F05 /* MainView.swift in Sources */,
 				8991164227AFEF3800FFDE93 /* ContentView.swift in Sources */,
+				89EF264728381464007A3BEC /* PermissionOverwrites.swift in Sources */,
 				89E9FEFC27AFFEC800861F05 /* GuildView.swift in Sources */,
 				89D7CBAF27B5801400D4B567 /* GifView.swift in Sources */,
 				89E9FEAA27AFFC3500861F05 /* Combine++.swift in Sources */,

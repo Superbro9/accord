@@ -129,7 +129,6 @@ public final class Markdown {
             }
             return promise(.success(appleMarkdown(word)))
         }
-        .debugWarnNoMainThread()
         .eraseToAnyPublisher()
     }
 
@@ -164,7 +163,6 @@ public final class Markdown {
             .collect()
             .map { $0.reduce(Text(""), +) }
             .eraseToAnyPublisher()
-            .debugWarnNoMainThread()
     }
 }
 
