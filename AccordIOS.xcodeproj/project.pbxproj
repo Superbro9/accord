@@ -89,6 +89,7 @@
 		89E9FF2627B014DD00861F05 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FF2527B014DD00861F05 /* Images.swift */; };
 		89EF263D2837EF4E007A3BEC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF263C2837EF4E007A3BEC /* Reachability.swift */; };
 		89EF263F2837FBF9007A3BEC /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF263E2837FBF9007A3BEC /* ProfileEditingView.swift */; };
+		89EF26412837FEB6007A3BEC /* JoinServerSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF26402837FEB6007A3BEC /* JoinServerSheetView.swift */; };
 		89EFBB192835583100141049 /* ZStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB182835583100141049 /* ZStream.swift */; };
 		89EFBB1B2835822D00141049 /* ServerListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB1A2835822D00141049 /* ServerListViewCell.swift */; };
 		89F5A57827B3173800385E06 /* GifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F5A57727B3173800385E06 /* GifManager.swift */; };
@@ -182,6 +183,7 @@
 		89E9FF2527B014DD00861F05 /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		89EF263C2837EF4E007A3BEC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		89EF263E2837FBF9007A3BEC /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
+		89EF26402837FEB6007A3BEC /* JoinServerSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinServerSheetView.swift; sourceTree = "<group>"; };
 		89EFBB182835583100141049 /* ZStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZStream.swift; sourceTree = "<group>"; };
 		89EFBB1A2835822D00141049 /* ServerListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerListViewCell.swift; sourceTree = "<group>"; };
 		89F5A57727B3173800385E06 /* GifManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifManager.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				89C209AB27DE9DB900A2994E /* PinsView2.swift */,
 				8997750127F0C6A5006628FA /* MentionsView.swift */,
 				89A1FADF27F63B890031ED77 /* ImagePicker.swift */,
+				89EF26402837FEB6007A3BEC /* JoinServerSheetView.swift */,
 			);
 			path = Accessories;
 			sourceTree = "<group>";
@@ -614,6 +617,7 @@
 				8997750227F0C6A5006628FA /* MentionsView.swift in Sources */,
 				897836CD27BBE85A00B86857 /* FolderListView.swift in Sources */,
 				89E9FEFE27AFFEC800861F05 /* LoginView.swift in Sources */,
+				89EF26412837FEB6007A3BEC /* JoinServerSheetView.swift in Sources */,
 				89E9FEDC27AFFD0700861F05 /* Gateway+MessageHandle.swift in Sources */,
 				89E9FE7527AFFAAF00861F05 /* Reaction.swift in Sources */,
 				89E9FED527AFFD0700861F05 /* Songlink.swift in Sources */,

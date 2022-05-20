@@ -14,6 +14,8 @@ extension ServerListView {
         @Binding var selectedServer: Int?
         @Binding var selection: Int?
         @Binding var selectedGuild: Guild?
+        
+        @State var isShowingJoinServerSheet: Bool = false
         @StateObject var updater: ServerListView.UpdateView
         
         var body: some View {
@@ -46,6 +48,17 @@ extension ServerListView {
                 }
             }
             .padding(.trailing, 6)
+            Button(action: {
+                isShowingJoinServerSheet.toggle()
+            }, label: {
+                Image(systemName: "plus.circle")
+                    .padding()
+                    .frame(width: 5, height: 30)
+            })
+            .sheet(isPresented: $isShowingJoinServerSheet, onDismiss: nil) {
+                JoinServerSheetView(isPresented: $isShowingJoinServerSheet, updater: updater)
+                    .padding()
+            }
         }
     }
 }
