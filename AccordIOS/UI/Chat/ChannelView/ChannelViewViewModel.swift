@@ -36,9 +36,9 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
             } else {
                 try? wss.subscribe(to: guildID)
             }
+            self.getMessages(channelID: channelID, guildID: guildID)
             MentionSender.shared.removeMentions(server: guildID)
         }
-        self.getMessages(channelID: channelID, guildID: guildID)
         self.connect()
     }
 
@@ -65,7 +65,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                     }
                     guard let author = message.author else { return }
                     Storage.usernames[author.id] = author.username
-                    withAnimation {
+                    withAnimation(Animation.linear(duration: 0.1)) {
                         self?.messages.insert(message, at: 0)
                     }
                 }
@@ -110,7 +110,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                 guard let message = gatewayMessage.d else { return }
                 guard let index = messageMap?[message.id] else { return }
                 DispatchQueue.main.async {
-                    withAnimation {
+                    withAnimation(Animation.linear(duration: 0.1)) {
                         let i: Int = index
                         self?.messages.remove(at: i)
                     }
@@ -311,10 +311,6 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
             self?.messages.append(contentsOf: messages)
         }
         .store(in: &cancellable)
-    }
-
-    deinit {
-        SlashCommandStorage.commands[guildID]?.removeAll()
     }
 }
 

@@ -41,7 +41,7 @@ struct SettingsView: View {
                         SettingsToggleView(key: "MetalRenderer", title: "Enable the Metal Renderer for the chat view", detail: "Experimental")
                         SettingsToggleView(key: "GifProfilePictures", title: "Enable Gif Profile Pictures", detail: "Experimental")
                         SettingsToggleView(key: "ShowHiddenChannels", title: "Show hidden channels", detail: "Please don't use this")
-                        SettingsToggleView(key: "CompressGateway", title: "Enable Gateway Stream Compression", detail: "Recommended")
+                        SettingsToggleView(key: "CompressGateway", title: "Enable Gateway Stream Compression", detail: "Recommended", defaultToggle: true)
                     }
 
                     
@@ -134,6 +134,7 @@ struct SettingsToggleView: View {
     var key: String
     var title: String
     var detail: String?
+    var defaultToggle: Bool?
     @State var toggled: Bool = false
     var body: some View {
         HStack {
@@ -154,7 +155,7 @@ struct SettingsToggleView: View {
                 })
                 .padding()
                 .onAppear {
-                    self.toggled = UserDefaults.standard.bool(forKey: self.key)
+                    self.toggled = UserDefaults.standard.object(forKey: self.key) as? Bool ?? defaultToggle ?? false
                 }
         }
     }

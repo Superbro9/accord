@@ -10,7 +10,22 @@ import Foundation
 import SwiftUI
 import UserNotifications
 
-var reachability: Reachability?
+var reachability: Reachability? = {
+     var reachability = try? Reachability()
+     reachability?.whenReachable = { status in
+         print("reconnecting reachable")
+         concurrentQueue.async {
+             if wss?.connection?.state != .preparing {
+                 wss?.reset()
+             }
+         }
+     }
+     reachability?.whenUnreachable = {
+         print($0, "unreachable")
+     }
+     try? reachability?.startNotifier()
+     return reachability
+ }()
 
 @main
 struct AccordApp: App {
@@ -22,6 +37,10 @@ struct AccordApp: App {
     private enum Tabs: Hashable {
         case general, rpc
     }
+    
+    init() {
+             _ = reachability
+         }
     
     @SceneBuilder
     var body: some Scene {
@@ -71,20 +90,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         wss?.close(.protocolCode(.noStatusReceived))
         print("application terminated")
-    }
-    
-    func applicationDidFinishLaunching(_ application: UIApplication) {
-        reachability = try? Reachability()
-                 reachability?.whenReachable = { status in
-                     print("reconnecting reachable")
-                     concurrentQueue.async {
-                         wss?.reset()
-                     }
-                 }
-                 reachability?.whenUnreachable = {
-                     print($0, "unreachable")
-                 }
-                 try? reachability?.startNotifier()
     }
 }
 

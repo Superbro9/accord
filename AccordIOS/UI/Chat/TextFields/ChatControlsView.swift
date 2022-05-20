@@ -277,9 +277,6 @@ struct ChatControls: View {
                         }
                     }
                 }
-                .onAppear {
-                    viewModel.findView()
-                }
                 .textFieldStyle(PlainTextFieldStyle())
                 .sheet(isPresented: $showImagePicker) {
                     ImagePicker(imageData: $fileUpload, isPresented: $showImagePicker, imageName: $fileUploadURL)

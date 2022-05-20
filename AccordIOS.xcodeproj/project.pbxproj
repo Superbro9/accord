@@ -90,6 +90,8 @@
 		89EF263D2837EF4E007A3BEC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF263C2837EF4E007A3BEC /* Reachability.swift */; };
 		89EF263F2837FBF9007A3BEC /* ProfileEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF263E2837FBF9007A3BEC /* ProfileEditingView.swift */; };
 		89EF26412837FEB6007A3BEC /* JoinServerSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF26402837FEB6007A3BEC /* JoinServerSheetView.swift */; };
+		89EF26432838008F007A3BEC /* DMButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF26422838008F007A3BEC /* DMButton.swift */; };
+		89EF26452838011C007A3BEC /* PrivateChannelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF26442838011C007A3BEC /* PrivateChannelsView.swift */; };
 		89EFBB192835583100141049 /* ZStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB182835583100141049 /* ZStream.swift */; };
 		89EFBB1B2835822D00141049 /* ServerListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFBB1A2835822D00141049 /* ServerListViewCell.swift */; };
 		89F5A57827B3173800385E06 /* GifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F5A57727B3173800385E06 /* GifManager.swift */; };
@@ -184,6 +186,8 @@
 		89EF263C2837EF4E007A3BEC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		89EF263E2837FBF9007A3BEC /* ProfileEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditingView.swift; sourceTree = "<group>"; };
 		89EF26402837FEB6007A3BEC /* JoinServerSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinServerSheetView.swift; sourceTree = "<group>"; };
+		89EF26422838008F007A3BEC /* DMButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMButton.swift; sourceTree = "<group>"; };
+		89EF26442838011C007A3BEC /* PrivateChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateChannelsView.swift; sourceTree = "<group>"; };
 		89EFBB182835583100141049 /* ZStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZStream.swift; sourceTree = "<group>"; };
 		89EFBB1A2835822D00141049 /* ServerListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerListViewCell.swift; sourceTree = "<group>"; };
 		89F5A57727B3173800385E06 /* GifManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifManager.swift; sourceTree = "<group>"; };
@@ -467,6 +471,8 @@
 				89EFBB1A2835822D00141049 /* ServerListViewCell.swift */,
 				89E9FEF727AFFEC800861F05 /* GuildView.swift */,
 				897836CC27BBE85A00B86857 /* FolderListView.swift */,
+				89EF26422838008F007A3BEC /* DMButton.swift */,
+				89EF26442838011C007A3BEC /* PrivateChannelsView.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -645,9 +651,11 @@
 				89E9FEFF27AFFEC800861F05 /* ServerListView+Mentions.swift in Sources */,
 				89E9FED827AFFD0700861F05 /* GatewayEvent.swift in Sources */,
 				89A54FDA27D93AAA003142A0 /* Collection++.swift in Sources */,
+				89EF26452838011C007A3BEC /* PrivateChannelsView.swift in Sources */,
 				89E9FEAD27AFFC5800861F05 /* Github.swift in Sources */,
 				89E9FE7827AFFAAF00861F05 /* Attachment.swift in Sources */,
 				89E9FE6427AFF98200861F05 /* LoadingScreenView.swift in Sources */,
+				89EF26432838008F007A3BEC /* DMButton.swift in Sources */,
 				89A54FDC27D93DB6003142A0 /* Permissions.swift in Sources */,
 				89E9FEFB27AFFEC800861F05 /* ServerListView+Misc.swift in Sources */,
 				89E9FE8027AFFAAF00861F05 /* Emote.swift in Sources */,
