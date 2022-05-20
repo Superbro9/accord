@@ -116,19 +116,23 @@ struct ServerListView: View {
     }
     
     var joinServerButton: some View {
-             Button(action: {
-                 isShowingJoinServerSheet.toggle()
-             }, label: {
-                 Image(systemName: "plus.circle")
-                     .imageScale(.medium)
-                     .frame(width: 45, height: 45)
-                     .cornerRadius(23.5)
-             })
-         }
+        Button(action: {
+            isShowingJoinServerSheet.toggle()
+        }, label: {
+            Image(systemName: "plus")
+                .imageScale(.large)
+                .frame(width: 45, height: 45)
+                .background(self.isShowingJoinServerSheet ? Color.accentColor.opacity(0.5) : Color(uiColor: .systemBackground))
+                .cornerRadius(iconHovered || self.isShowingJoinServerSheet ? 13.5 : 23.5)
+                .if(self.isShowingJoinServerSheet, transform: { $0.foregroundColor(Color.white) })
+                    .onHover(perform: { h in withAnimation(Animation.linear(duration: 0.1)) { self.iconHovered = h } })
+        })
+        .buttonStyle(.borderless)
+    }
     
     var onlineButton: some View {
         Button("Offline") {
-            AccordApp.error("Offline" as! Error, additionalDescription: "Check your network connection")
+            AccordApp.error("Offline" as Error, additionalDescription: "Check your network connection")
         }
     }
     
@@ -193,12 +197,13 @@ struct ServerListView: View {
                             updater: self.viewUpdater
                         )
                         Color.gray
-                            .frame(height: 1)
+                            .frame(width: 30, height: 1)
                             .opacity(0.75)
-                            .padding(.horizontal)
                         FolderListView(selectedServer: self.$selectedServer, selection: self.$selection, selectedGuild: self.$selectedGuild, updater: self.viewUpdater)
                             .padding(.trailing, 3.5)
-                        Divider()
+                        Color.gray
+                            .frame(width: 30, height: 1)
+                            .opacity(0.75)
                         joinServerButton
                             .sheet(isPresented: $isShowingJoinServerSheet) {
                                 JoinServerSheetView(isPresented: $isShowingJoinServerSheet, updater: viewUpdater)
