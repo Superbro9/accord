@@ -22,7 +22,7 @@
 
              TextField("Invite Code", text: $inviteCode)
                  .textFieldStyle(.roundedBorder)
-             Text("ie: `zun3eCEr6k`")
+             Text("example: `zun3eCEr6k`")
                  .font(.subheadline)
          }
 
