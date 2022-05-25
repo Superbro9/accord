@@ -91,7 +91,7 @@ final class ZStream {
     }
     guard let outputData = outputData else { throw "No data returned" }
         lock = false
-        print(try? String(outputData))
+        //print(try? String(outputData))
     return outputData
 }
 
