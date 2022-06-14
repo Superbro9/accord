@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8991163B27AFEF3800FFDE93"
-               BuildableName = "Accord.app"
-               BlueprintName = "Accord"
-               ReferencedContainer = "container:Accord.xcodeproj">
+               BuildableName = "AccordIOS.app"
+               BlueprintName = "AccordIOS"
+               ReferencedContainer = "container:AccordIOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8991163B27AFEF3800FFDE93"
-            BuildableName = "Accord.app"
-            BlueprintName = "Accord"
-            ReferencedContainer = "container:Accord.xcodeproj">
+            BuildableName = "AccordIOS.app"
+            BlueprintName = "AccordIOS"
+            ReferencedContainer = "container:AccordIOS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8991163B27AFEF3800FFDE93"
-            BuildableName = "Accord.app"
-            BlueprintName = "Accord"
-            ReferencedContainer = "container:Accord.xcodeproj">
+            BuildableName = "AccordIOS.app"
+            BlueprintName = "AccordIOS"
+            ReferencedContainer = "container:AccordIOS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
