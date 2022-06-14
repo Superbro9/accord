@@ -109,7 +109,7 @@
 		8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsView.swift; sourceTree = "<group>"; };
 		8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsViewModel.swift; sourceTree = "<group>"; };
 		8984EED127B4454C0025AEC5 /* AttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentView.swift; sourceTree = "<group>"; };
-		8991163C27AFEF3800FFDE93 /* AccordIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AccordIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8991163C27AFEF3800FFDE93 /* Accord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Accord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8991163F27AFEF3800FFDE93 /* AccordIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccordIOSApp.swift; sourceTree = "<group>"; };
 		8991164127AFEF3800FFDE93 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8991164327AFEF3800FFDE93 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -212,7 +212,7 @@
 		8991163327AFEF3800FFDE93 = {
 			isa = PBXGroup;
 			children = (
-				8991163E27AFEF3800FFDE93 /* AccordIOS */,
+				8991163E27AFEF3800FFDE93 /* Accord */,
 				8991163D27AFEF3800FFDE93 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -220,12 +220,12 @@
 		8991163D27AFEF3800FFDE93 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8991163C27AFEF3800FFDE93 /* AccordIOS.app */,
+				8991163C27AFEF3800FFDE93 /* Accord.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8991163E27AFEF3800FFDE93 /* AccordIOS */ = {
+		8991163E27AFEF3800FFDE93 /* Accord */ = {
 			isa = PBXGroup;
 			children = (
 				89BEB1D827B04BD30097A2AF /* AccordIOS.entitlements */,
@@ -239,7 +239,7 @@
 				8991164327AFEF3800FFDE93 /* Assets.xcassets */,
 				8991164527AFEF3800FFDE93 /* Preview Content */,
 			);
-			path = AccordIOS;
+			path = Accord;
 			sourceTree = "<group>";
 		};
 		8991164527AFEF3800FFDE93 /* Preview Content */ = {
@@ -544,9 +544,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8991163B27AFEF3800FFDE93 /* AccordIOS */ = {
+		8991163B27AFEF3800FFDE93 /* Accord */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8991164A27AFEF3800FFDE93 /* Build configuration list for PBXNativeTarget "AccordIOS" */;
+			buildConfigurationList = 8991164A27AFEF3800FFDE93 /* Build configuration list for PBXNativeTarget "Accord" */;
 			buildPhases = (
 				8991163827AFEF3800FFDE93 /* Sources */,
 				8991163927AFEF3800FFDE93 /* Frameworks */,
@@ -556,9 +556,9 @@
 			);
 			dependencies = (
 			);
-			name = AccordIOS;
+			name = Accord;
 			productName = AccordIOS;
-			productReference = 8991163C27AFEF3800FFDE93 /* AccordIOS.app */;
+			productReference = 8991163C27AFEF3800FFDE93 /* Accord.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -576,7 +576,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8991163727AFEF3800FFDE93 /* Build configuration list for PBXProject "AccordIOS" */;
+			buildConfigurationList = 8991163727AFEF3800FFDE93 /* Build configuration list for PBXProject "Accord" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -589,7 +589,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8991163B27AFEF3800FFDE93 /* AccordIOS */,
+				8991163B27AFEF3800FFDE93 /* Accord */,
 			);
 		};
 /* End PBXProject section */
@@ -890,7 +890,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8991163727AFEF3800FFDE93 /* Build configuration list for PBXProject "AccordIOS" */ = {
+		8991163727AFEF3800FFDE93 /* Build configuration list for PBXProject "Accord" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8991164827AFEF3800FFDE93 /* Debug */,
@@ -899,7 +899,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8991164A27AFEF3800FFDE93 /* Build configuration list for PBXNativeTarget "AccordIOS" */ = {
+		8991164A27AFEF3800FFDE93 /* Build configuration list for PBXNativeTarget "Accord" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8991164B27AFEF3800FFDE93 /* Debug */,
