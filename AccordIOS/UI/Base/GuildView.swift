@@ -20,8 +20,8 @@ struct GuildView: View {
                     self.invitePopup.toggle()
                 }
                 Button("Copy ID") {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(guild.id, forType: .string)
+                    UIPasteboard.general.string = ""
+                    UIPasteboard.general.string = guild.id
                 }
                 Divider()
                 if guild.owner_id != user_id {

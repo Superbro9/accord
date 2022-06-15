@@ -74,17 +74,26 @@ public final class Markdown {
      **/
     public class func markWord(_ word: String, _ members: [String: String] = [:], font: Bool) -> TextPublisher {
         let emoteIDs = word.matches(precomputed: Regex.emojiIDRegex)
-        if let id = emoteIDs.first, let emoteURL = URL(string: cdnURL + "/emojis/\(id).png?size=\(font ? "48" : "16")") {
+        if let id = emoteIDs.first, let emoteURL = URL(string: cdnURL + "/emojis/\(id).png?size=48") {
             return RequestPublisher.image(url: emoteURL)
                 .replaceError(with: UIImage(systemName: "wifi.slash") ?? UIImage())
-                .map { Text("\(Image(uiImage: $0))") + Text(" ") }
+                .map { image -> UIImage in
+                    guard !font else { return image }
+                    var size = CGSize(width: 18, height: 18)
+                    image.size
+                    print("resizing hehe")
+                    return image
+                }
+                .map {
+                    Text(Image(uiImage: $0)).font(.system(size: 14)) + Text(" ")
+                }
                 .eraseToAny()
         }
         let inlineImages = word.matches(precomputed: Regex.inlineImageRegex).filter { $0.contains("nitroless") || $0.contains("emote") || $0.contains("emoji") } // nitroless emoji
         if let url = inlineImages.first, let emoteURL = URL(string: url) {
             return RequestPublisher.image(url: emoteURL)
                 .replaceError(with: UIImage(systemName: "wifi.slash") ?? UIImage())
-                .map { Text("\(Image(uiImage: $0))") + Text(" ") }
+                .map { Text(Image(uiImage: $0)) + Text(" ") }
                 .eraseToAny()
         }
         return Future { promise -> Void in
@@ -131,7 +140,7 @@ public final class Markdown {
         }
         .eraseToAnyPublisher()
     }
-
+    
     /**
      markLine: Simple Publisher that combines an array of word publishers for a split line
      - Parameter line: The line being processed
@@ -146,7 +155,7 @@ public final class Markdown {
             .collect()
             .eraseToAnyPublisher()
     }
-
+    
     /**
      markLine: Simple Publisher that combines an array of word and line publishers for a text section
      - Parameter text: The text being processed
@@ -155,9 +164,47 @@ public final class Markdown {
      **/
     public class func markAll(text: String, _ members: [String: String] = [:], font: Bool = false) -> TextPublisher {
         let newlines = text.split(whereSeparator: \.isNewline)
+        let codeBlockMarkerRawOffsets = newlines
+            .lazy
+            .enumerated()
+            .filter { $0.element.prefix(3) == "```" }
+            .map(\.offset)
+        
+        let indexes = codeBlockMarkerRawOffsets
+            .lazy
+            .indices
+            .filter { $0 % 2 == 0 }
+            .map { number -> (Int, Int)? in
+                if !codeBlockMarkerRawOffsets.indices.contains(number + 1) { return nil }
+                return (codeBlockMarkerRawOffsets[number], codeBlockMarkerRawOffsets[number + 1])
+            }
+            .compactMap(\.self)
+        
         let pubs = newlines.map { markLine(String($0), members, font: font) }
-        let withNewlines: [TextArrayPublisher] = Array(pubs.map { [$0] }.joined(separator: [newLinePublisher]))
-        return Publishers.MergeMany(withNewlines)
+        var strippedPublishers = pubs
+            .map { [$0] }
+            .joined()
+            .arrayLiteral
+        
+        indexes.forEach { lowerBound, upperBound in
+            (lowerBound...upperBound).forEach { line in
+                let textObject: Text = Text(newlines[line]).font(Font.system(size: 14, design: .monospaced))
+                strippedPublishers[line] = Just([textObject]).eraseToAny()
+            }
+        }
+        let deleteIndexes = indexes
+            .map { [$0, $1] }
+            .joined()
+        
+        strippedPublishers.remove(atOffsets: IndexSet(deleteIndexes))
+        
+        let arrayWithNewlines = strippedPublishers
+            .map { Array([$0]) }
+            .joined(separator: [
+                newLinePublisher
+            ])
+        
+        return Publishers.MergeMany(Array(arrayWithNewlines))
             .map { $0.reduce(Text(""), +) }
             .mapError { $0 as Error }
             .collect()
@@ -165,32 +212,6 @@ public final class Markdown {
             .eraseToAnyPublisher()
     }
 }
-
-//final class NSAttributedMarkdown {
-//    public class func markdown(_ text: String, font: UIFont?) -> NSMutableAttributedString {
-//        let mut = NSMutableAttributedString(string: text)
-//        let italic = text.matchRange(for: #"(\*|_)(.*?)\1"#)
-//        let bold = text.matchRange(for: #"(\*\*|__)(.*?)\1"#)
-//        let strikeThrough = text.matchRange(for: #"(~~(\w+(\s\w+)*)~~)"#)
-//        let monospace = text.matchRange(for: #"(`(\w+(\s\w+)*)`)"#)
-//        if let font = font {
-//            mut.setAttributes([.font: font, .foregroundColor: UIColor.label], range: NSRange(mut.string.startIndex..., in: mut.string))
-//        }
-//        italic.forEach { match in
-//            mut.applyFontTraits(NSFontTraitMask.italicFontMask, range: NSRange(match, in: mut.string))
-//        }
-//        bold.forEach { match in
-//            mut.applyFontTraits(NSFontTraitMask.boldFontMask, range: NSRange(match, in: mut.string))
-//        }
-//        strikeThrough.forEach { match in
-//            mut.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSRange(match, in: mut.string))
-//        }
-//        monospace.forEach { match in
-//            mut.addAttribute(NSAttributedString.Key.font, value: UIFont.monospacedSystemFont(ofSize: 12, weight: .regular), range: NSRange(match, in: mut.string))
-//        }
-//        return mut
-//    }
-//}
 
 extension Array where Element == String {
     func replaceAllOccurences(of original: String, with string: String) -> [String] {

@@ -66,26 +66,27 @@ struct AsyncMarkdown: View, Equatable {
         self._text = binded
     }
     
+    @ViewBuilder
     var body: some View {
-        if #available(iOS 15.0, *) {
-            model.markdown
-                .textSelectionBool(!model.hasEmojiOnly)
-                .font(self.model.hasEmojiOnly ? .system(size: 48) : .chatTextFont)
-                .animation(nil)
-                .fixedSize(horizontal: false, vertical: true)
-                .onChange(of: self.text, perform: { text in
-                    self.model.make(text: text)
-                })
-                .if(!model.loaded && model.hasEmojiOnly, transform: { $0.hidden() })
-        } else {
-            model.markdown
-                .font(self.model.hasEmojiOnly ? .system(size: 48) : .chatTextFont)
-                .animation(nil)
-                .fixedSize(horizontal: false, vertical: true)
-                .onChange(of: self.text, perform: { text in
-                    self.model.make(text: text)
-                })
-                .if(!model.loaded && model.hasEmojiOnly, transform: { $0.hidden() })
+        if !model.hasEmojiOnly || model.loaded {
+            if #available(iOS 16.0, *) {
+                model.markdown
+                    .textSelectionBool(!model.hasEmojiOnly)
+                    .font(self.model.hasEmojiOnly ? .system(size: 48) : .chatTextFont)
+                    .animation(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .onChange(of: self.text, perform: { text in
+                        self.model.make(text: text)
+                    })
+            } else {
+                model.markdown
+                    .font(self.model.hasEmojiOnly ? .system(size: 48) : .chatTextFont)
+                    .animation(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .onChange(of: self.text, perform: { text in
+                        self.model.make(text: text)
+                    })
+            }
         }
     }
 }

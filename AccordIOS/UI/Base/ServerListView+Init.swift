@@ -25,7 +25,7 @@ extension ServerListView {
                      var c = c
                      if c.recipients?.isEmpty != false {
                          c.recipients = c.recipient_ids?
-                             .compactMap { readyPacket.users[$0, keys] }
+                             .compactMap { readyPacket.users[keyed: $0, keys] }
 //                             .compactMap { keys[$0] }
 //                             .map { readyPacket.users[$0] }
                      }
@@ -60,20 +60,6 @@ extension ServerListView {
                          return nextDict
                      }
         
-        // Set presence
-        Activity.current = Activity(
-            emoji: StatusEmoji(
-                name: readyPacket.user_settings?.custom_status?.emoji_name ?? Array(Emotes.emotes.values.joined())[readyPacket.user_settings?.custom_status?.emoji_id ?? ""]?.name,
-                id: readyPacket.user_settings?.custom_status?.emoji_id,
-                animated: false
-            ),
-            name: "Custom Status",
-            type: 4,
-            state: readyPacket.user_settings?.custom_status?.text
-        )
-        wss?.presences.append(Activity.current!)
-        self.statusText = readyPacket.user_settings?.custom_status?.text
-        
         // Save the emotes for easy access
         Emotes.emotes = readyPacket.guilds
             .map { ["\($0.id)$\($0.name ?? "Unknown Guild")": $0.emojis] }
@@ -101,7 +87,7 @@ extension ServerListView {
         // Form the folders and fix the guild objects
         let guildKeyMap = readyPacket.guilds.generateKeyMap()
         let guildTemp = guildOrder
-            .compactMap { readyPacket.guilds[$0, guildKeyMap] }
+            .compactMap { readyPacket.guilds[keyed: $0, guildKeyMap] }
 //            .compactMap { guildKeyMap[$0] }
 //            .map { readyPacket.guilds[$0] }
         

@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import AppKit
+import UIKit
 
 struct NewInviteSheet: View {
     @State var code: String?
@@ -16,7 +16,6 @@ struct NewInviteSheet: View {
     @Binding var isPresented: Bool
     @State var maxAge: Int = 0
     @State var maxUses: Int = 0
-    let desc: NSWindow.PersistableFrameDescriptor? = nil
     
     var ageString: String {
         if maxAge == 0 {
@@ -64,8 +63,8 @@ struct NewInviteSheet: View {
                     }
                     .padding(5)
                     Button("Copy") {
-                        NSPasteboard.general.clearContents()
-                        NSPasteboard.general.setString("https://discord.gg/" + (self.code ?? ""), forType: .string)
+                        UIPasteboard.general.string = ""
+                        UIPasteboard.general.string = "https://discord.gg/" + (self.code ?? "")
                     }
                 }
             }
@@ -133,9 +132,6 @@ struct NewInviteSheet: View {
                 isPresented.toggle()
             }
             .controlSize(.large)
-            .onExitCommand {
-                isPresented.toggle()
-            }
             
             Button("Generate new invite") {
                 self.generateCode()
