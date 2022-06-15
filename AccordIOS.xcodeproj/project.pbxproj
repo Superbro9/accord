@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8921DBD0285A75AC00711560 /* SetNicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBCF285A75AC00711560 /* SetNicknameView.swift */; };
 		8934607E27B1ACCC00BD681F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8934607D27B1ACCC00BD681F /* SettingsView.swift */; };
 		897836CD27BBE85A00B86857 /* FolderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897836CC27BBE85A00B86857 /* FolderListView.swift */; };
 		897836CF27BBE93B00B86857 /* ServerListView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897836CE27BBE93B00B86857 /* ServerListView+Init.swift */; };
@@ -102,6 +103,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8921DBCF285A75AC00711560 /* SetNicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNicknameView.swift; sourceTree = "<group>"; };
 		8934607D27B1ACCC00BD681F /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		897836CC27BBE85A00B86857 /* FolderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListView.swift; sourceTree = "<group>"; };
 		897836CE27BBE93B00B86857 /* ServerListView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerListView+Init.swift"; sourceTree = "<group>"; };
@@ -476,6 +478,7 @@
 				897836CC27BBE85A00B86857 /* FolderListView.swift */,
 				89EF26422838008F007A3BEC /* DMButton.swift */,
 				89EF26442838011C007A3BEC /* PrivateChannelsView.swift */,
+				8921DBCF285A75AC00711560 /* SetNicknameView.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -613,6 +616,7 @@
 			files = (
 				89E9FEF327AFFE8C00861F05 /* PopoverProfileView.swift in Sources */,
 				89C209AC27DE9DB900A2994E /* PinsView2.swift in Sources */,
+				8921DBD0285A75AC00711560 /* SetNicknameView.swift in Sources */,
 				89EFBB192835583100141049 /* ZStream.swift in Sources */,
 				89E9FEA427AFFC3500861F05 /* Keypath++.swift in Sources */,
 				89E9FE6227AFF98200861F05 /* AccordAlert.swift in Sources */,
@@ -840,8 +844,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -872,8 +875,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
