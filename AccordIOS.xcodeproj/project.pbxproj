@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8921DBD0285A75AC00711560 /* SetNicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBCF285A75AC00711560 /* SetNicknameView.swift */; };
+		8921DBD2285A768500711560 /* InviteUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBD1285A768500711560 /* InviteUpdate.swift */; };
+		8921DBD4285A770000711560 /* NewInviteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBD3285A770000711560 /* NewInviteSheet.swift */; };
 		8934607E27B1ACCC00BD681F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8934607D27B1ACCC00BD681F /* SettingsView.swift */; };
 		897836CD27BBE85A00B86857 /* FolderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897836CC27BBE85A00B86857 /* FolderListView.swift */; };
 		897836CF27BBE93B00B86857 /* ServerListView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897836CE27BBE93B00B86857 /* ServerListView+Init.swift */; };
@@ -104,6 +106,8 @@
 
 /* Begin PBXFileReference section */
 		8921DBCF285A75AC00711560 /* SetNicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNicknameView.swift; sourceTree = "<group>"; };
+		8921DBD1285A768500711560 /* InviteUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteUpdate.swift; sourceTree = "<group>"; };
+		8921DBD3285A770000711560 /* NewInviteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInviteSheet.swift; sourceTree = "<group>"; };
 		8934607D27B1ACCC00BD681F /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		897836CC27BBE85A00B86857 /* FolderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListView.swift; sourceTree = "<group>"; };
 		897836CE27BBE93B00B86857 /* ServerListView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServerListView+Init.swift"; sourceTree = "<group>"; };
@@ -308,6 +312,7 @@
 				89E9FE6827AFFAAF00861F05 /* Reaction.swift */,
 				89A54FDB27D93DB6003142A0 /* Permissions.swift */,
 				89EF264628381464007A3BEC /* PermissionOverwrites.swift */,
+				8921DBD1285A768500711560 /* InviteUpdate.swift */,
 			);
 			path = DiscordTypes;
 			sourceTree = "<group>";
@@ -479,6 +484,7 @@
 				89EF26422838008F007A3BEC /* DMButton.swift */,
 				89EF26442838011C007A3BEC /* PrivateChannelsView.swift */,
 				8921DBCF285A75AC00711560 /* SetNicknameView.swift */,
+				8921DBD3285A770000711560 /* NewInviteSheet.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -669,8 +675,10 @@
 				89E9FE8027AFFAAF00861F05 /* Emote.swift in Sources */,
 				89E9FE7627AFFAAF00861F05 /* Sticker.swift in Sources */,
 				89E9FEA927AFFC3500861F05 /* SwiftUI++.swift in Sources */,
+				8921DBD2285A768500711560 /* InviteUpdate.swift in Sources */,
 				89E9FF2227B0064A00861F05 /* ChannelView.swift in Sources */,
 				89E9FE7A27AFFAAF00861F05 /* User.swift in Sources */,
+				8921DBD4285A770000711560 /* NewInviteSheet.swift in Sources */,
 				89D7CBB827B58C3800D4B567 /* EmbedView.swift in Sources */,
 				89E9FE8927AFFBAB00861F05 /* MemberList.swift in Sources */,
 				89E9FE7D27AFFAAF00861F05 /* Settings.swift in Sources */,
