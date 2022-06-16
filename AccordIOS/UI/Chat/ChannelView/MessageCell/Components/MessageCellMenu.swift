@@ -15,7 +15,7 @@ fileprivate var encoder: ISO8601DateFormatter = {
 }()
 
 struct MessageCellMenu: View {
-    
+
     var message: Message
     var guildID: String
     var permissions: Permissions
@@ -23,7 +23,7 @@ struct MessageCellMenu: View {
     @Binding var editing: Bool
     @Binding var popup: Bool
     @Binding var showEditNicknamePopover: Bool
-    
+
     @ViewBuilder
     private var moderationSection: some View {
         if self.guildID == "@me" || (self.guildID != "@me" && permissions.moderator) {
@@ -73,7 +73,7 @@ struct MessageCellMenu: View {
             }
         }
     }
-    
+
     func timeout(time: String) {
         let url = URL(string: "https://discord.com/api/v9/guilds/")?
             .appendingPathComponent(guildID)
@@ -91,7 +91,7 @@ struct MessageCellMenu: View {
             ))
         }
     }
-    
+
     private var copyMenu: some View {
         Menu("Copy") {
             Button("Copy message text") { [weak message] in
@@ -121,7 +121,7 @@ struct MessageCellMenu: View {
             })
         }
     }
-    
+
     private var moderationMenu: some View {
         Menu("Moderation") {
             if permissions.contains(.banMembers) {
@@ -197,7 +197,7 @@ struct MessageCellMenu: View {
             }
         }
     }
-    
+
     private var attachmentMenu: some View {
         ForEach(message.attachments, id: \.url) { attachment in
             Menu(attachment.filename) { [weak attachment] in
@@ -213,7 +213,7 @@ struct MessageCellMenu: View {
             }
         }
     }
-    
+
     var body: some View {
         Button("Reply") { [weak message] in
             replyingTo = message
@@ -234,13 +234,13 @@ struct MessageCellMenu: View {
         Button("Show profile") {
             popup.toggle()
         }
-        
+
         if ((message.author == AccordCoreVars.user) || self.permissions.contains(.manageNicknames)) && guildID != "@me" {
             Button("Set nickname") {
                 showEditNicknamePopover.toggle()
             }
         }
-        
+
         Divider()
         copyMenu
         if !message.attachments.isEmpty {

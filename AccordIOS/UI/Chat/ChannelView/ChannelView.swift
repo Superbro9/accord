@@ -68,52 +68,38 @@ struct ChannelView: View, Equatable {
     }
     
     var messagesView: some View {
-        ForEach(viewModel.messages, id: \.identifier) { message in
-            if let author = message.author {
-                MessageCellView (
-                    message: message,
-                    nick: viewModel.nicks[author.id],
-                    replyNick: viewModel.nicks[message.referenced_message?.author?.id ?? ""],
-                    pronouns: viewModel.pronouns[author.id],
-                    avatar: viewModel.avatars[author.id],
-                    guildID: guildID,
-                    permissions: viewModel.permissions,
-                    role: $viewModel.roles[author.id],
-                    replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
-                    replyingTo: $replyingTo
-                )
-                .equatable()
-                .id(message.id)
-                ///b  #warning("Whats commented out doesnt compile, to use replace it with whats in line 92 to 102")
-                //                .listRowInsets(.init(top: 3.5, leading: 0, bottom: ((message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 13) - (message.user_mentioned == true ? 3 : 0), trailing: 0))
-                //                .padding(.horizontal, 5)
-                //                .padding(.vertical, message.user_mentioned == true ? 3 : 0)
-                //                .background(message.user_mentioned == true ? Color.yellow.opacity(0.1).cornerRadius(7) : nil)
-                .listRowInsets(.init(top: 0, leading: 0, bottom: (message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 10, trailing: 0))
-                .if(message.mentions.compactMap { $0?.id }.contains(user_id), transform: { view in
-                    view
-                        .padding(5)
-                        .frame (
-                            maxWidth: .infinity,
-                            maxHeight: .infinity
-                        )
-                        .background(Color.yellow.opacity(0.05))
-                        .cornerRadius(7)
-                })
+            ForEach(viewModel.messages, id: \.identifier) { message in
+                if let author = message.author {
+                    MessageCellView (
+                        message: message,
+                        nick: viewModel.nicks[author.id],
+                        replyNick: viewModel.nicks[message.referenced_message?.author?.id ?? ""],
+                        pronouns: viewModel.pronouns[author.id],
+                        avatar: viewModel.avatars[author.id],
+                        guildID: guildID,
+                        permissions: viewModel.permissions,
+                        role: $viewModel.roles[author.id],
+                        replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
+                        replyingTo: $replyingTo
+                    )
+                    .equatable()
+                    .id(message.id)
+                    .listRowInsets(.init(top: 0, leading: 0, bottom: (message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 10, trailing: 0))
                     .onAppear {
-                    if viewModel.messages.count >= 50 &&
-                        message == viewModel.messages[viewModel.messages.count - 2] {
-                        messageFetchQueue.async {
-                            viewModel.loadMoreMessages()
+                        if viewModel.messages.count >= 50,
+                           message == viewModel.messages[viewModel.messages.count - 2]
+                        {
+                            messageFetchQueue.async {
+                                viewModel.loadMoreMessages()
+                            }
                         }
                     }
                 }
             }
+            //.offset(x: 0, y: -1)
+            .rotationEffect(.radians(.pi))
+            .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
         }
-        //.offset(x: 0, y: -1)
-        .rotationEffect(.radians(.pi))
-        .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
-    }
     
     var body: some View {
         HStack {

@@ -8,7 +8,6 @@
 import SwiftUI
 import AVKit
 
-
 struct MessageCellView: View, Equatable {
     static func == (lhs: MessageCellView, rhs: MessageCellView) -> Bool {
         lhs.message == rhs.message && lhs.nick == rhs.nick && lhs.avatar == rhs.avatar
@@ -27,9 +26,8 @@ struct MessageCellView: View, Equatable {
     @State var editing: Bool = false
     @State var popup: Bool = false
     @State var editedText: String = ""
-    
     @State var showEditNicknamePopover: Bool = false
-
+    
     @AppStorage("GifProfilePictures")
     var gifPfp: Bool = false
     
@@ -41,7 +39,7 @@ struct MessageCellView: View, Equatable {
             self.editing = false
             self.editedText = ""
         }
-        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .textFieldStyle(.roundedBorder)
         .onAppear {
             self.editedText = message.content
         }
@@ -95,7 +93,7 @@ struct MessageCellView: View, Equatable {
                 }
             case .channelNameChange:
                 if let user = message.author {
-                    WelcomeMessageView (
+                    ChannelNameChangeView (
                         user: user
                     )
                     .padding(.leading, leftPadding)
@@ -155,40 +153,30 @@ struct MessageCellView: View, Equatable {
                     }
                     Spacer()
                 }
+
             }
-        if let user = message.author {
-            WelcomeMessageView (
-                user: user
-            )
-            .padding(.leading, leftPadding)
-        }
-        ForEach(message.embeds ?? [], id: \.id) { embed in
-            EmbedView(embed: embed)
-                .equatable()
-                .padding(.leading, leftPadding)
-        }
-        if !message.attachments.isEmpty {
-            AttachmentView(media: message.attachments)
-                .padding(.leading, leftPadding)
-                .padding(.top, 5)
-        }
+            if let stickerItems = message.sticker_items,
+                stickerItems.isEmpty == false {
+                StickerView (
+                    stickerItems: stickerItems
+                )
+            }
+            ForEach(message.embeds ?? [], id: \.id) { embed in
+                EmbedView(embed: embed)
+                    .equatable()
+                    .padding(.leading, leftPadding)
+            }
+            if !message.attachments.isEmpty {
+                AttachmentView(media: message.attachments)
+                    .padding(.leading, leftPadding)
+                    .padding(.top, 5)
+            }
             if let reactions = message.reactions, !reactions.isEmpty {
                 ReactionsGridView (
                     reactions: reactions
                 )
                 .padding(.leading, leftPadding)
             }
-        }
-        .contextMenu {
-            MessageCellMenu (
-                message: self.message,
-                guildID: self.guildID,
-                permissions: self.permissions,
-                replyingTo: self.$replyingTo,
-                editing: self.$editing,
-                popup: self.$popup,
-                showEditNicknamePopover: self.$showEditNicknamePopover
-            )
         }
         .id(message.id)
         .popover(isPresented: $showEditNicknamePopover) {

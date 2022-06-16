@@ -257,9 +257,9 @@
 		891751B5285B51D600CE042E /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				891751B6285B522D00CE042E /* ServerJoin */,
 				89EF26422838008F007A3BEC /* DMButton.swift */,
 				897836CC27BBE85A00B86857 /* FolderListView.swift */,
+				891751B6285B522D00CE042E /* ServerJoin */,
 			);
 			path = Icons;
 			sourceTree = "<group>";
@@ -306,13 +306,13 @@
 			isa = PBXGroup;
 			children = (
 				891751C1285B55B300CE042E /* AvatarView.swift */,
-				891751BF285B559A00CE042E /* AuthorText.swift */,
 				891751C3285B55D200CE042E /* GridStack.swift */,
-				891751D3285B5F4400CE042E /* StickerView.swift */,
-				891751D2285B5EF100CE042E /* Reference */,
-				891751C9285B5E7300CE042E /* MessageTypes */,
-				891751D5285B60FC00CE042E /* ReactionsGrid.swift */,
+				891751BF285B559A00CE042E /* AuthorText.swift */,
 				891751D7285B612500CE042E /* MessageCellMenu.swift */,
+				891751D5285B60FC00CE042E /* ReactionsGrid.swift */,
+				891751D3285B5F4400CE042E /* StickerView.swift */,
+				891751C9285B5E7300CE042E /* MessageTypes */,
+				891751D2285B5EF100CE042E /* Reference */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -320,9 +320,9 @@
 		891751C9285B5E7300CE042E /* MessageTypes */ = {
 			isa = PBXGroup;
 			children = (
-				891751CB285B5EA600CE042E /* ChannelNameChangeView.swift */,
 				891751CC285B5EA600CE042E /* RecipientAddView.swift */,
 				891751CD285B5EA600CE042E /* RecipientRemoveView.swift */,
+				891751CB285B5EA600CE042E /* ChannelNameChangeView.swift */,
 				891751CA285B5EA600CE042E /* WelcomeMessageView.swift */,
 			);
 			path = MessageTypes;
