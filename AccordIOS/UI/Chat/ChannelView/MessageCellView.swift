@@ -341,6 +341,13 @@ struct MessageCellView: View, Equatable {
         Button("Show profile") {
             popup.toggle()
         }
+        
+        if ((message.author == AccordCoreVars.user) || self.permissions.contains(.manageNicknames)) && guildID != "@me" {
+            Button("Set nickname") {
+                showEditNicknamePopover.toggle()
+            }
+        }
+        
         Divider()
         copyMenu
         if !message.attachments.isEmpty {

@@ -201,9 +201,12 @@ struct ChatControls: View {
             }
 
         } label: {
-            Label("", systemImage: "plus.circle.fill")
-                .imageScale(.medium)
+            Image(systemName: "plus.circle.fill")
+                .resizable()
+                .scaledToFit()
         }
+        .buttonStyle(.bordered)
+        .frame(width: 17.5, height: 17.5)
     }
     
     var nitrolessButton: some View {
@@ -211,9 +214,11 @@ struct ChatControls: View {
             nitroless.toggle()
         }) {
             Image(systemName: "rectangle.grid.3x2.fill")
-                .imageScale(.medium)
+                .resizable()
+                                 .scaledToFit()
         }
         .buttonStyle(.bordered)
+        .frame(width: 17.5, height: 17.5)
         .popover(isPresented: $nitroless, content: {
             NavigationLazyView(NitrolessView(chatText: $viewModel.textFieldContents).equatable())
                 .frame(width: 300, height: 400)
@@ -225,9 +230,11 @@ struct ChatControls: View {
             emotes.toggle()
         }) {
             Image(systemName: "face.smiling.fill")
-                .imageScale(.medium)
+                .resizable()
+                .scaledToFit()
         }
         .buttonStyle(.bordered)
+        .frame(width: 17.5, height: 17.5)
         .popover(isPresented: $emotes, content: {
             NavigationLazyView(EmotesView(chatText: $viewModel.textFieldContents).equatable())
                 .frame(width: 300, height: 400)
@@ -253,8 +260,9 @@ struct ChatControls: View {
                         .padding(.bottom, 7)
                     }
                     HStack {
-                       montereyTextField
                         fileImportButton
+                        Divider().frame(height: 20)
+                        montereyTextField
                         if nitrolessEnabled {
                             nitrolessButton
                         }
@@ -262,6 +270,9 @@ struct ChatControls: View {
                         HStack {
                             if fileUpload != nil {
                                 Image(systemName: "doc.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 17.5, height: 17.5)
                                     .foregroundColor(Color.secondary)
                             }
                         }

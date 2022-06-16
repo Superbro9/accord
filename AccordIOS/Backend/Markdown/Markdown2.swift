@@ -81,7 +81,6 @@ public final class Markdown {
                     guard !font else { return image }
                     var size = CGSize(width: 18, height: 18)
                     image.size
-                    print("resizing hehe")
                     return image
                 }
                 .map {
