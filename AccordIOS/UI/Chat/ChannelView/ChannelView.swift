@@ -10,6 +10,15 @@ import AVKit
 import SwiftUI
 import Combine
 
+
+extension UIScrollView {
+   func scrollToBottom(animated: Bool) {
+     if self.contentSize.height < self.bounds.size.height { return }
+     let bottomOffset = CGPoint(x: 0, y: self.contentSize.height - self.bounds.size.height)
+     self.setContentOffset(bottomOffset, animated: animated)
+  }
+}
+
 struct ChannelView: View, Equatable {
     static func == (lhs: ChannelView, rhs: ChannelView) -> Bool {
         return lhs.viewModel == rhs.viewModel
@@ -77,7 +86,7 @@ struct ChannelView: View, Equatable {
                         replyNick: viewModel.nicks[message.referenced_message?.author?.id ?? ""],
                         pronouns: viewModel.pronouns[author.id],
                         avatar: viewModel.avatars[author.id],
-                        guildID: guildID,
+                        guildID: viewModel.guildID,
                         permissions: $viewModel.permissions,
                         role: $viewModel.roles[author.id],
                         replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
@@ -124,16 +133,16 @@ struct ChannelView: View, Equatable {
                 
             }
             if memberListShown {
-                MemberListView(guildID: self.guildID, list: $viewModel.memberList)
+                MemberListView(guildID: viewModel.guildID, list: $viewModel.memberList)
                     .frame(width: 250)
-                    .onAppear {
-                        if viewModel.memberList.isEmpty && guildID != "@me" {
-                            try? wss.memberList(for: guildID, in: channelID)
+                    .onAppear { [unowned viewModel] in
+                        if viewModel.memberList.isEmpty && viewModel.guildID != "@me" {
+                            try? wss.memberList(for: viewModel.guildID, in: viewModel.channelID)
                         }
                     }
             }
         }
-        .navigationTitle(Text("\(guildID == "@me" ? "" : "#")\(channelName)"))
+        .navigationTitle(Text("\(viewModel.guildID == "@me" ? "" : "#")\(channelName)"))
         .gesture(DragGesture().onChanged({ _ in
             self.endTextEditing()
         }))
@@ -145,23 +154,22 @@ struct ChannelView: View, Equatable {
                     Image(systemName: "pin.fill")
                         .rotationEffect(.degrees(45))
                 }
-                .popover(isPresented: $pins) {
-                    PinsView(guildID: guildID, channelID: channelID, replyingTo: Binding.constant(nil))
-                        .frame(width: 500, height: 700)
-                }
-                
-                Button(action: {
-                    self.mentions.toggle()
-                }) {
-                    Image(systemName: "bell.badge.fill")
-                }
-                .popover(isPresented: $mentions) {
-                    MentionsView(replyingTo: Binding.constant(nil))
-                        .frame(width: 500, height: 700)
-                }
-                
-                Toggle(isOn: $memberListShown.animation()) {
-                    Image(systemName: "person.2.fill")
+                .popover(isPresented: $pins) { [unowned viewModel] in
+                    PinsView(guildID: viewModel.guildID, channelID: viewModel.channelID, replyingTo: Binding.constant(nil))
+                    
+                    Button(action: {
+                        self.mentions.toggle()
+                    }) {
+                        Image(systemName: "bell.badge.fill")
+                    }
+                    .popover(isPresented: $mentions) {
+                        MentionsView(replyingTo: Binding.constant(nil))
+                            .frame(width: 500, height: 700)
+                    }
+                    
+                    Toggle(isOn: $memberListShown.animation()) {
+                        Image(systemName: "person.2.fill")
+                    }
                 }
             }
         }

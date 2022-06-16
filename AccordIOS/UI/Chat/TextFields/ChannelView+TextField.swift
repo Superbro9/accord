@@ -10,7 +10,7 @@ import SwiftUI
 
 extension ChannelView {
     var blurredTextField: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) { [unowned viewModel] in
             if replyingTo != nil || !viewModel.typing.isEmpty {
                 HStack {
                     if let replied = replyingTo {
@@ -46,12 +46,12 @@ extension ChannelView {
                 Divider()
             }
             ChatControls(
-                guildID: guildID,
-                channelID: channelID,
+                guildID: viewModel.guildID,
+                channelID: viewModel.channelID,
                 chatText: "Message #\(channelName)",
                 replyingTo: $replyingTo,
                 mentionUser: $mentionUser,
-                permissions: $viewModel.permissions,
+                permissions: viewModel.permissions,
                 fileUpload: $fileUpload,
                 fileUploadURL: $fileUploadURL
             )

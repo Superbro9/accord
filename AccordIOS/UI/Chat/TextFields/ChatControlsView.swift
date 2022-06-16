@@ -13,7 +13,7 @@ struct ChatControls: View {
     enum FocusedElements: Hashable {
       case mainTextField
     }
-    @available(iOS 15.0, *)
+    
     @FocusState private var focusedField: FocusedElements?
     
     @State var chatTextFieldContents: String = ""
@@ -23,7 +23,7 @@ struct ChatControls: View {
     var chatText: String
     @Binding var replyingTo: Message?
     @Binding var mentionUser: Bool
-    @Binding var permissions: Permissions
+    var permissions: Permissions
     @State var nitroless = false
     @State var emotes = false
     @State var showImagePicker: Bool = false
@@ -65,10 +65,15 @@ struct ChatControls: View {
             } else {
                 viewModel?.send(text: contents, guildID: guildID, channelID: channelID)
             }
-            if #available(iOS 15.0, *) {
-                DispatchQueue.main.async {
-                    self.focusedField = .mainTextField
-                }
+            self.focusIfUnfocused()
+        }
+    }
+    
+    func focusIfUnfocused() {
+        DispatchQueue.main.async {
+            print(self.focusedField)
+            if self.focusedField != .mainTextField {
+                self.focusedField = .mainTextField
             }
         }
     }
@@ -166,7 +171,7 @@ var matchedChannelsView: some View {
     )
 }
 
-    var montereyTextField: some View {
+    var mainTextField: some View {
         TextField(textFieldText, text: $viewModel.textFieldContents)
             .focused($focusedField, equals: .mainTextField)
             .onSubmit {
@@ -174,7 +179,9 @@ var matchedChannelsView: some View {
                 send()
             }
             .onAppear {
-                self.focusedField = .mainTextField
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    self.focusIfUnfocused()
+                })
             }
     }
     
@@ -212,7 +219,7 @@ var matchedChannelsView: some View {
         .buttonStyle(.bordered)
         .frame(width: 17.5, height: 17.5)
         .popover(isPresented: $nitroless, content: {
-            NavigationLazyView(NitrolessView(chatText: $viewModel.textFieldContents).equatable())
+            NitrolessView(chatText: $viewModel.textFieldContents).equatable()
                 .frame(width: 300, height: 400)
         })
     }
@@ -254,7 +261,7 @@ var matchedChannelsView: some View {
                     HStack {
                         fileImportButton
                         Divider().frame(height: 20)
-                        montereyTextField
+                        mainTextField
                         if nitrolessEnabled {
                             nitrolessButton
                         }

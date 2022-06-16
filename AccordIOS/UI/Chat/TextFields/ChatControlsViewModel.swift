@@ -11,7 +11,7 @@ import Foundation
 import SwiftUI
 
 final class ChatControlsViewModel: ObservableObject {
-    @Published var matchedUsers: [String:String] = .init()
+    @Published var matchedUsers: [String: String] = .init()
     @Published var matchedChannels: [Channel] = .init()
     @Published var matchedEmoji: [DiscordEmote] = .init()
     @Published var matchedCommands: [SlashCommandStorage.Command] = .init()
@@ -20,29 +20,28 @@ final class ChatControlsViewModel: ObservableObject {
     var observation: NSKeyValueObservation?
     var command: SlashCommandStorage.Command?
 
-    weak var textField: UITextField?
     var currentValue: String?
     var currentRange: Int?
-    
+
     @AppStorage("SilentTyping")
     var silentTyping: Bool = false
     
     var locked: Bool = false
     var runOnUnlock: (() -> Void)?
-    
+
     init() {
-             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                 self.findView()
-             })
-         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            self.findView()
+        })
+    }
     
     func checkText(guildID: String, channelID: String) {
         let ogContents = self.textFieldContents
-        let mentions = textFieldContents.matches(precomputed: Regex.chatTextMentionsRegex)
-        let channels = textFieldContents.matches(precomputed: Regex.chatTextChannelsRegex)
-        let slashes = textFieldContents.matches(precomputed: Regex.chatTextSlashCommandRegex)
-        let emoji = textFieldContents.matches(precomputed: Regex.chatTextEmojiRegex)
-        let emotes = self.textFieldContents.matches(precomputed: Regex.completedEmoteRegex)
+        let mentions = textFieldContents.matches(precomputed: RegexExpressions.chatTextMentionsRegex)
+        let channels = textFieldContents.matches(precomputed: RegexExpressions.chatTextChannelsRegex)
+        let slashes = textFieldContents.matches(precomputed: RegexExpressions.chatTextSlashCommandRegex)
+        let emoji = textFieldContents.matches(precomputed: RegexExpressions.chatTextEmojiRegex)
+        let emotes = self.textFieldContents.matches(precomputed: RegexExpressions.completedEmoteRegex)
         
         emotes.forEach { emoji in
             let emote = emoji.dropLast().dropFirst().stringLiteral
@@ -64,7 +63,7 @@ final class ChatControlsViewModel: ObservableObject {
         }
         
         if let search = mentions.last?.lowercased() {
-            let matched: [String:String] = Storage.usernames
+            let matched: [String: String] = Storage.usernames
                 .mapValues { $0.lowercased() }
                 .filterValues { $0.contains(search) }
                 .prefix(10)
@@ -82,8 +81,8 @@ final class ChatControlsViewModel: ObservableObject {
                 self.matchedChannels = joined
             }
         } else if let command = slashes.last?.trimmingCharacters(in: .letters.inverted),
-                  textFieldContents.prefix(1) == "/" && guildID != "@me" {
-            
+                  textFieldContents.prefix(1) == "/", guildID != "@me"
+        {
             guard !locked else {
                 self.runOnUnlock = { [weak self] in
                     self?.checkText(guildID: guildID, channelID: channelID)
@@ -131,13 +130,15 @@ final class ChatControlsViewModel: ObservableObject {
             }
         }
     }
-    
+
     func findView() {
         UIKitLink<UITextField>.introspect { textField, _ in
-            textField.allowsEditingTextAttributes = true
+            DispatchQueue.main.async {
+                textField.allowsEditingTextAttributes = true
+            }
         }
     }
-    
+
     func clearMatches() {
         DispatchQueue.main.async {
             self.matchedEmoji.removeAll()
@@ -145,12 +146,12 @@ final class ChatControlsViewModel: ObservableObject {
             self.matchedChannels.removeAll()
         }
     }
-    
+
     func send(text: String, guildID: String, channelID: String) {
         Request.ping(url: URL(string: "\(rootURL)/channels/\(channelID)/messages"), headers: Headers(
             userAgent: discordUserAgent,
             token: AccordCoreVars.token,
-            bodyObject: ["content": text, "tts":false, "nonce":generateFakeNonce()],
+            bodyObject: ["content": text, "tts": false, "nonce": generateFakeNonce()],
             type: .POST,
             discordHeaders: true,
             referer: "https://discord.com/channels/\(guildID)/\(channelID)",
@@ -158,34 +159,28 @@ final class ChatControlsViewModel: ObservableObject {
             json: true
         ))
     }
-    
+
     func emptyTextField() {
-        if #available(macOS 12.0, *) {
-            DispatchQueue.main.async {
-                self.textFieldContents = ""
-            }
-        } else {
-            DispatchQueue.main.sync {
-                self.textFieldContents = ""
-            }
+        DispatchQueue.main.async {
+            self.textFieldContents = ""
         }
     }
-    
+
     func executeCommand(guildID: String, channelID: String) throws {
-        guard let command = self.command else {
-            if self.textFieldContents.prefix(6) == "/nick " {
-                let nick = self.textFieldContents.dropFirst(6).stringLiteral
-                Request.ping(url: URL(string: "\(rootURL)/guilds/\(guildID)/members/%40me/nick"), headers: Headers (
+        guard let command = command else {
+            if textFieldContents.prefix(6) == "/nick " {
+                let nick = textFieldContents.dropFirst(6).stringLiteral
+                Request.ping(url: URL(string: "\(rootURL)/guilds/\(guildID)/members/%40me/nick"), headers: Headers(
                     userAgent: discordUserAgent,
                     token: AccordCoreVars.token,
-                    bodyObject: ["nick":nick],
+                    bodyObject: ["nick": nick],
                     type: .PATCH,
                     discordHeaders: true,
                     json: true
                 ))
-                self.emptyTextField()
-            } else if self.textFieldContents.prefix(6) == "/shrug" {
-                self.send(text: #"¯\_(ツ)_/¯"#, guildID: guildID, channelID: channelID)
+                emptyTextField()
+            } else if textFieldContents.prefix(6) == "/shrug" {
+                send(text: #"¯\_(ツ)_/¯"#, guildID: guildID, channelID: channelID)
                 self.emptyTextField()
             } else if textFieldContents.prefix(6) == "/debug" {
                 sendDebugLog(guildID: guildID, channelID: channelID)
@@ -198,12 +193,12 @@ final class ChatControlsViewModel: ObservableObject {
                 self.emptyTextField()
             } else if textFieldContents.prefix(5) == "/help" {
                 let help = """
-                                 **Slash commands**
-                                 `/shrug`: shrug
-                                 `/debug`: send debug log
-                                 `/reset`: resume websocket connection
-                                 `/reset force`: force reset websocket connection
-                                 """
+                **Slash commands**
+                `/shrug`: shrug
+                `/debug`: send debug log
+                `/reset`: resume websocket connection
+                `/reset force`: force reset websocket connection
+                """
                 let system = AccordCoreVars.user
                 system?.id = generateFakeNonce()
                 system?.username = "Accord"
@@ -229,11 +224,11 @@ final class ChatControlsViewModel: ObservableObject {
             }
             return
         }
-        var options: [[String:Any]] = []
+        var options: [[String: Any]] = []
         if command.options?.count != 0 {
-            let args: [(key: String, value: Any)] = self.textFieldContents
+            let args: [(key: String, value: Any)] = textFieldContents
                 .matches(for: #"(\S+):((?:(?! \S+:).)+)"#)
-                .compactMap { (arg) -> (key: String, value: Any)? in
+                .compactMap { arg -> (key: String, value: Any)? in
                     let components = arg.components(separatedBy: ":")
                     if let key = components.first, let value = components.last {
                         return (key: key, value: value)
@@ -241,12 +236,12 @@ final class ChatControlsViewModel: ObservableObject {
                         return nil
                     }
                 }
-            options = args.map { (arg) -> [String:Any] in
-                ["name":arg.key, "type":3, "value":arg.value]
+            options = args.map { arg -> [String: Any] in
+                ["name": arg.key, "type": 3, "value": arg.value]
             }
         }
-        
-        try SlashCommands.interact (
+
+        try SlashCommands.interact(
             applicationID: command.application_id,
             guildID: guildID,
             channelID: channelID,
@@ -258,23 +253,24 @@ final class ChatControlsViewModel: ObservableObject {
             options: command.options ?? [],
             optionValues: options
         )
+
         DispatchQueue.main.async {
             self.command = nil
             self.matchedCommands.removeAll()
             self.emptyTextField()
         }
     }
-    
+
     var debugLog: String {
-            """
-            **Accord Debug Log**
-            Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
-            Gateway State: \(wss.connection?.state as Any)
-            Compression: \(wss.compress ? "Enabled" : "Disabled")
-            Message Subscriber: \(String(reflecting: wss.messageSubject))
-            Compressor State: \(wss.decompressor.status)
-            Connection State: \(reachability?.connection as Any)
-            """
+        """
+        **Accord Debug Log**
+        Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
+        Gateway State: \(wss.connection?.state as Any)
+        Compression: \(wss.compress ? "Enabled" : "Disabled")
+        Message Subscriber: \(String(reflecting: wss.messageSubject))
+        Compressor State: \(wss.decompressor.status)
+        Connection State: \(reachability?.connection as Any)
+        """
     }
     
     func sendDebugLog(guildID: String, channelID: String) {
@@ -285,7 +281,7 @@ final class ChatControlsViewModel: ObservableObject {
         Request.ping(url: URL(string: "\(rootURL)/channels/\(replyingTo.channel_id)/messages"), headers: Headers(
             userAgent: discordUserAgent,
             token: AccordCoreVars.token,
-            bodyObject: ["content": text, "allowed_mentions": ["parse": ["users", "roles", "everyone"], "replied_user": mention], "message_reference": ["channel_id": replyingTo.channel_id, "message_id": replyingTo.id], "tts":false, "nonce":generateFakeNonce()],
+            bodyObject: ["content": text, "allowed_mentions": ["parse": ["users", "roles", "everyone"], "replied_user": mention], "message_reference": ["channel_id": replyingTo.channel_id, "message_id": replyingTo.id], "tts": false, "nonce": generateFakeNonce()],
             type: .POST,
             discordHeaders: true,
             referer: "https://discord.com/channels/\(guildID)/\(replyingTo.channel_id)",
@@ -300,9 +296,9 @@ final class ChatControlsViewModel: ObservableObject {
         let boundary = "Boundary-\(UUID().uuidString)"
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.addValue(AccordCoreVars.token, forHTTPHeaderField: "Authorization")
-        guard let string = try? ["content":text].jsonString() else { return }
+        guard let string = try? ["content": text].jsonString() else { return }
         request.httpBody = try? Request.createMultipartBody(with: string, fileURLs: file.map(\.absoluteString), boundary: boundary, fileData: data)
-        let task = URLSession.shared.dataTask(with: request) { [weak self] data, res, error in
+        let task = URLSession.shared.dataTask(with: request) { [weak self] _, res, _ in
             if let response = res as? HTTPURLResponse, response.statusCode == 200 {
                 DispatchQueue.main.async {
                     self?.observation = nil
@@ -310,7 +306,7 @@ final class ChatControlsViewModel: ObservableObject {
                 }
             }
         }
-        self.observation = task.progress.observe(\.fractionCompleted) { [weak self] progress, _ in
+        observation = task.progress.observe(\.fractionCompleted) { [weak self] progress, _ in
             DispatchQueue.main.async {
                 self?.percent = "Uploading \(String(Int(progress.fractionCompleted * 100)))%"
             }
@@ -332,7 +328,6 @@ final class ChatControlsViewModel: ObservableObject {
 
 func generateFakeNonce() -> String {
     let date: Double = Date().timeIntervalSince1970
-    let nonceNumber = (Int(date)*1000 - 1420070400000) * 4194304
+    let nonceNumber = (Int(date) * 1000 - 1_420_070_400_000) * 4_194_304
     return String(nonceNumber)
 }
-

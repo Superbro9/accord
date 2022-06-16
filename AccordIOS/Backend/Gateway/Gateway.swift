@@ -63,8 +63,6 @@ final class Gateway {
     private let socketEndpoint: NWEndpoint
     internal let compress: Bool
     
-    var cachedMemberRequest: [String: GuildMember] = [:]
-    
     enum GatewayErrors: Error {
         case noStringData(String)
         case essentialEventFailed(String)
@@ -441,20 +439,22 @@ final class Gateway {
             try send(json: packet)
         }
         
-        func getCommands(guildID: String, query: String, limit: Int = 10) throws {
-            let packet: [String: Any] = [
-                "op": 24,
-                "d": [
-                    "locale": NSNull(),
-                    "query": query,
-                    "guild_id": guildID,
-                    "limit":limit,
-                    "nonce":generateFakeNonce(),
-                    "type":1
-                ],
-            ]
-            try send(json: packet)
-        }
+    func getCommands(guildID: String, commandIDs: [String] = [], limit: Int = 10) throws {
+        let packet: [String: Any] = [
+            "op": 24,
+            "d": [
+                "applications": true,
+                "command_ids": commandIDs,
+                "guild_id": guildID,
+                "limit": limit,
+                "locale": NSNull(),
+                "nonce": generateFakeNonce(),
+                "offset": 0,
+                "type": 1,
+            ],
+        ]
+        try send(json: packet)
+    }
     
    func listenForPresence(userID: String, action: @escaping ((PresenceUpdate) -> Void)) {
              self.presencePipeline[userID] = .init()

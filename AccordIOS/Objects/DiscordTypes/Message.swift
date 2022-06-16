@@ -5,6 +5,7 @@
 //  Created by evelyn on 2021-08-16.
 //
 
+import UIKit
 import Foundation
 
 struct Message: Codable, Equatable, Identifiable, Hashable {
@@ -23,6 +24,12 @@ struct Message: Codable, Equatable, Identifiable, Hashable {
     var mention_everyone: Bool?
     var mentions: [User]
     var user_mentioned: Bool?
+    
+    var userMentioned: Bool { user_mentioned ?? false }
+    var bottomInset: CGFloat {
+        (self.isSameAuthor && self.referenced_message == nil ? 0.5 : 13.0) - (self.userMentioned ? 3.0 : 0.0)
+    }
+    
     var pinned: Bool?
     var timestamp: String
     var processedTimestamp: String?
