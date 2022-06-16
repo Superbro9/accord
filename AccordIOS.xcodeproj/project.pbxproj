@@ -13,6 +13,14 @@
 		891751C4285B55D200CE042E /* GridStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751C3285B55D200CE042E /* GridStack.swift */; };
 		891751C6285B55FA00CE042E /* InteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751C5285B55FA00CE042E /* InteractionView.swift */; };
 		891751C8285B560B00CE042E /* ReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751C7285B560B00CE042E /* ReplyView.swift */; };
+		891751CE285B5EA600CE042E /* WelcomeMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751CA285B5EA600CE042E /* WelcomeMessageView.swift */; };
+		891751CF285B5EA600CE042E /* ChannelNameChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751CB285B5EA600CE042E /* ChannelNameChangeView.swift */; };
+		891751D0285B5EA600CE042E /* RecipientAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751CC285B5EA600CE042E /* RecipientAddView.swift */; };
+		891751D1285B5EA600CE042E /* RecipientRemoveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751CD285B5EA600CE042E /* RecipientRemoveView.swift */; };
+		891751D4285B5F4400CE042E /* StickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751D3285B5F4400CE042E /* StickerView.swift */; };
+		891751D6285B60FC00CE042E /* ReactionsGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751D5285B60FC00CE042E /* ReactionsGrid.swift */; };
+		891751D8285B612500CE042E /* MessageCellMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751D7285B612500CE042E /* MessageCellMenu.swift */; };
+		891751DA285B631800CE042E /* MatchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751D9285B631800CE042E /* MatchesView.swift */; };
 		8921DBD0285A75AC00711560 /* SetNicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBCF285A75AC00711560 /* SetNicknameView.swift */; };
 		8921DBD2285A768500711560 /* InviteUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBD1285A768500711560 /* InviteUpdate.swift */; };
 		8921DBD4285A770000711560 /* NewInviteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBD3285A770000711560 /* NewInviteSheet.swift */; };
@@ -117,6 +125,14 @@
 		891751C3285B55D200CE042E /* GridStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridStack.swift; sourceTree = "<group>"; };
 		891751C5285B55FA00CE042E /* InteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionView.swift; sourceTree = "<group>"; };
 		891751C7285B560B00CE042E /* ReplyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyView.swift; sourceTree = "<group>"; };
+		891751CA285B5EA600CE042E /* WelcomeMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeMessageView.swift; sourceTree = "<group>"; };
+		891751CB285B5EA600CE042E /* ChannelNameChangeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelNameChangeView.swift; sourceTree = "<group>"; };
+		891751CC285B5EA600CE042E /* RecipientAddView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipientAddView.swift; sourceTree = "<group>"; };
+		891751CD285B5EA600CE042E /* RecipientRemoveView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipientRemoveView.swift; sourceTree = "<group>"; };
+		891751D3285B5F4400CE042E /* StickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerView.swift; sourceTree = "<group>"; };
+		891751D5285B60FC00CE042E /* ReactionsGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsGrid.swift; sourceTree = "<group>"; };
+		891751D7285B612500CE042E /* MessageCellMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellMenu.swift; sourceTree = "<group>"; };
+		891751D9285B631800CE042E /* MatchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesView.swift; sourceTree = "<group>"; };
 		8921DBCF285A75AC00711560 /* SetNicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNicknameView.swift; sourceTree = "<group>"; };
 		8921DBD1285A768500711560 /* InviteUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteUpdate.swift; sourceTree = "<group>"; };
 		8921DBD3285A770000711560 /* NewInviteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInviteSheet.swift; sourceTree = "<group>"; };
@@ -289,13 +305,36 @@
 		891751BE285B557600CE042E /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				891751BF285B559A00CE042E /* AuthorText.swift */,
 				891751C1285B55B300CE042E /* AvatarView.swift */,
+				891751BF285B559A00CE042E /* AuthorText.swift */,
 				891751C3285B55D200CE042E /* GridStack.swift */,
+				891751D3285B5F4400CE042E /* StickerView.swift */,
+				891751D2285B5EF100CE042E /* Reference */,
+				891751C9285B5E7300CE042E /* MessageTypes */,
+				891751D5285B60FC00CE042E /* ReactionsGrid.swift */,
+				891751D7285B612500CE042E /* MessageCellMenu.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		891751C9285B5E7300CE042E /* MessageTypes */ = {
+			isa = PBXGroup;
+			children = (
+				891751CB285B5EA600CE042E /* ChannelNameChangeView.swift */,
+				891751CC285B5EA600CE042E /* RecipientAddView.swift */,
+				891751CD285B5EA600CE042E /* RecipientRemoveView.swift */,
+				891751CA285B5EA600CE042E /* WelcomeMessageView.swift */,
+			);
+			path = MessageTypes;
+			sourceTree = "<group>";
+		};
+		891751D2285B5EF100CE042E /* Reference */ = {
+			isa = PBXGroup;
+			children = (
 				891751C5285B55FA00CE042E /* InteractionView.swift */,
 				891751C7285B560B00CE042E /* ReplyView.swift */,
 			);
-			path = Components;
+			path = Reference;
 			sourceTree = "<group>";
 		};
 		8991163327AFEF3800FFDE93 = {
@@ -580,6 +619,7 @@
 				8984EEC927B43E4E0025AEC5 /* ChannelView+TextField.swift */,
 				8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */,
 				8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */,
+				891751D9285B631800CE042E /* MatchesView.swift */,
 			);
 			path = TextFields;
 			sourceTree = "<group>";
@@ -696,6 +736,7 @@
 			files = (
 				89E9FEF327AFFE8C00861F05 /* PopoverProfileView.swift in Sources */,
 				89C209AC27DE9DB900A2994E /* PinsView2.swift in Sources */,
+				891751CF285B5EA600CE042E /* ChannelNameChangeView.swift in Sources */,
 				8921DBD0285A75AC00711560 /* SetNicknameView.swift in Sources */,
 				89EFBB192835583100141049 /* ZStream.swift in Sources */,
 				89E9FEA427AFFC3500861F05 /* Keypath++.swift in Sources */,
@@ -727,6 +768,7 @@
 				89E9FEDA27AFFD0700861F05 /* RegisterImages.swift in Sources */,
 				89E9FE9227AFFBD100861F05 /* Models.swift in Sources */,
 				89E9FE7E27AFFAAF00861F05 /* Embed.swift in Sources */,
+				891751D8285B612500CE042E /* MessageCellMenu.swift in Sources */,
 				89E9FE8B27AFFBAB00861F05 /* GatewayStructure.swift in Sources */,
 				89E9FEA327AFFC3500861F05 /* Extensions.swift in Sources */,
 				897836CF27BBE93B00B86857 /* ServerListView+Init.swift in Sources */,
@@ -737,6 +779,7 @@
 				891751C2285B55B300CE042E /* AvatarView.swift in Sources */,
 				89E9FF2627B014DD00861F05 /* Images.swift in Sources */,
 				89E9FEA627AFFC3500861F05 /* Networking++.swift in Sources */,
+				891751CE285B5EA600CE042E /* WelcomeMessageView.swift in Sources */,
 				8984EECA27B43E4E0025AEC5 /* ChannelView+TextField.swift in Sources */,
 				89E9FED727AFFD0700861F05 /* MentionProtocol.swift in Sources */,
 				89E9FE7927AFFAAF00861F05 /* Status.swift in Sources */,
@@ -745,6 +788,7 @@
 				89A54FDA27D93AAA003142A0 /* Collection++.swift in Sources */,
 				89EF26452838011C007A3BEC /* PrivateChannelsView.swift in Sources */,
 				89E9FEAD27AFFC5800861F05 /* Github.swift in Sources */,
+				891751D4285B5F4400CE042E /* StickerView.swift in Sources */,
 				89E9FE7827AFFAAF00861F05 /* Attachment.swift in Sources */,
 				89E9FE6427AFF98200861F05 /* LoadingScreenView.swift in Sources */,
 				89EF26432838008F007A3BEC /* DMButton.swift in Sources */,
@@ -752,6 +796,7 @@
 				89E9FEFB27AFFEC800861F05 /* ServerListView+Misc.swift in Sources */,
 				89E9FE8027AFFAAF00861F05 /* Emote.swift in Sources */,
 				89E9FE7627AFFAAF00861F05 /* Sticker.swift in Sources */,
+				891751D1285B5EA600CE042E /* RecipientRemoveView.swift in Sources */,
 				89E9FEA927AFFC3500861F05 /* SwiftUI++.swift in Sources */,
 				8921DBD2285A768500711560 /* InviteUpdate.swift in Sources */,
 				89E9FF2227B0064A00861F05 /* ChannelView.swift in Sources */,
@@ -764,7 +809,9 @@
 				891751C0285B559A00CE042E /* AuthorText.swift in Sources */,
 				89E9FE7B27AFFAAF00861F05 /* Message.swift in Sources */,
 				89F5A57827B3173800385E06 /* GifManager.swift in Sources */,
+				891751D0285B5EA600CE042E /* RecipientAddView.swift in Sources */,
 				89BBFC2527E3A1B600B3D122 /* Gateway+VoiceState.swift in Sources */,
+				891751D6285B60FC00CE042E /* ReactionsGrid.swift in Sources */,
 				89F5A58727B31A9D00385E06 /* Markdown2.swift in Sources */,
 				89E9FECE27AFFD0700861F05 /* Socket.swift in Sources */,
 				8984EECC27B43E6D0025AEC5 /* ChatControlsView.swift in Sources */,
@@ -778,6 +825,7 @@
 				89E9FEB227AFFC8500861F05 /* ImageProcessing.swift in Sources */,
 				89E9FE7F27AFFAAF00861F05 /* ReadState.swift in Sources */,
 				89F5A57A27B3174000385E06 /* AppKitLink.swift in Sources */,
+				891751DA285B631800CE042E /* MatchesView.swift in Sources */,
 				89E9FEDB27AFFD0700861F05 /* Gateway.swift in Sources */,
 				891751B8285B523B00CE042E /* JoinServerButton.swift in Sources */,
 				89A1FAE027F63B890031ED77 /* ImagePicker.swift in Sources */,

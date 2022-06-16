@@ -72,108 +72,98 @@ struct ChatControls: View {
     }
     
     var matchedUsersView: some View {
-        ForEach(viewModel.matchedUsers.sorted(by: >).prefix(10), id: \.key) { id, username in
-            Button(action: { [weak viewModel] in
+        MatchesView (
+            elements: viewModel.matchedUsers.sorted(by: >).prefix(10),
+            id: \.key,
+            action: { [weak viewModel] key, username in
                 if let range = viewModel?.textFieldContents.ranges(of: "@").last {
                     viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
                 }
-                viewModel?.textFieldContents.append("<@!\(id)>")
-            }, label: {
+                viewModel?.textFieldContents.append("<@!\(key)> ")
+            },
+            label: { key, username in
                 HStack {
                     Text(username)
                     Spacer()
                 }
-            })
-            .buttonStyle(.borderless)
-            .padding(3)
-        }
+            }
+        )
     }
-    
-    var matchedCommandsView: some View {
-        ForEach(viewModel.matchedCommands.prefix(10), id: \.id) { command in
-            Button.init(action: { [weak command, weak viewModel] in
-                guard let command = command else { return }
-                var contents = "/\(command.name)"
-                command.options?.forEach { arg in
-                    contents.append(" \(arg.name)\(arg.type == 1 ? "" : ":")")
-                }
-                viewModel?.command = command
-                viewModel?.textFieldContents = contents
-                viewModel?.matchedCommands.removeAll()
-            }, catch: { error in
-                print("Interaction Failed", error as Any)
-            }, label: { [weak command] in
-                HStack {
-                    if let command = command, let avatar = command.avatar {
-                        Attachment(cdnURL + "/avatars/\(command.application_id)/\(avatar).png?size=48")
-                            .equatable()
-                            .frame(width: 22, height: 22)
-                            .clipShape(Circle())
-                    }
-                    VStack(alignment: .leading) {
-                        Text(command?.name ?? "Unknown Command")
-                            .fontWeight(.semibold)
-                        Text(command?.description ?? "Some slash command")
-                    }
-                    Spacer()
-                }
-            })
-            .buttonStyle(.borderless)
-            .padding(3)
-        }
-    }
-    
-    var matchedEmojiView: some View {
-        ForEach(viewModel.matchedEmoji.prefix(10), id: \.id) { emoji in
+
+var matchedCommandsView: some View {
+    MatchesView (
+        elements: viewModel.matchedCommands.prefix(10),
+        id: \.id,
+        action: { [weak viewModel] command in
+            var contents = "/\(command.name)"
+            command.options?.forEach { arg in
+                contents.append(" \(arg.name)\(arg.type == 1 ? "" : ":")")
+            }
+            viewModel?.command = command
+            viewModel?.textFieldContents = contents
+            viewModel?.matchedCommands.removeAll()
+        },
+        label: { command in
             HStack {
-                Button(action: { [weak viewModel] in
-                    if let range = viewModel?.textFieldContents.ranges(of: ":").last {
-                        viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
-                    }
-                    viewModel?.textFieldContents.append("<\((emoji.animated ?? false) ? "a" : ""):\(emoji.name):\(emoji.id)> ")
-                    viewModel?.matchedEmoji.removeAll()
-                }, label: {
-                    HStack {
-                        Attachment(cdnURL + "/emojis/\(emoji.id).png?size=80", size: CGSize(width: 48, height: 48))
-                            .equatable()
-                            .frame(width: 20, height: 20)
-                        Text(emoji.name)
-                        Spacer()
-                    }
-                })
-                .buttonStyle(.borderless)
-                .padding(3)
-                Button("Send link") { [weak viewModel] in
-                    if let range = viewModel?.textFieldContents.ranges(of: ":").last {
-                        viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
-                    }
-                    viewModel?.textFieldContents.append(cdnURL + "/emojis/\(emoji.id).png?size=48")
-                    viewModel?.matchedEmoji.removeAll()
+                if let command = command, let avatar = command.avatar {
+                    Attachment(cdnURL + "/avatars/\(command.application_id)/\(avatar).png?size=48")
+                        .equatable()
+                        .frame(width: 22, height: 22)
+                        .clipShape(Circle())
                 }
-                .buttonStyle(.borderless)
-                .padding(3)
+                VStack(alignment: .leading) {
+                    Text(command.name)
+                        .fontWeight(.semibold)
+                    Text(command.description)
+                }
+                Spacer()
             }
         }
-    }
-    
-    var matchedChannelsView: some View {
-        ForEach(viewModel.matchedChannels.prefix(10), id: \.id) { channel in
-            Button(action: { [weak viewModel] in
-                if let range = viewModel?.textFieldContents.ranges(of: "#").last {
-                    viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
-                }
-                viewModel?.textFieldContents.append("<#\(channel.id)> ")
-            }) {
-                HStack {
-                    Text(channel.name ?? "Unknown Channel")
-                    Spacer()
-                }
+    )
+}
+
+var matchedEmojiView: some View {
+    MatchesView (
+        elements: viewModel.matchedEmoji.prefix(10),
+        id: \.id,
+        action: { [weak viewModel] emoji in
+            if let range = viewModel?.textFieldContents.ranges(of: ":").last {
+                viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
             }
-            .buttonStyle(.borderless)
-            .padding(3)
+            viewModel?.textFieldContents.append("<\((emoji.animated ?? false) ? "a" : ""):\(emoji.name):\(emoji.id)> ")
+            viewModel?.matchedEmoji.removeAll()
+        },
+        label: { emoji in
+            HStack {
+                Attachment(cdnURL + "/emojis/\(emoji.id).png?size=80", size: CGSize(width: 48, height: 48))
+                    .equatable()
+                    .frame(width: 20, height: 20)
+                Text(emoji.name)
+                Spacer()
+            }
         }
-    }
-    
+    )
+}
+
+var matchedChannelsView: some View {
+    MatchesView (
+        elements: viewModel.matchedChannels.prefix(10),
+        id: \.id,
+        action: { [weak viewModel] channel in
+            if let range = viewModel?.textFieldContents.ranges(of: "#").last {
+                viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
+            }
+            viewModel?.textFieldContents.append("<#\(channel.id)> ")
+        },
+        label: { channel in
+            HStack {
+                Text(channel.name ?? "Unknown Channel")
+                Spacer()
+            }
+        }
+    )
+}
+
     var montereyTextField: some View {
         TextField(textFieldText, text: $viewModel.textFieldContents)
             .focused($focusedField, equals: .mainTextField)
