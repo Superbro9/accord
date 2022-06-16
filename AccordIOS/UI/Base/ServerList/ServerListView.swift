@@ -219,7 +219,6 @@ struct ServerListView: View {
                 self.selectedGuild = upcomingGuild
                 self.selection = self.upcomingSelection
             }
-            print(self.selectedGuild)
         }
         .toolbar {
             ToolbarItemGroup {
