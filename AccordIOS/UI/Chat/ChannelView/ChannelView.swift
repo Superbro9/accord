@@ -60,6 +60,10 @@ struct ChannelView: View, Equatable {
     @Environment(\.colorScheme)
     var colorScheme: ColorScheme
     
+    static var scrollTo = PassthroughSubject<(String, String), Never>()
+    
+    @State var scrolledOutOfBounds: Bool = false
+    
     
     // MARK: - init
     init(_ channel: Channel, _ guildName: String? = nil) {
