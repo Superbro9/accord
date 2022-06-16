@@ -159,7 +159,7 @@ struct MessageCellView: View, Equatable {
                 AttachmentView(media: message.attachments)
                     .background {
                         Rectangle()
-                            .foregroundColor(Color(NSColor.windowBackgroundColor))
+                            .foregroundColor(Color(UIColor.systemBackground))
                             .cornerRadius(5)
                         ProgressView()
                     }
