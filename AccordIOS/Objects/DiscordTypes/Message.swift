@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Message: Decodable, Equatable, Identifiable, Hashable {
+struct Message: Codable, Equatable, Identifiable, Hashable {
     static func == (lhs: Message, rhs: Message) -> Bool {
         lhs.id == rhs.id && lhs.content == rhs.content && lhs.embeds == rhs.embeds
     }

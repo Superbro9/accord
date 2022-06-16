@@ -37,10 +37,21 @@ final class ChatControlsViewModel: ObservableObject {
          }
     
     func checkText(guildID: String, channelID: String) {
+        let ogContents = self.textFieldContents
         let mentions = textFieldContents.matches(precomputed: Regex.chatTextMentionsRegex)
         let channels = textFieldContents.matches(precomputed: Regex.chatTextChannelsRegex)
         let slashes = textFieldContents.matches(precomputed: Regex.chatTextSlashCommandRegex)
         let emoji = textFieldContents.matches(precomputed: Regex.chatTextEmojiRegex)
+        let emotes = self.textFieldContents.matches(precomputed: Regex.completedEmoteRegex)
+        
+        emotes.forEach { emoji in
+            let emote = emoji.dropLast().dropFirst().stringLiteral
+            guard let matched: DiscordEmote = Array(Emotes.emotes.values.joined()).filter({ $0.name.lowercased() == emote.lowercased() }).first else { return }
+            DispatchQueue.main.async {
+                if self.textFieldContents != ogContents { return }
+                self.textFieldContents = self.textFieldContents.replacingOccurrences(of: emoji, with: "<\((matched.animated ?? false) ? "a" : ""):\(matched.name):\(matched.id)> ")
+            }
+        }
         
         guard !self.textFieldContents.isEmpty else {
             DispatchQueue.main.async {
@@ -122,9 +133,8 @@ final class ChatControlsViewModel: ObservableObject {
     }
     
     func findView() {
-        UIKitLink<UITextField>.introspect { [weak self] textField, _ in
+        UIKitLink<UITextField>.introspect { textField, _ in
             textField.allowsEditingTextAttributes = true
-            //self?.textField = textField
         }
     }
     
@@ -176,6 +186,46 @@ final class ChatControlsViewModel: ObservableObject {
                 self.emptyTextField()
             } else if self.textFieldContents.prefix(6) == "/shrug" {
                 self.send(text: #"¯\_(ツ)_/¯"#, guildID: guildID, channelID: channelID)
+                self.emptyTextField()
+            } else if textFieldContents.prefix(6) == "/debug" {
+                sendDebugLog(guildID: guildID, channelID: channelID)
+                self.emptyTextField()
+            } else if textFieldContents.prefix(6) == "/reset" {
+                wss.reset()
+                self.emptyTextField()
+            } else if textFieldContents.prefix(12) == "/reset force" {
+                wss.hardReset()
+                self.emptyTextField()
+            } else if textFieldContents.prefix(5) == "/help" {
+                let help = """
+                                 **Slash commands**
+                                 `/shrug`: shrug
+                                 `/debug`: send debug log
+                                 `/reset`: resume websocket connection
+                                 `/reset force`: force reset websocket connection
+                                 """
+                let system = AccordCoreVars.user
+                system?.id = generateFakeNonce()
+                system?.username = "Accord"
+                system?.discriminator = "0000"
+                system?.avatar = nil
+                let message = Message (
+                    author: system,
+                    channel_id: channelID,
+                    guild_id: guildID,
+                    content: help,
+                    id: generateFakeNonce(),
+                    mentions: [],
+                    timestamp: .init(),
+                    type: .default,
+                    attachments: .init(),
+                    sticker_items: .init()
+                )
+                let gatewayMessage = GatewayEventCodable(d: message)
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
+                let data = try encoder.encode(gatewayMessage)
+                wss.messageSubject.send((data, channelID, false))
             }
             return
         }
@@ -213,6 +263,22 @@ final class ChatControlsViewModel: ObservableObject {
             self.matchedCommands.removeAll()
             self.emptyTextField()
         }
+    }
+    
+    var debugLog: String {
+            """
+            **Accord Debug Log**
+            Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
+            Gateway State: \(wss.connection?.state as Any)
+            Compression: \(wss.compress ? "Enabled" : "Disabled")
+            Message Subscriber: \(String(reflecting: wss.messageSubject))
+            Compressor State: \(wss.decompressor.status)
+            Connection State: \(reachability?.connection as Any)
+            """
+    }
+    
+    func sendDebugLog(guildID: String, channelID: String) {
+        self.send(text: debugLog, guildID: guildID, channelID: channelID)
     }
     
     func send(text: String, replyingTo: Message, mention: Bool, guildID: String) {

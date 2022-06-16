@@ -8,6 +8,7 @@
 import Foundation
 
 final class User: Codable, Identifiable, Hashable {
+    
     static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
     }
