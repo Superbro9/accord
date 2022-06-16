@@ -18,9 +18,9 @@ struct ChatControls: View {
     
     @State var chatTextFieldContents: String = ""
     @State var pfps: [String: UIImage] = [:]
-    @Binding var guildID: String
-    @Binding var channelID: String
-    @Binding var chatText: String
+    var guildID: String
+    var channelID: String
+    var chatText: String
     @Binding var replyingTo: Message?
     @Binding var mentionUser: Bool
     @Binding var permissions: Permissions

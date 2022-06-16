@@ -52,6 +52,9 @@ struct ChannelView: View, Equatable {
     @Environment(\.user)
     var user: User
     
+    @Environment(\.colorScheme)
+    var colorScheme: ColorScheme
+    
     
     // MARK: - init
     init(_ channel: Channel, _ guildName: String? = nil) {
@@ -67,7 +70,7 @@ struct ChannelView: View, Equatable {
     var messagesView: some View {
         ForEach(viewModel.messages, id: \.identifier) { message in
             if let author = message.author {
-                MessageCellView(
+                MessageCellView (
                     message: message,
                     nick: viewModel.nicks[author.id],
                     replyNick: viewModel.nicks[message.referenced_message?.author?.id ?? ""],
@@ -116,7 +119,7 @@ struct ChannelView: View, Equatable {
         HStack {
             VStack(spacing: 0) {
                 List {
-                    Spacer().frame(height: 20)
+                    Spacer().frame(height: 15)
                     if metalRenderer {
                         messagesView.drawingGroup()
                             .listRowSeparator(.hidden)
@@ -126,7 +129,7 @@ struct ChannelView: View, Equatable {
                     }
                 }
                 .listStyle(.plain)
-                .offset(x: 0, y: -1)
+                //.offset(x: 0, y: -1)
                 .rotationEffect(.radians(.pi))
                 .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
                 .padding()
@@ -217,10 +220,6 @@ struct ChannelView: View, Equatable {
             }
         }
         )
-        .onDisappear {
-            self.cancellable.forEach { $0.cancel() }
-            self.cancellable.removeAll()
-        }
     }
 }
 

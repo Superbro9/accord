@@ -37,7 +37,7 @@ struct GuildHoverAnimation: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onHover(perform: { res in
-                withAnimation(Animation.linear(duration: 0.1)) {
+                withAnimation(Animation.easeInOut(duration: 0.1)) {
                     hovered = res
                 }
             })
@@ -85,54 +85,10 @@ struct ServerListView: View {
     internal static var readStates: [ReadStateEntry] = .init()
     var statusText: String?
     @State var status: String?
-    @State var timedOut: Bool = false
-    @State var mentions: Bool = false
     @State var bag = Set<AnyCancellable>()
     @StateObject var viewUpdater = UpdateView()
     @State var iconHovered: Bool = false
     @State var isShowingJoinServerSheet: Bool = false
-    
-    var dmButton: some View {
-        Button(action: {
-            selection = nil
-            DispatchQueue.global().async {
-                wss?.cachedMemberRequest.removeAll()
-                ServerListView.privateChannels = ServerListView.privateChannels.sorted(by: { $0.last_message_id ?? "" > $1.last_message_id ?? "" })
-            }
-            selectedServer = 201
-            let prevSelection = selection
-            if let selectionPrevious = UserDefaults.standard.object(forKey: "AccordChannelDMs") as? Int {
-                self.selection = selectionPrevious
-            }
-            if let selection = prevSelection {
-                UserDefaults.standard.set(selection, forKey: "AccordChannelDMs")
-            }
-        }) {
-            Image(systemName: "bubble.right.fill")
-                .imageScale(.medium)
-                .frame(width: 45, height: 45)
-                .foregroundColor(.white)
-                .background(selectedServer == 201 ? Color.accentColor.opacity(0.5) : Color(UIColor.systemBackground))
-                .cornerRadius(iconHovered || selectedServer == 201 ? 13.5 : 23.5)
-                .if(selectedServer == 201, transform: { $0.foregroundColor(Color.white) })
-                    .onHover(perform: { h in withAnimation(Animation.linear(duration: 0.1)) { self.iconHovered = h } })
-        }
-    }
-    
-    var joinServerButton: some View {
-        Button(action: {
-            isShowingJoinServerSheet.toggle()
-        }, label: {
-            Image(systemName: "plus")
-                .imageScale(.large)
-                .frame(width: 45, height: 45)
-                .background(self.isShowingJoinServerSheet ? Color.accentColor.opacity(0.5) : Color(uiColor: .systemBackground))
-                .cornerRadius(iconHovered || self.isShowingJoinServerSheet ? 13.5 : 23.5)
-                .if(self.isShowingJoinServerSheet, transform: { $0.foregroundColor(Color.white) })
-                    .onHover(perform: { h in withAnimation(Animation.linear(duration: 0.1)) { self.iconHovered = h } })
-        })
-        .buttonStyle(.borderless)
-    }
     
     var onlineButton: some View {
         Button("Offline") {
@@ -189,7 +145,9 @@ struct ServerListView: View {
         return NavigationView {
             HStack(spacing: 0) {
                 ScrollView(.vertical, showsIndicators: false) {
+                    
                     // MARK: - Messages button
+                    
                     LazyVStack {
                         if !NetworkCore.shared.connected {
                             onlineButton
@@ -209,12 +167,7 @@ struct ServerListView: View {
                         Color.gray
                             .frame(width: 30, height: 1)
                             .opacity(0.75)
-                        joinServerButton
-                            .sheet(isPresented: $isShowingJoinServerSheet) {
-                                JoinServerSheetView(isPresented: $isShowingJoinServerSheet, updater: viewUpdater)
-                                    .frame(width: 300, height: 120)
-                                    .padding()
-                            }
+                        JoinServerButton(viewUpdater: self.viewUpdater)
                     }
                     .padding(.vertical)
                 }
@@ -226,7 +179,7 @@ struct ServerListView: View {
                     List {
                         settingsLink
                         Divider()
-                        PrivateChannelsView(
+                        PrivateChannelsView (
                             privateChannels: Self.privateChannels,
                             selection: self.$selection,
                             viewUpdater: self.viewUpdater

@@ -52,7 +52,6 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
             } else {
                 Self.permissionQueue.async {
                     self.permissions = channel.permission_overwrites?.allAllowed(guildID: self.guildID) ?? .init()
-                    print(self.permissions.contains(.sendMessages))
                 }
             }
         }
@@ -82,7 +81,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                     }
                     guard let author = message.author else { return }
                     Storage.usernames[author.id] = author.username
-                    withAnimation(Animation.linear(duration: 0.1)) {
+                    withAnimation(Animation.easeInOut(duration: 0.1)) {
                         self?.messages.insert(message, at: 0)
                     }
                 }
@@ -127,7 +126,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                 guard let message = gatewayMessage.d else { return }
                 guard let index = messageMap?[message.id] else { return }
                 DispatchQueue.main.async {
-                    withAnimation(Animation.linear(duration: 0.1)) {
+                    withAnimation(Animation.easeInOut(duration: 0.1)) {
                         let i: Int = index
                         self?.messages.remove(at: i)
                     }
