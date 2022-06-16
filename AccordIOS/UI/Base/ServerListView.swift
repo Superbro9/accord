@@ -198,6 +198,7 @@ struct ServerListView: View {
                         DMButton(
                             selection: self.$selection,
                             selectedServer: self.$selectedServer,
+                            selectedGuild: self.$selectedGuild,
                             updater: self.viewUpdater
                         )
                         Color.gray
