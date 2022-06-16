@@ -88,7 +88,7 @@ struct MessageCellView: View, Equatable {
     @AppStorage("GifProfilePictures")
     var gifPfp: Bool = false
     
-    private let leftPadding: CGFloat = 45
+    private let leftPadding: CGFloat = 44.5
 
     var editingTextField: some View {
         TextField("Edit your message", text: self.$editedText, onEditingChanged: { _ in }) {
@@ -196,114 +196,114 @@ struct MessageCellView: View, Equatable {
 
     }
     
-//    private var copyMenu: some View {
-//        Menu("Copy") {
-//            Button("Copy message text") { [weak message] in
-//                guard let content = message?.content else { return }
-//                UIPasteboard.general.string = ""
-//                UIPasteboard.general.string = content
-//            }
-//            Button("Copy message link") { [weak message] in
-//                guard let channelID = message?.channel_id, let id = message?.id else { return }
-//                UIPasteboard.general.string = ""
-//                UIPasteboard.general.string = "https://discord.com/channels/\(message?.guild_id ?? guildID)/\(channelID)/\(id)"
-//            }
-//            Button("Copy user ID") { [weak message] in
-//                guard let id = message?.author?.id else { return }
-//                UIPasteboard.general.string = ""
-//                UIPasteboard.general.string = id
-//            }
-//            Button("Copy message ID") { [weak message] in
-//                guard let id = message?.id else { return }
-//                UIPasteboard.general.string = ""
-//                UIPasteboard.general.string = id
-//            }
-//            Button("Copy username and tag", action: { [weak message] in
-//                guard let author = message?.author else { return }
-//                UIPasteboard.general.string = ""
-//                UIPasteboard.general.string = "\(author.username)#\(author.discriminator)"
-//            })
-//        }
-//
-//    }
-//
-//    private var moderationMenu: some View {
-//        Menu("Moderation") {
-//            if permissions.contains(.banMembers) {
-//                Button("Ban") {
-//                    let url = URL(string: rootURL)?
-//                        .appendingPathComponent("guilds")
-//                        .appendingPathComponent(guildID)
-//                        .appendingPathComponent("bans")
-//                        .appendingPathComponent(message.author!.id)
-//                    DispatchQueue.global().async {
-//                        Request.ping(url: url, headers: Headers(
-//                            userAgent: discordUserAgent,
-//                            token: AccordCoreVars.token,
-//                            bodyObject: ["delete_message_days":1],
-//                            type: .PUT,
-//                            discordHeaders: true,
-//                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
-//                        ))
-//                    }
-//                }
-//            }
-//            if permissions.contains(.kickMembers) {
-//                Button("Kick") {
-//                    let url = URL(string: rootURL)?
-//                        .appendingPathComponent("guilds")
-//                        .appendingPathComponent(guildID)
-//                        .appendingPathComponent("members")
-//                        .appendingPathComponent(message.author!.id)
-//                    DispatchQueue.global().async {
-//                        Request.ping(url: url, headers: Headers(
-//                            userAgent: discordUserAgent,
-//                            token: AccordCoreVars.token,
-//                            type: .DELETE,
-//                            discordHeaders: true,
-//                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
-//                        ))
-//                    }
-//                }
-//            }
-//            if permissions.contains(.moderateMembers) {
-//                Menu("Timeout") {
-//                    Button("60 seconds") {
-//                        let date = Date() + 60
-//                        let encoded = encoder.string(from: date)
-//                        self.timeout(time: encoded)
-//                    }
-//                    Button("5 minutes") {
-//                        let date = Date() + 60 * 5
-//                        let encoded = encoder.string(from: date)
-//                        self.timeout(time: encoded)
-//                    }
-//                    Button("10 minutes") {
-//                        let date = Date() + 60 * 10
-//                        let encoded = encoder.string(from: date)
-//                        self.timeout(time: encoded)
-//                    }
-//                    Button("1 hour") {
-//                        let date = Date() + 60 * 60
-//                        let encoded = encoder.string(from: date)
-//                        self.timeout(time: encoded)
-//                    }
-//                    Button("1 day") {
-//                        let date = Date() + 60 * 60 * 24
-//                        let encoded = encoder.string(from: date)
-//                        self.timeout(time: encoded)
-//                    }
-//                    Button("1 week") {
-//                        let date = Date() + 60 * 60 * 24 * 7
-//                        let encoded = encoder.string(from: date)
-//                        self.timeout(time: encoded)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//
+    private var copyMenu: some View {
+        Menu("Copy") {
+            Button("Copy message text") { [weak message] in
+                guard let content = message?.content else { return }
+                UIPasteboard.general.string = ""
+                UIPasteboard.general.string = content
+            }
+            Button("Copy message link") { [weak message] in
+                guard let channelID = message?.channel_id, let id = message?.id else { return }
+                UIPasteboard.general.string = ""
+                UIPasteboard.general.string = "https://discord.com/channels/\(message?.guild_id ?? guildID)/\(channelID)/\(id)"
+            }
+            Button("Copy user ID") { [weak message] in
+                guard let id = message?.author?.id else { return }
+                UIPasteboard.general.string = ""
+                UIPasteboard.general.string = id
+            }
+            Button("Copy message ID") { [weak message] in
+                guard let id = message?.id else { return }
+                UIPasteboard.general.string = ""
+                UIPasteboard.general.string = id
+            }
+            Button("Copy username and tag", action: { [weak message] in
+                guard let author = message?.author else { return }
+                UIPasteboard.general.string = ""
+                UIPasteboard.general.string = "\(author.username)#\(author.discriminator)"
+            })
+        }
+
+    }
+
+    private var moderationMenu: some View {
+        Menu("Moderation") {
+            if permissions.contains(.banMembers) {
+                Button("Ban") {
+                    let url = URL(string: rootURL)?
+                        .appendingPathComponent("guilds")
+                        .appendingPathComponent(guildID)
+                        .appendingPathComponent("bans")
+                        .appendingPathComponent(message.author!.id)
+                    DispatchQueue.global().async {
+                        Request.ping(url: url, headers: Headers(
+                            userAgent: discordUserAgent,
+                            token: AccordCoreVars.token,
+                            bodyObject: ["delete_message_days":1],
+                            type: .PUT,
+                            discordHeaders: true,
+                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
+                        ))
+                    }
+                }
+            }
+            if permissions.contains(.kickMembers) {
+                Button("Kick") {
+                    let url = URL(string: rootURL)?
+                        .appendingPathComponent("guilds")
+                        .appendingPathComponent(guildID)
+                        .appendingPathComponent("members")
+                        .appendingPathComponent(message.author!.id)
+                    DispatchQueue.global().async {
+                        Request.ping(url: url, headers: Headers(
+                            userAgent: discordUserAgent,
+                            token: AccordCoreVars.token,
+                            type: .DELETE,
+                            discordHeaders: true,
+                            referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
+                        ))
+                    }
+                }
+            }
+            if permissions.contains(.moderateMembers) {
+                Menu("Timeout") {
+                    Button("60 seconds") {
+                        let date = Date() + 60
+                        let encoded = encoder.string(from: date)
+                        self.timeout(time: encoded)
+                    }
+                    Button("5 minutes") {
+                        let date = Date() + 60 * 5
+                        let encoded = encoder.string(from: date)
+                        self.timeout(time: encoded)
+                    }
+                    Button("10 minutes") {
+                        let date = Date() + 60 * 10
+                        let encoded = encoder.string(from: date)
+                        self.timeout(time: encoded)
+                    }
+                    Button("1 hour") {
+                        let date = Date() + 60 * 60
+                        let encoded = encoder.string(from: date)
+                        self.timeout(time: encoded)
+                    }
+                    Button("1 day") {
+                        let date = Date() + 60 * 60 * 24
+                        let encoded = encoder.string(from: date)
+                        self.timeout(time: encoded)
+                    }
+                    Button("1 week") {
+                        let date = Date() + 60 * 60 * 24 * 7
+                        let encoded = encoder.string(from: date)
+                        self.timeout(time: encoded)
+                    }
+                }
+            }
+        }
+    }
+
+
     private var attachmentMenu: some View {
         ForEach(message.attachments, id: \.url) { attachment in
             Menu(attachment.filename) { [weak attachment] in
@@ -319,93 +319,93 @@ struct MessageCellView: View, Equatable {
             }
         }
     }
-//
-//    @ViewBuilder
-//    private var contextMenuContent: some View {
-//        Button("Reply") { [weak message] in
-//            replyingTo = message
-//        }
-//        if message.author?.id == AccordCoreVars.user?.id {
-//            Button("Edit") {
-//                self.editing.toggle()
-//            }
-//        }
-//        if message.author?.id == AccordCoreVars.user?.id || self.permissions.contains(.manageMessages) {
-//            Button("Delete") { [weak message] in
-//                DispatchQueue.global().async {
-//                    message?.delete()
-//                }
-//            }
-//        }
-//        Divider()
-//        Button("Show profile") {
-//            popup.toggle()
-//        }
-//        Divider()
-//        copyMenu
-//        if !message.attachments.isEmpty {
-//            Divider()
-//            attachmentMenu
-//        }
-//        moderationSection
-//    }
-//
-//    @ViewBuilder
-//         private var moderationSection: some View {
-//             if self.guildID == "@me" || (self.guildID != "@me" && permissions.moderator) {
-//                 Divider()
-//             }
-//             if self.permissions.contains(.manageMessages) || guildID == "@me" {
-//                 Button(message.pinned == false ? "Pin" : "Unpin") {
-//                     let url = URL(string: rootURL)?
-//                         .appendingPathComponent("channels")
-//                         .appendingPathComponent(message.channel_id)
-//                         .appendingPathComponent("pins")
-//                         .appendingPathComponent(message.id)
-//                     DispatchQueue.global().async {
-//                         Request.ping(url: url, headers: Headers(
-//                             userAgent: discordUserAgent,
-//                             token: AccordCoreVars.token,
-//                             type: message.pinned == false ? .PUT : .DELETE,
-//                             discordHeaders: true,
-//                             referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
-//                         ))
-//                         DispatchQueue.main.async {
-//                             message.pinned?.toggle()
-//                         }
-//                     }
-//                 }
-//             }
-//             if message.author != nil &&
-//                 guildID != "@me" &&
-//                 permissions.moderator {
-//                     moderationMenu
-//             } else if self.guildID == "@me" && permissions.contains(.kickMembers) {
-//                 Button("Remove member") {
-//                     let url = URL(string: rootURL)?
-//                         .appendingPathComponent("channels")
-//                         .appendingPathComponent(self.message.channel_id)
-//                         .appendingPathComponent("recipients")
-//                         .appendingPathComponent(message.author!.id)
-//                     DispatchQueue.global().async {
-//                         Request.ping(url: url, headers: Headers(
-//                             userAgent: discordUserAgent,
-//                             token: AccordCoreVars.token,
-//                             type: .DELETE,
-//                             discordHeaders: true,
-//                             referer: "https://discord.com/channels/@me/\(self.message.channel_id)"
-//                         ))
-//                     }
-//                 }
-//             }
-//         }
+
+    @ViewBuilder
+    private var contextMenuContent: some View {
+        Button("Reply") { [weak message] in
+            replyingTo = message
+        }
+        if message.author?.id == AccordCoreVars.user?.id {
+            Button("Edit") {
+                self.editing.toggle()
+            }
+        }
+        if message.author?.id == AccordCoreVars.user?.id || self.permissions.contains(.manageMessages) {
+            Button("Delete") { [weak message] in
+                DispatchQueue.global().async {
+                    message?.delete()
+                }
+            }
+        }
+        Divider()
+        Button("Show profile") {
+            popup.toggle()
+        }
+        Divider()
+        copyMenu
+        if !message.attachments.isEmpty {
+            Divider()
+            attachmentMenu
+        }
+        moderationSection
+    }
+
+    @ViewBuilder
+         private var moderationSection: some View {
+             if self.guildID == "@me" || (self.guildID != "@me" && permissions.moderator) {
+                 Divider()
+             }
+             if self.permissions.contains(.manageMessages) || guildID == "@me" {
+                 Button(message.pinned == false ? "Pin" : "Unpin") {
+                     let url = URL(string: rootURL)?
+                         .appendingPathComponent("channels")
+                         .appendingPathComponent(message.channel_id)
+                         .appendingPathComponent("pins")
+                         .appendingPathComponent(message.id)
+                     DispatchQueue.global().async {
+                         Request.ping(url: url, headers: Headers(
+                             userAgent: discordUserAgent,
+                             token: AccordCoreVars.token,
+                             type: message.pinned == false ? .PUT : .DELETE,
+                             discordHeaders: true,
+                             referer: "https://discord.com/channels/\(guildID)/\(self.message.channel_id)"
+                         ))
+                         DispatchQueue.main.async {
+                             message.pinned?.toggle()
+                         }
+                     }
+                 }
+             }
+             if message.author != nil &&
+                 guildID != "@me" &&
+                 permissions.moderator {
+                     moderationMenu
+             } else if self.guildID == "@me" && permissions.contains(.kickMembers) {
+                 Button("Remove member") {
+                     let url = URL(string: rootURL)?
+                         .appendingPathComponent("channels")
+                         .appendingPathComponent(self.message.channel_id)
+                         .appendingPathComponent("recipients")
+                         .appendingPathComponent(message.author!.id)
+                     DispatchQueue.global().async {
+                         Request.ping(url: url, headers: Headers(
+                             userAgent: discordUserAgent,
+                             token: AccordCoreVars.token,
+                             type: .DELETE,
+                             discordHeaders: true,
+                             referer: "https://discord.com/channels/@me/\(self.message.channel_id)"
+                         ))
+                     }
+                 }
+             }
+         }
              
              private var replyView: some View {
                  HStack {
                      RoundedRectangle(cornerRadius: 5)
                          .trim(from: 0.5, to: 0.75)
                          .stroke(.gray.opacity(0.4), lineWidth: 2)
-                         .frame(width: 53, height: 20)
+                         .frame(width: 53, height: 17)
                          .padding(.bottom, -15)
                          .padding(.trailing, -30)
                      Attachment(pfpURL(message.referenced_message?.author?.id, message.referenced_message?.author?.avatar, discriminator: message.referenced_message?.author?.discriminator ?? "0005", "16"))
@@ -420,7 +420,7 @@ struct MessageCellView: View, Equatable {
                              }
                              return Color.primary
                          }())
-                         .fontWeight(.semibold)
+                         .fontWeight(.medium)
                      Text(message.referenced_message?.content ?? "Error")
                          .font(.subheadline)
                          .lineLimit(0)

@@ -43,12 +43,13 @@
              )
 
          ServerListView.mergedMembers[guildID]?.cachedPermissions = permsArray
-
+         
          if permsArray.contains(.administrator) {
-             permsArray = Permissions(rawValue: 2199023255551)
+             permsArray = Permissions.all
+             ServerListView.mergedMembers[guildID]?.cachedPermissions = permsArray
              return permsArray
          }
-
+         
          let everyonePerms = self.filter { $0.id == guildID }
          permsArray.insert(.init([
             .sendMessages, .readMessages, .changeNickname

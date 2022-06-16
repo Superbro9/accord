@@ -30,7 +30,7 @@ struct GifView: View {
     @ViewBuilder
     var body: some View {
         HStack {
-            if !animatedImages.isEmpty {
+            if !animatedImages.isEmpty, animatedImages.indices.contains(value) {
                 Image(uiImage: animatedImages[value])
                     .resizable()
                     .scaledToFit()
@@ -42,7 +42,6 @@ struct GifView: View {
     func prep() {
         if url.suffix(4) == "json" {
             gifQueue.async {
-                print(self.url)
                 Request.fetch(url: URL(string: self.url)) {
                     switch $0 {
                     case .success(let data):

@@ -202,6 +202,7 @@ struct ChatControls: View {
 
         } label: {
             Label("", systemImage: "plus.circle.fill")
+                .imageScale(.medium)
         }
     }
     
@@ -210,6 +211,7 @@ struct ChatControls: View {
             nitroless.toggle()
         }) {
             Image(systemName: "rectangle.grid.3x2.fill")
+                .imageScale(.medium)
         }
         .buttonStyle(.bordered)
         .popover(isPresented: $nitroless, content: {
@@ -223,6 +225,7 @@ struct ChatControls: View {
             emotes.toggle()
         }) {
             Image(systemName: "face.smiling.fill")
+                .imageScale(.medium)
         }
         .buttonStyle(.bordered)
         .popover(isPresented: $emotes, content: {

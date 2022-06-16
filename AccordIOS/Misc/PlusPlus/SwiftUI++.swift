@@ -185,3 +185,40 @@ struct SafeVideoPlayer: View {
 extension Font {
      static var chatTextFont = Font.system(size: 14)
  }
+
+struct NotificationBadge: ViewModifier {
+     var count: Int?
+     func body(content: Content) -> some View {
+         ZStack(alignment: .bottomTrailing) {
+             content
+             if let count = count, count != 0 {
+                 ZStack {
+                     Circle()
+                         .foregroundColor(.red)
+                         .opacity(0.9)
+                         .shadow(radius: 0.25)
+                     Text(String(count))
+                         .foregroundColor(.white)
+                         .font(.caption)
+                 }
+                 .frame(width: 17.5, height: 17.5)
+                 .padding([.bottom, .trailing], -1)
+             }
+         }
+     }
+ }
+
+ extension View {
+     func redBadge(_ count: Int?) -> some View {
+         self.modifier(NotificationBadge(count: count))
+     }
+
+     @ViewBuilder
+     func conditionalClipShape<S: Shape, U: Shape>(_ condition: Bool, _ shape1: S, _ shape2: U) -> some View {
+         if condition {
+             self.clipShape(shape1)
+         } else {
+             self.clipShape(shape2)
+         }
+     }
+ }

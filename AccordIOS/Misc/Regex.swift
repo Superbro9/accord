@@ -23,7 +23,8 @@ enum Regex {
             chatTextMentionsRegex,
             chatTextChannelsRegex,
             chatTextSlashCommandRegex,
-            chatTextEmojiRegex
+            chatTextEmojiRegex,
+            completedEmoteRegex
         )
     }
     
@@ -40,4 +41,5 @@ enum Regex {
     static var chatTextChannelsRegex = try? NSRegularExpression(pattern: #"(?<=#)(?:(?!\ ).)*"#)
     static var chatTextSlashCommandRegex = try? NSRegularExpression(pattern: #"(?<=\/)(?:(?!\ ).)*"#)
     static var chatTextEmojiRegex = try? NSRegularExpression(pattern: #"(?<=:).*"#)
+    static var completedEmoteRegex = try? NSRegularExpression(pattern: "(?<!<|<a):.+:")
 }
