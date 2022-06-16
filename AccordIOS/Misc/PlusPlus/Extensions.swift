@@ -95,73 +95,85 @@ extension Color {
     }
 }
 
-@available(iOS 15.0, *)
+
 struct Folder<Content: View>: View {
     var icon: [Guild]
     var color: Color
     @Binding var read: Bool
     var mentionCount: Int?
     var content: () -> Content
-    
+
     @State private var collapsed: Bool = true
-    
+
     let gridLayout: [GridItem] = GridItem.multiple(count: 2, spacing: 0)
-    
+
     var body: some View {
         VStack {
             Button(
-                action: { withAnimation(Animation.spring()) { self.collapsed.toggle() } },
+                action: { withAnimation(Animation.easeInOut(duration: 0.2)) { self.collapsed.toggle() } },
                 label: {
                     HStack {
                         Circle()
                             .fill()
                             .foregroundColor(Color.primary)
                             .frame(width: 5, height: 5)
-                            .opacity(read ? 1 : 0)
-                        ZStack(alignment: .bottomTrailing) {
-                            VStack(spacing: 3) {
-                                HStack(spacing: 3) {
-                                    if let guild = icon.first, let icon = guild.icon {
-                                        Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
-                                            .equatable()
-                                            .clipShape(Circle())
-                                            .frame(width: 16, height: 16)
-                                    } else {
-                                        Spacer().frame(width: 16, height: 16)
+                            .opacity(read && collapsed ? 1 : 0)
+                        if self.collapsed {
+                            ZStack(alignment: .bottomTrailing) {
+                                VStack(spacing: 3) {
+                                    HStack(spacing: 3) {
+                                        if let guild = icon.first, let icon = guild.icon {
+                                            Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
+                                                .equatable()
+                                                .clipShape(Circle())
+                                                .frame(width: 16, height: 16)
+                                        } else {
+                                            Spacer().frame(width: 16, height: 16)
+                                        }
+                                        if let guild = icon[safe: 1], let icon = guild.icon {
+                                            Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
+                                                .equatable()
+                                                .clipShape(Circle())
+                                                .frame(width: 16, height: 16)
+                                        } else {
+                                            Spacer().frame(width: 16, height: 16)
+                                        }
                                     }
-                                    if let guild = icon[safe: 1], let icon = guild.icon {
-                                        Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
-                                            .equatable()
-                                            .clipShape(Circle())
-                                            .frame(width: 16, height: 16)
-                                    } else {
-                                        Spacer().frame(width: 16, height: 16)
+                                    HStack(spacing: 3) {
+                                        if let guild = icon[safe: 2], let icon = guild.icon {
+                                            Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
+                                                .equatable()
+                                                .clipShape(Circle())
+                                                .frame(width: 16, height: 16)
+                                        } else {
+                                            Spacer().frame(width: 16, height: 16)
+                                        }
+                                        if let guild = icon[safe: 3], let icon = guild.icon {
+                                            Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
+                                                .equatable()
+                                                .clipShape(Circle())
+                                                .frame(width: 16, height: 16)
+                                        } else {
+                                            Spacer().frame(width: 16, height: 16)
+                                        }
                                     }
                                 }
-                                HStack(spacing: 3) {
-                                    if let guild = icon[safe: 2], let icon = guild.icon {
-                                        Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
-                                            .equatable()
-                                            .clipShape(Circle())
-                                            .frame(width: 16, height: 16)
-                                    } else {
-                                        Spacer().frame(width: 16, height: 16)
-                                    }
-                                    if let guild = icon[safe: 3], let icon = guild.icon {
-                                        Attachment(cdnURL + "/icons/\(guild.id)/\(icon).png?size=24")
-                                            .equatable()
-                                            .clipShape(Circle())
-                                            .frame(width: 16, height: 16)
-                                    } else {
-                                        Spacer().frame(width: 16, height: 16)
-                                    }
-                                }
+                                .frame(width: 45, height: 45)
+                                .background(color.opacity(0.75))
+                                .cornerRadius(15)
+                                .frame(width: 45, height: 45)
+                                .redBadge(collapsed ? .constant(mentionCount) : .constant(nil))
                             }
-                            .frame(width: 45, height: 45)
-                            .background(color.opacity(0.75))
-                            .cornerRadius(15)
-                            .frame(width: 45, height: 45)
-                            .redBadge(collapsed ? .constant(mentionCount) : .constant(nil))
+                        } else {
+                            Image(systemName: "folder.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .foregroundColor(color.lighter().opacity(0.75))
+                                .padding()
+                                .frame(width: 45, height: 45)
+                                .background(color.opacity(0.65))
+                                .cornerRadius(15)
+                                .frame(width: 45, height: 45)
                         }
                     }
                 }
@@ -176,6 +188,20 @@ struct Folder<Content: View>: View {
         .frame(width: 45)
     }
 }
+
+extension Color {
+     func colorInvert() -> Self {
+         let color = self.cgColor ?? .none
+         let comp = color?.components ?? []
+         return Color(red: 1.0 - comp[0], green: 1.0 - comp[1], blue: 1.0 - comp[2])
+     }
+
+     func lighter() -> Self {
+         let color = self.cgColor ?? .none
+         let comp = color?.components ?? []
+         return Color(red: max(1.0, comp[0] + 0.1), green: max(1.0, comp[1] + 0.1), blue: max(1.0, comp[2] + 0.1))
+     }
+ }
 
 func pronounDBFormed(pronoun: String?) -> String {
     switch pronoun {
