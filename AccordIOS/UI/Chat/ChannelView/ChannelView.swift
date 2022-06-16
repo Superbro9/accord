@@ -25,9 +25,6 @@ struct ChannelView: View, Equatable {
     // Whether or not there is a message send in progress
     @State var sending: Bool = false
     
-    // Nicknames/Usernames of users typing
-    @State var typing: [String] = []
-    
     // WebSocket error
     @State var error: String?
     
@@ -40,7 +37,6 @@ struct ChannelView: View, Equatable {
     @State var mentions: Bool = false
     
     @State var memberListShown: Bool = false
-    @State var memberList: [OPSItems]
     @State var fileUpload: Data?
     @State var fileUploadURL: URL?
     
@@ -63,7 +59,12 @@ struct ChannelView: View, Equatable {
         channelName = channel.name ?? channel.recipients?.first?.username ?? "Unknown channel"
         self.guildName = guildName ?? "Direct Messages"
         _viewModel = StateObject(wrappedValue: ChannelViewViewModel(channel: channel))
-        _memberList = State(initialValue: channel.recipients?.map(OPSItems.init) ?? [])
+        viewModel.memberList = channel.recipients?.map(OPSItems.init) ?? []
+        if wss.connection?.state == .cancelled {
+            concurrentQueue.async {
+                wss?.reset()
+            }
+        }
         UITableView.appearance().showsVerticalScrollIndicator = false
     }
     
@@ -77,7 +78,7 @@ struct ChannelView: View, Equatable {
                         pronouns: viewModel.pronouns[author.id],
                         avatar: viewModel.avatars[author.id],
                         guildID: guildID,
-                        permissions: viewModel.permissions,
+                        permissions: $viewModel.permissions,
                         role: $viewModel.roles[author.id],
                         replyRole: $viewModel.roles[message.referenced_message?.author?.id ?? ""],
                         replyingTo: $replyingTo
@@ -85,7 +86,7 @@ struct ChannelView: View, Equatable {
                     .equatable()
                     .id(message.id)
                     .listRowInsets(.init(top: 0, leading: 0, bottom: (message.isSameAuthor && message.referenced_message == nil) ? 0.5 : 10, trailing: 0))
-                    .onAppear {
+                    .onAppear { [unowned viewModel] in
                         if viewModel.messages.count >= 50,
                            message == viewModel.messages[viewModel.messages.count - 2]
                         {
@@ -96,7 +97,7 @@ struct ChannelView: View, Equatable {
                     }
                 }
             }
-            //.offset(x: 0, y: -1)
+            .offset(x: 0, y: -1)
             .rotationEffect(.radians(.pi))
             .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
         }
@@ -123,10 +124,10 @@ struct ChannelView: View, Equatable {
                 
             }
             if memberListShown {
-                MemberListView(guildID: self.guildID, list: $memberList)
+                MemberListView(guildID: self.guildID, list: $viewModel.memberList)
                     .frame(width: 250)
                     .onAppear {
-                        if memberList.isEmpty && guildID != "@me" {
+                        if viewModel.memberList.isEmpty && guildID != "@me" {
                             try? wss.memberList(for: guildID, in: channelID)
                         }
                     }
@@ -136,47 +137,6 @@ struct ChannelView: View, Equatable {
         .gesture(DragGesture().onChanged({ _ in
             self.endTextEditing()
         }))
-        .onAppear {
-            guard wss != nil else { return MentionSender.shared.deselect() }
-            wss.typingSubject
-                .receive(on: webSocketQueue)
-                .sink { [weak viewModel] msg, channelID in
-                    
-                    guard channelID == self.channelID,
-                          let memberDecodable = try? JSONDecoder().decode(TypingEvent.self, from: msg).d,
-                          memberDecodable.user_id != self.user.id else { return }
-                    
-                    let isKnownAs =
-                    viewModel?.nicks[memberDecodable.user_id] ??
-                    memberDecodable.member?.nick ??
-                    memberDecodable.member?.user.username ??
-                    "Unknown User"
-                    
-                    if !typing.contains(isKnownAs) {
-                        typing.append(isKnownAs)
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        guard !typing.isEmpty else { return }
-                        typing.removeLast()
-                    }
-                }
-                .store(in: &cancellable)
-            wss.memberListSubject
-                .sink { list in
-                    if self.memberListShown, memberList.isEmpty {
-                        self.memberList = Array(list.d.ops.compactMap(\.items).joined())
-                            .map { item -> OPSItems in
-                                let new = item
-                                new.member?.roles = new.member?.roles?
-                                    .filter { roleColors[$0] != nil }
-                                    .sorted(by: { roleColors[$0]!.1 > roleColors[$1]!.1 })
-                                return new
-                            }
-                    }
-                }
-                .store(in: &cancellable)
-        }
         .toolbar(content: {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button(action: {

@@ -16,7 +16,7 @@ fileprivate var encoder: ISO8601DateFormatter = {
 
 struct MessageCellMenu: View {
 
-    var message: Message
+    @State var message: Message
     var guildID: String
     var permissions: Permissions
     @Binding var replyingTo: Message?
@@ -94,28 +94,21 @@ struct MessageCellMenu: View {
 
     private var copyMenu: some View {
         Menu("Copy") {
-            Button("Copy message text") { [weak message] in
-                guard let content = message?.content else { return }
-                UIPasteboard.general.string = ""
-                UIPasteboard.general.string = content
+            Button("Copy message text") {
+                UIPasteboard.general.string = message.content
             }
-            Button("Copy message link") { [weak message] in
-                guard let channelID = message?.channel_id, let id = message?.id else { return }
-                UIPasteboard.general.string = ""
-                UIPasteboard.general.string = "https://discord.com/channels/\(message?.guild_id ?? guildID)/\(channelID)/\(id)"
+            Button("Copy message link") {
+                UIPasteboard.general.string = "https://discord.com/channels/\(message.guild_id ?? guildID)/\(message.channel_id)/\(message.id)"
             }
-            Button("Copy user ID") { [weak message] in
-                guard let id = message?.author?.id else { return }
-                UIPasteboard.general.string = ""
+            Button("Copy user ID") {
+                guard let id = message.author?.id else { return }
                 UIPasteboard.general.string = id
             }
-            Button("Copy message ID") { [weak message] in
-                guard let id = message?.id else { return }
-                UIPasteboard.general.string = ""
-                UIPasteboard.general.string = id
+            Button("Copy message ID") {
+                UIPasteboard.general.string = message.id
             }
-            Button("Copy username and tag", action: { [weak message] in
-                guard let author = message?.author else { return }
+            Button("Copy username and tag", action: {
+                guard let author = message.author else { return }
                 UIPasteboard.general.string = ""
                 UIPasteboard.general.string = "\(author.username)#\(author.discriminator)"
             })
@@ -207,7 +200,6 @@ struct MessageCellMenu: View {
                     }
                 }
                 Button("Copy media URL") {
-                    UIPasteboard.general.string = ""
                     UIPasteboard.general.string = attachment?.url ?? ""
                 }
             }
@@ -215,7 +207,7 @@ struct MessageCellMenu: View {
     }
 
     var body: some View {
-        Button("Reply") { [weak message] in
+        Button("Reply") {
             replyingTo = message
         }
         if message.author?.id == AccordCoreVars.user?.id {
@@ -224,9 +216,9 @@ struct MessageCellMenu: View {
             }
         }
         if message.author?.id == AccordCoreVars.user?.id || self.permissions.contains(.manageMessages) {
-            Button("Delete") { [weak message] in
+            Button("Delete") {
                 DispatchQueue.global().async {
-                    message?.delete()
+                    message.delete()
                 }
             }
         }

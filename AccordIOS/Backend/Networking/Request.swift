@@ -438,7 +438,6 @@ public final class RequestPublisher {
                     throw Request.FetchErrors.discordError(code: discordError.code, message: discordError.message)
                 }
             }
-            .debugWarnNoMainThread()
             .eraseToAnyPublisher()
     }
     
@@ -463,7 +462,6 @@ public final class RequestPublisher {
                     return image
                 } else { throw ImageErrors.noImage }
             }
-            .debugWarnNoMainThread()
             .eraseToAny()
     }
 }

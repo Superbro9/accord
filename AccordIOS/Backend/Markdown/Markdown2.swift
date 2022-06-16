@@ -88,13 +88,6 @@ public final class Markdown {
                 }
                 .eraseToAny()
         }
-        let inlineImages = word.matches(precomputed: Regex.inlineImageRegex).filter { $0.contains("nitroless") || $0.contains("emote") || $0.contains("emoji") } // nitroless emoji
-        if let url = inlineImages.first, let emoteURL = URL(string: url) {
-            return RequestPublisher.image(url: emoteURL)
-                .replaceError(with: UIImage(systemName: "wifi.slash") ?? UIImage())
-                .map { Text(Image(uiImage: $0)) + Text(" ") }
-                .eraseToAny()
-        }
         return Future { promise -> Void in
             let mentions = word.matches(precomputed: Regex.mentionsRegex)
             let channels = word.matches(precomputed: Regex.channelsRegex)
@@ -128,9 +121,8 @@ public final class Markdown {
                 ))
             }
             for id in channels {
-                let matches = ServerListView.folders.map { $0.guilds.compactMap { $0.channels?.filter { $0.id == id } } }
-                let joined: Channel? = Array(Array(Array(matches).joined()).joined()).first
-                return promise(.success(Text("#\(joined?.name ?? "deleted-channel") ").foregroundColor(Color(UIColor.gray)).underline() + Text(" ")))
+                let channel = Array(ServerListView.folders.map({ $0.guilds }).joined().map(\.channels).joined())[keyed: id]
+                return promise(.success(Text("#\(channel?.name ?? "deleted-channel") ").foregroundColor(Color(UIColor.systemGray)) + Text(" ")))
             }
             if word.contains("+") || word.contains("<") || word.contains(">") { // the markdown parser removes these??
                 return promise(.success(Text(word) + Text(" ")))
