@@ -100,8 +100,9 @@ struct MessageCellView: View, Equatable {
                         )
                         .frame(width: 35, height: 35)
                         .clipShape(Circle())
-                        .popover(isPresented: $popup, content: {
+                        .sheet(isPresented: $popup, content: {
                             PopoverProfileView(user: message.author, guildID: self.guildID)
+                                .presentationDetents([.medium])
                         })
                         .padding(.trailing, 1.5)
                     }
@@ -115,8 +116,9 @@ struct MessageCellView: View, Equatable {
                                     AsyncMarkdown(message.content)
                                         .equatable()
                                         .padding(.leading, leftPadding)
-                                        .popover(isPresented: $popup, content: {
+                                        .sheet(isPresented: $popup, content: {
                                             PopoverProfileView(user: message.author, guildID: self.guildID)
+                                                .presentationDetents([.medium])
                                         })
                                 }
                             } else {

@@ -222,8 +222,9 @@ struct MemberListViewCell: View {
             }
         }
         .buttonStyle(.borderless)
-        .popover(isPresented: self.$popup, content: {
+        .sheet(isPresented: self.$popup, content: {
             PopoverProfileView(user: ops.member?.user, guildID: guildID)
+                .presentationDetents([.medium])
         })
     }
 }

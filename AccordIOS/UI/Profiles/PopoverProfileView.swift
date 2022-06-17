@@ -109,20 +109,13 @@ struct PopoverProfileView: View {
                         .font(.subheadline)
                 }
                 .padding(4)
-                .frame(width: 60, height: 45)
+                //.frame(width: 60, height: 45)
                 .background(hovered == 1 ? Color.gray.opacity(0.25).cornerRadius(5) : Color.clear.cornerRadius(5))
             })
             .buttonStyle(BorderlessButtonStyle())
-            .onHover(perform: { hover in
-                switch hover {
-                case true:
-                    withAnimation {
-                        hovered = 1
-                    }
-                case false:
-                    withAnimation {
-                        hovered = nil
-                    }
+            .onTapGesture(perform: { hover in
+                withAnimation {
+                    hovered = 1
                 }
             })
         }
@@ -159,99 +152,111 @@ struct PopoverProfileView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .top) {
-            VStack {
-                if let banner = fullUser?.banner, let id = user?.id {
-                    Attachment(cdnURL + "/banners/\(id)/\(banner).png?size=320")
-                        .equatable()
-                        .frame(width: 290)
-                } else {
-                    Color(UIColor.systemBackground).frame(height: 100).opacity(0.75)
-                }
-                Spacer()
-            }
-            VStack {
-                Spacer().frame(height: 100)
-                VStack(alignment: .leading) {
-                    if user?.avatar?.prefix(2) == "a_" {
-                        ZStack(alignment: .center) {
-                            Circle().frame(width: 64, height: 64)
-                                .foregroundColor(Color(UIColor.systemBackground))
-                            GifView(cdnURL + "/avatars/\(user?.id ?? "")/\(user?.avatar ?? "").gif?size=64")
-                                .clipShape(Circle())
-                                .frame(width: 60, height: 60)
-                        }
-                        .offset(y: -48)
-                        .padding(.bottom, -48)
+        ScrollView {
+            ZStack(alignment: .top) {
+                VStack {
+                    if let banner = fullUser?.banner, let id = user?.id {
+                        Attachment(cdnURL + "/banners/\(id)/\(banner).png?size=320")
+                            .equatable()
+                            .frame(width: .infinity)
                     } else {
-                        ZStack(alignment: .center) {
-                            Circle().frame(width: 64, height: 64)
-                                .foregroundColor(Color(UIColor.systemBackground))
-                            Attachment(pfpURL(user?.id, user?.avatar, discriminator: user?.discriminator ?? "0005"))
-                                .equatable()
-                                .clipShape(Circle())
-                                .frame(width: 60, height: 60)
+                        let colors: [Color] = [.green, .red, .orange,
+                                               .blue, .cyan, .mint, .teal,
+                                               .yellow, .indigo, .gray, .brown,
+                                               .pink, .purple, .accentColor]
+                        Text("")
+                            .foregroundColor(.white)
+                            .frame(height: 100)
+                            .frame(maxWidth: .infinity)
+                            .background(colors.randomElement())
+                    }
+                    Spacer()
+                }
+                VStack {
+                    Spacer().frame(height: 100)
+                    VStack(alignment: .leading) {
+                        if user?.avatar?.prefix(2) == "a_" {
+                            ZStack(alignment: .center) {
+                                Circle().frame(width: 64, height: 64)
+                                    .foregroundColor(Color(UIColor.systemBackground))
+                                GifView(cdnURL + "/avatars/\(user?.id ?? "")/\(user?.avatar ?? "").gif?size=64")
+                                    .clipShape(Circle())
+                                    .frame(width: 60, height: 60)
+                            }
+                            .offset(y: -48)
+                            .padding(.bottom, -48)
+                        } else {
+                            ZStack(alignment: .center) {
+                                Circle().frame(width: 64, height: 64)
+                                    .foregroundColor(Color(UIColor.systemBackground))
+                                Attachment(pfpURL(user?.id, user?.avatar, discriminator: user?.discriminator ?? "0005"))
+                                    .equatable()
+                                    .clipShape(Circle())
+                                    .frame(width: 60, height: 60)
+                            }
+                            .offset(y: -48)
+                            .padding(.bottom, -48)
                         }
-                        .offset(y: -48)
-                        .padding(.bottom, -48)
-                    }
-                    Text(self.guildMember?.nick ?? user?.username ?? "")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Text("\(user?.username ?? "")#\(user?.discriminator ?? "")")
-                        .font(.subheadline)
-                        .foregroundColor(Color.secondary)
-                    
-                    if let bio = self.fullUser?.bio, !bio.isEmpty {
+                        Text(self.guildMember?.nick ?? user?.username ?? "")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Text("\(user?.username ?? "")#\(user?.discriminator ?? "")")
+                            .font(.subheadline)
+                            .foregroundColor(Color.secondary)
+                        
+                        if let bio = self.fullUser?.bio, !bio.isEmpty {
+                            Divider()
+                            VStack(alignment: .leading) {
+                                Text("About me")
+                                    .fontWeight(.semibold)
+                                    .padding(.bottom, 1)
+                                AsyncMarkdown(bio)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            Divider()
+                        }
+                        if let roles = self.guildMember?.roles?.sorted(by: { lhs, rhs in
+                            if let lhs = roleColors[lhs]?.1, let rhs = roleColors[rhs]?.1 {
+                                return lhs > rhs
+                            } else { return true }
+                        }) {
+                            RolesView(tags: roles)
+                        }
                         Divider()
-                        Text("About me")
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 1)
-                        AsyncMarkdown(bio)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Divider()
-                    }
-                    if let roles = self.guildMember?.roles?.sorted(by: { lhs, rhs in
-                        if let lhs = roleColors[lhs]?.1, let rhs = roleColors[rhs]?.1 {
-                            return lhs > rhs
-                        } else { return true }
-                    }) {
-                        RolesView(tags: roles)
-                    }
-                    HStack(alignment: .bottom) {
-                        PopoverProfileViewButton(
-                            label: "Message",
-                            symbolName: "bubble.right.fill"
-                        ) {
-                            print("lol creating new channel now")
-                            Request.fetch(Channel.self, url: URL(string: "https://discord.com/api/v9/users/@me/channels"), headers: Headers(
-                                userAgent: discordUserAgent,
-                                token: AccordCoreVars.token,
-                                bodyObject: ["recipients":[user?.id ?? ""]],
-                                type: .POST,
-                                discordHeaders: true,
-                                referer: "https://discord.com/channels/@me",
-                                json: true
-                            )) {
-                                switch $0 {
-                                case .success(let channel):
-                                    print(channel)
-                                    ServerListView.privateChannels.append(channel)
-                                    MentionSender.shared.select(channel: channel)
-                                case .failure(let error):
-                                    AccordApp.error(error, additionalDescription: "Failed to open dm")
+                            HStack(alignment: .bottom) {
+                                PopoverProfileViewButton(
+                                    label: "Message",
+                                    symbolName: "bubble.right.fill"
+                                ) {
+                                    print("lol creating new channel now")
+                                    Request.fetch(Channel.self, url: URL(string: "https://discord.com/api/v9/users/@me/channels"), headers: Headers(
+                                        userAgent: discordUserAgent,
+                                        token: AccordCoreVars.token,
+                                        bodyObject: ["recipients":[user?.id ?? ""]],
+                                        type: .POST,
+                                        discordHeaders: true,
+                                        referer: "https://discord.com/channels/@me",
+                                        json: true
+                                    )) {
+                                        switch $0 {
+                                        case .success(let channel):
+                                            print(channel)
+                                            ServerListView.privateChannels.append(channel)
+                                            MentionSender.shared.select(channel: channel)
+                                        case .failure(let error):
+                                            AccordApp.error(error, additionalDescription: "Failed to open dm")
+                                        }
+                                    }
                                 }
                             }
+                            .frame(maxWidth: .infinity)
+                            .transition(AnyTransition.opacity)
                         }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .transition(AnyTransition.opacity)
+                        .padding(14)
+                        .background(Color(uiColor: .systemBackground))
                 }
-                .padding(14)
-                .background(Color(uiColor: .systemBackground))
             }
         }
-        .frame(width: 290)
         .onAppear {
             DispatchQueue.global().async {
                 self.loadUser()
