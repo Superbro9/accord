@@ -49,9 +49,6 @@ struct ChannelView: View, Equatable {
     @State var fileUpload: Data?
     @State var fileUploadURL: URL?
     
-    @AppStorage("MetalRenderer")
-    var metalRenderer: Bool = false
-    
     @State private var cancellable = Set<AnyCancellable>()
     
     @Environment(\.user)
@@ -116,68 +113,55 @@ struct ChannelView: View, Equatable {
         }
     
     var body: some View {
-        HStack {
-            VStack(spacing: 0) {
-                List {
-                    Spacer().frame(height: 15)
-                    if metalRenderer {
-                        messagesView.drawingGroup()
-                            .listRowSeparator(.hidden)
-                    } else {
+            HStack {
+                VStack(spacing: 0) {
+                    List {
+                        Spacer().frame(height: 15)
                         messagesView
                             .listRowSeparator(.hidden)
                     }
+                    .listStyle(.plain)
+                    .rotationEffect(.radians(.pi))
+                    .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
+                    .padding()
+                    .scrollIndicators(.hidden)
+                    blurredTextField
                 }
-                .listStyle(.plain)
-                //.offset(x: 0, y: -1)
-                .rotationEffect(.radians(.pi))
-                .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
-                .padding()
-                blurredTextField
-                
-            }
-            if memberListShown {
-                MemberListView(guildID: viewModel.guildID, list: $viewModel.memberList)
-                    .frame(width: 250)
-                    .onAppear { [unowned viewModel] in
-                        if viewModel.memberList.isEmpty && viewModel.guildID != "@me" {
-                            try? wss.memberList(for: viewModel.guildID, in: viewModel.channelID)
+                if memberListShown {
+                    MemberListView(guildID: viewModel.guildID, list: $viewModel.memberList)
+                        .frame(width: 250)
+                        .onAppear { [unowned viewModel] in
+                            if viewModel.memberList.isEmpty && viewModel.guildID != "@me" {
+                                try? wss.memberList(for: viewModel.guildID, in: viewModel.channelID)
+                            }
                         }
-                    }
+                }
             }
-        }
+        .scrollDismissesKeyboard(.immediately)
         .navigationTitle(Text("\(viewModel.guildID == "@me" ? "" : "#")\(channelName)"))
-        .gesture(DragGesture().onChanged({ _ in
-            self.endTextEditing()
-        }))
-        .toolbar(content: {
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button(action: {
-                    self.pins.toggle()
-                }) {
+                Toggle(isOn: $pins) {
                     Image(systemName: "pin.fill")
                         .rotationEffect(.degrees(45))
                 }
                 .popover(isPresented: $pins) { [unowned viewModel] in
                     PinsView(guildID: viewModel.guildID, channelID: viewModel.channelID, replyingTo: Binding.constant(nil))
-                    
-                    Button(action: {
-                        self.mentions.toggle()
-                    }) {
-                        Image(systemName: "bell.badge.fill")
-                    }
-                    .popover(isPresented: $mentions) {
-                        MentionsView(replyingTo: Binding.constant(nil))
-                            .frame(width: 500, height: 700)
-                    }
-                    
-                    Toggle(isOn: $memberListShown.animation()) {
-                        Image(systemName: "person.2.fill")
-                    }
+                        .frame(width: 500, height: 600)
+                }
+                Toggle(isOn: $mentions) {
+                    Image(systemName: "bell.badge.fill")
+                }
+                .popover(isPresented: $mentions) {
+                    MentionsView(replyingTo: Binding.constant(nil))
+                        .frame(width: 500, height: 600)
+                }
+                Toggle(isOn: $memberListShown.animation()) {
+                    Image(systemName: "person.2.fill")
                 }
             }
         }
-        )
     }
 }
 
@@ -186,13 +170,6 @@ struct VisualEffectView: UIViewRepresentable {
     var effect: UIVisualEffect?
     func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView { UIVisualEffectView() }
     func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) { uiView.effect = effect }
-}
-
-extension View {
-    func endTextEditing() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                        to: nil, from: nil, for: nil)
-    }
 }
 
 struct MemberListView: View {

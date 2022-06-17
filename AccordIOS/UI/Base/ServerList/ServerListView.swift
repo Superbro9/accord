@@ -116,7 +116,9 @@ struct ServerListView: View {
     }
     
     var settingsLink: some View {
-        NavigationLink(destination: SettingsView(), tag: 0, selection: self.$selection) {
+        NavigationLink {
+            SettingsView()
+        } label: {
             HStack {
                 ZStack(alignment: .bottomTrailing) {
                     Image(uiImage: UIImage(data: avatar) ?? UIImage()).resizable()
@@ -137,11 +139,10 @@ struct ServerListView: View {
                 }
             }
         }
-        .buttonStyle(BorderlessButtonStyle())
     }
     
     var body: some View {
-        return NavigationView {
+        NavigationStack {
             HStack(spacing: 0) {
                 ScrollView(.vertical, showsIndicators: false) {
                     
@@ -177,7 +178,8 @@ struct ServerListView: View {
                 if selectedServer == 201 {
                     List {
                         settingsLink
-                        Divider()
+                            .padding(.bottom)
+                            .listRowSeparator(.hidden)
                         PrivateChannelsView (
                             privateChannels: Self.privateChannels,
                             selection: self.$selection,
@@ -186,6 +188,7 @@ struct ServerListView: View {
                         .animation(nil, value: UUID())
                     }
                     .padding(.top, 5)
+                    .listStyle(.plain)
                     .listStyle(.sidebar)
                     .animation(nil, value: UUID())
                 } else if let selectedGuild = selectedGuild {

@@ -97,33 +97,28 @@ struct GuildView: View {
                         .font(.system(size: 10))
                     
                 } else {
-                    NavigationLink(
-                        tag: Int(channel.id) ?? 0,
-                        selection: self.$selection,
-                        destination: {
-                            NavigationLazyView (
-                                ChannelView(channel, guild.name)
-                                    .equatable()
-                                    .onAppear {
-                                        let prevCount = channel.read_state?.mention_count
-                                        channel.read_state?.mention_count = 0
-                                        channel.read_state?.last_message_id = channel.last_message_id
-                                        if prevCount != 0 { self.updater.updateView() }
-                                    }
-                                    .onDisappear {
-                                        let prevCount = channel.read_state?.mention_count
-                                        channel.read_state?.mention_count = 0
-                                        channel.read_state?.last_message_id = channel.last_message_id
-                                        if prevCount != 0 { self.updater.updateView() }
-                                    }
-                            )
-                        }, label: {
-                            ServerListViewCell(
-                                channel: channel,
-                                updater: self.updater
-                            )
-                        }
-                    )
+                    NavigationLink(value: channel) {
+                        ServerListViewCell(
+                            channel: channel,
+                            updater: self.updater
+                        )
+                    }
+                    .navigationDestination(for: Channel.self, destination: { channel in
+                        ChannelView(channel, guild.name)
+                            .equatable()
+                            .onAppear {
+                                let prevCount = channel.read_state?.mention_count
+                                channel.read_state?.mention_count = 0
+                                channel.read_state?.last_message_id = channel.last_message_id
+                                if prevCount != 0 { self.updater.updateView() }
+                            }
+                            .onDisappear {
+                                let prevCount = channel.read_state?.mention_count
+                                channel.read_state?.mention_count = 0
+                                channel.read_state?.last_message_id = channel.last_message_id
+                                if prevCount != 0 { self.updater.updateView() }
+                            }
+                    })
                     
                     .buttonStyle(BorderlessButtonStyle())
                     .foregroundColor(channel.read_state?.last_message_id == channel.last_message_id ? Color.secondary : nil)

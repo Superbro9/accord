@@ -22,8 +22,7 @@ struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        List {
-            LazyVStack(alignment: .leading) {
+            List {
                 Section {
                     Group {
                         SettingsToggleView(key: "pfpShown", title: "Show profile pictures")
@@ -38,7 +37,6 @@ struct SettingsView: View {
                         SettingsToggleView(key: "MentionsMenuBarItemEnabled", title: "Enable the mentions menu bar popup")
                         SettingsToggleView(key: "Nitroless", title: "Enable Nitroless support")
                         SettingsToggleView(key: "SilentTyping", title: "Enable silent typing")
-                        SettingsToggleView(key: "MetalRenderer", title: "Enable the Metal Renderer for the chat view", detail: "Experimental")
                         SettingsToggleView(key: "GifProfilePictures", title: "Enable Gif Profile Pictures", detail: "Experimental")
                         SettingsToggleView(key: "ShowHiddenChannels", title: "Show hidden channels", detail: "Please don't use this")
                         SettingsToggleView(key: "CompressGateway", title: "Enable Gateway Stream Compression", detail: "Recommended", defaultToggle: true)
@@ -66,6 +64,7 @@ struct SettingsView: View {
                         .padding()
                     }
                 }
+                .listRowSeparator(.hidden)
                 .toggleStyle(SwitchToggleStyle())
                 .padding(5)
                 .background(Color.black.opacity(colorScheme == .dark ? 0.25 : 0.10))
@@ -78,40 +77,37 @@ struct SettingsView: View {
                    }
                    .padding(.leading, 20)
                    .foregroundColor(.secondary)
-                Spacer()
                 
                 Text("AccordiOS (com.superbro.AccordIOS) \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
                     .padding(.leading, 20)
                     .foregroundColor(.secondary)
+                    .listRowSeparator(.hidden)
                 Text("OS: iOS \(String(describing: ProcessInfo.processInfo.operatingSystemVersionString))")
                     .padding(.leading, 20)
                     .foregroundColor(.secondary)
+                
                 HStack(alignment: .center) {
                     Text("Open source at")
                         .padding(.leading, 20)
                         .foregroundColor(.secondary)
                     GithubIcon()
                         .foregroundColor(Color.accentColor)
-                        .frame(width: 13, height: 13)
-                        .onTapGesture {
-                            UIApplication.shared.open(URL(string: "https://github.com/Superbro9/accord")!)
-                        }
+                        .frame(width: 20, height: 20)
+                        
+                }
+                .onTapGesture {
+                    UIApplication.shared.open(URL(string: "https://github.com/Superbro9/accord")!)
                 }
                 .frame(height: 5)
+                .listRowSeparator(.hidden)
                 Text("Made with 🤍 by Superbro")
                     .padding(.leading, 20)
                     .foregroundColor(.secondary)
+                    .listRowSeparator(.hidden)
             }
-            .toolbar {
-                ToolbarItemGroup {
-                    Toggle(isOn: Binding.constant(false)) {
-                        Image(systemName: "bell.badge.fill")
-                    }
-                    .hidden()
-                }
-            }
-            
-        }
+            .listStyle(.plain)
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.large)
     }
 }
 
