@@ -40,6 +40,8 @@
 		89A1FAE027F63B890031ED77 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A1FADF27F63B890031ED77 /* ImagePicker.swift */; };
 		89A54FDA27D93AAA003142A0 /* Collection++.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A54FD927D93AAA003142A0 /* Collection++.swift */; };
 		89A54FDC27D93DB6003142A0 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A54FDB27D93DB6003142A0 /* Permissions.swift */; };
+		89BA01C3285DE7F600950EAF /* Opcodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA01C2285DE7F600950EAF /* Opcodes.swift */; };
+		89BA01C5285DE81800950EAF /* RTCSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA01C4285DE81800950EAF /* RTCSocket.swift */; };
 		89BBFC2527E3A1B600B3D122 /* Gateway+VoiceState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BBFC2427E3A1B600B3D122 /* Gateway+VoiceState.swift */; };
 		89BBFC2727E3A24700B3D122 /* String++.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BBFC2627E3A24700B3D122 /* String++.swift */; };
 		89BBFC2927E3A26B00B3D122 /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BBFC2827E3A26B00B3D122 /* Regex.swift */; };
@@ -154,6 +156,8 @@
 		89A1FADF27F63B890031ED77 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		89A54FD927D93AAA003142A0 /* Collection++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection++.swift"; sourceTree = "<group>"; };
 		89A54FDB27D93DB6003142A0 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		89BA01C2285DE7F600950EAF /* Opcodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Opcodes.swift; sourceTree = "<group>"; };
+		89BA01C4285DE81800950EAF /* RTCSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCSocket.swift; sourceTree = "<group>"; };
 		89BBFC2427E3A1B600B3D122 /* Gateway+VoiceState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gateway+VoiceState.swift"; sourceTree = "<group>"; };
 		89BBFC2627E3A24700B3D122 /* String++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String++.swift"; sourceTree = "<group>"; };
 		89BBFC2827E3A26B00B3D122 /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
@@ -404,6 +408,8 @@
 			isa = PBXGroup;
 			children = (
 				89BBFC2427E3A1B600B3D122 /* Gateway+VoiceState.swift */,
+				89BA01C2285DE7F600950EAF /* Opcodes.swift */,
+				89BA01C4285DE81800950EAF /* RTCSocket.swift */,
 			);
 			path = Voice;
 			sourceTree = "<group>";
@@ -788,12 +794,14 @@
 				891751C4285B55D200CE042E /* GridStack.swift in Sources */,
 				89EFBB1B2835822D00141049 /* ServerListViewCell.swift in Sources */,
 				891751C2285B55B300CE042E /* AvatarView.swift in Sources */,
+				89BA01C3285DE7F600950EAF /* Opcodes.swift in Sources */,
 				89E9FF2627B014DD00861F05 /* Images.swift in Sources */,
 				89E9FEA627AFFC3500861F05 /* Networking++.swift in Sources */,
 				891751CE285B5EA600CE042E /* WelcomeMessageView.swift in Sources */,
 				8984EECA27B43E4E0025AEC5 /* ChannelView+TextField.swift in Sources */,
 				89E9FED727AFFD0700861F05 /* MentionProtocol.swift in Sources */,
 				89E9FE7927AFFAAF00861F05 /* Status.swift in Sources */,
+				89BA01C5285DE81800950EAF /* RTCSocket.swift in Sources */,
 				89E9FEFF27AFFEC800861F05 /* ServerListView+Mentions.swift in Sources */,
 				89E9FED827AFFD0700861F05 /* GatewayEvent.swift in Sources */,
 				89A54FDA27D93AAA003142A0 /* Collection++.swift in Sources */,
