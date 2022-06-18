@@ -112,6 +112,33 @@ struct ChannelView: View, Equatable {
             .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
         }
     
+    var messagePlaceholderView : some View {
+        ForEach(1..<20) { _ in
+            VStack {
+                HStack(alignment: .bottom) {
+                    Circle()
+                        .foregroundColor(.gray)
+                        .frame(width: 35, height: 35)
+                        .padding(.trailing, 1.5)
+                        .fixedSize()
+                    
+                    VStack(alignment: .leading) {
+                        Rectangle()
+                            .frame(width: 30 * CGFloat(Int.random(in: 3...20)), height: 13 * CGFloat(Int.random(in: 1...5)))
+                            .cornerRadius(6)
+                        Rectangle()
+                            .frame(width: 20 * CGFloat(Int.random(in: 3...10)), height: 13)
+                            .cornerRadius(6)
+                        Spacer().frame(height: 1.3)
+                    }
+                }
+                .foregroundColor(.gray)
+                .opacity(0.5)
+                Spacer()
+            }
+        }
+    }
+    
     var body: some View {
             HStack {
                 VStack(spacing: 0) {
@@ -120,11 +147,25 @@ struct ChannelView: View, Equatable {
                         messagesView
                             .listRowSeparator(.hidden)
                     }
-                    .listStyle(.plain)
-                    .rotationEffect(.radians(.pi))
-                    .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
-                    .padding()
-                    .scrollIndicators(.hidden)
+                    if viewModel.noMoreMessages {
+                        Divider()
+                        Text("This is the start of the channel")
+                            .rotationEffect(.degrees(180))
+                            .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
+                        Text("Welcome to #\(channelName)!")
+                            .bold()
+                            .dynamicTypeSize(.xxxLarge)
+                            .font(.largeTitle)
+                            .rotationEffect(.degrees(180))
+                            .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
+                    } else {
+                        messagePlaceholderView
+                    }
+                        .listStyle(.plain)
+                        .rotationEffect(.radians(.pi))
+                        .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
+                        .padding()
+                        .scrollIndicators(.hidden)
                     blurredTextField
                 }
                 if memberListShown {
@@ -138,7 +179,7 @@ struct ChannelView: View, Equatable {
                 }
             }
         .scrollDismissesKeyboard(.immediately)
-        .navigationTitle(Text("\(viewModel.guildID == "@me" ? "" : "#")\(channelName)"))
+        .navigationTitle(Text("\(viewModel.guildID == "@me" ? "" : "#")\(channelName)".replacingOccurrences(of: "#", with: "")))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {

@@ -40,7 +40,9 @@ struct EmotesView: View, Equatable {
                     Spacer().frame(height: 45)
                     LazyVStack(alignment: .leading) {
                         if search == "" {
-                            ForEach(Array(Emotes.emotes.keys), id: \.self) { key in
+                            let keys = Array(Emotes.emotes.keys)
+                            let nonEmptyKeys = keys.filter { !(Emotes.emotes[$0] ?? []).isEmpty }
+                            ForEach(nonEmptyKeys, id: \.self) { key in
                                 Section(header: Text(key.components(separatedBy: "$")[1])) {
                                     LazyVGrid(columns: columns) {
                                         ForEach(Emotes.emotes[key] ?? [], id: \.id) { emote in
@@ -48,10 +50,10 @@ struct EmotesView: View, Equatable {
                                                 chatText.append(contentsOf: "<\(emote.animated ?? false ? "a" : ""):\(emote.name):\(emote.id)> ")
                                                 onSelect(emote)
                                                 self.dismiss()
-                                                print(cdnURL + "/emojis/\(emote.id).png?size=24")
+                                                print(cdnURL + "/emojis/\(emote.id).png?size=48")
                                             }) {
                                                 VStack {
-                                                    HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=24").equatable()
+                                                    HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=48").equatable()
                                                         .frame(width: 40, height: 40)
                                                 }
                                                 .frame(width: 60, height: 60)
@@ -70,7 +72,7 @@ struct EmotesView: View, Equatable {
                                         onSelect(emote)
                                         self.dismiss()
                                     }) {
-                                        HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=24").equatable()
+                                        HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=48").equatable()
                                             .frame(width: 40, height: 40)
                                     }
                                     .buttonStyle(EmoteButton())
