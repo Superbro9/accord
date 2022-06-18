@@ -70,7 +70,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
     }
 
     func loadPermissions(_ channel: Channel) {
-        if guildID == "@me" {
+        if guildID == "@me" || channel.overridePermissions == true {
             DispatchQueue.main.async {
                 self.permissions = .init([
                     .sendMessages, .readMessages,
@@ -280,7 +280,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
         guard let last = messages.first?.id else { return }
         Request.ping(url: URL(string: "\(rootURL)/channels/\(channelID)/messages/\(last)/ack"), headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             bodyObject: ["token": NSNull()], // I don't understand why this is needed, but it wasn't when I first implemented ack...
             type: .POST,
             discordHeaders: true,
@@ -292,7 +292,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
     func getMessages(channelID: String, guildID: String, scrollAfter: Bool = false) {
         RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/messages?limit=50"), headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             type: .GET,
             discordHeaders: true,
             referer: "https://discord.com/channels/\(guildID)/\(channelID)"
@@ -371,7 +371,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
     }
 
     func loadPronouns() {
-        guard AccordCoreVars.pronounDB else { return }
+        guard Globals.pronounDB else { return }
         RequestPublisher.fetch([String: String].self, url: URL(string: "https://pronoundb.org/api/v1/lookup-bulk"), headers: Headers(
             bodyObject: [
                 "platform": "discord",
@@ -411,7 +411,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
     func loadMoreMessages() {
         RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/messages?before=\(messages.last?.id ?? "")&limit=50"), headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             type: .GET,
             discordHeaders: true,
             referer: "https://discord.com/channels/\(guildID)/\(channelID)"
@@ -441,7 +441,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
     func loadAroundMessage(id: String) {
         RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/messages?around=\(id)&limit=50"), headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             type: .GET,
             discordHeaders: true,
             referer: "https://discord.com/channels/\(guildID)/\(channelID)"

@@ -13,26 +13,27 @@ import SwiftUI
 var wss: Gateway!
 
 let rootURL: String = "https://discord.com/api/v9"
- let cdnURL: String = "https://cdn.discordapp.com"
- var user_id: String = .init()
- var avatar: Data = .init()
- var proxyIP: String? = UserDefaults.standard.string(forKey: "proxyIP")
- var proxyPort: String? = UserDefaults.standard.string(forKey: "proxyPort")
- var proxyEnabled: Bool = UserDefaults.standard.bool(forKey: "proxyEnabled")
- var pastelColors: Bool = UserDefaults.standard.bool(forKey: "pastelColors")
- // var discordStockSettings: Bool = UserDefaults.standard.bool(forKey: "discordStockSettings")
- var DiscordDesktopRPCEnabled = UserDefaults.standard.bool(forKey: "DiscordDesktopRPCEnabled")
- var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
- var sortByMostRecent: Bool = UserDefaults.standard.bool(forKey: "sortByMostRecent")
- var pfpShown: Bool = UserDefaults.standard.bool(forKey: "pfpShown")
+let root = URL(string: "https://discord.com/api/v9")!
+let cdnURL: String = "https://cdn.discordapp.com"
+var user_id: String = .init()
+var avatar: Data = .init()
+var proxyIP: String? = UserDefaults.standard.string(forKey: "proxyIP")
+var proxyPort: String? = UserDefaults.standard.string(forKey: "proxyPort")
+var proxyEnabled: Bool = UserDefaults.standard.bool(forKey: "proxyEnabled")
+var pastelColors: Bool = UserDefaults.standard.bool(forKey: "pastelColors")
+// var discordStockSettings: Bool = UserDefaults.standard.bool(forKey: "discordStockSettings")
+var DiscordDesktopRPCEnabled = UserDefaults.standard.bool(forKey: "DiscordDesktopRPCEnabled")
+var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
+var sortByMostRecent: Bool = UserDefaults.standard.bool(forKey: "sortByMostRecent")
+var pfpShown: Bool = UserDefaults.standard.bool(forKey: "pfpShown")
 var musicPlatform: Platforms? = Platforms(rawValue: UserDefaults.standard.string(forKey: "MusicPlatform") ?? "")
- let discordUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.266 Chrome/91.0.4472.164 Electron/13.6.6 Safari/537.36"
- var dscVersion = 126_462
+let discordUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.266 Chrome/91.0.4472.164 Electron/13.6.6 Safari/537.36"
+var dscVersion = 126_462
 
- let xcodeRPCAppID = "926282502937641001"
- let musicRPCAppID = "925514277987704842"
- let discordDesktopRPCAppID = "928798784174051399"
- let vsCodeRPCAppID = "928861386140971078"
+let xcodeRPCAppID = "926282502937641001"
+let musicRPCAppID = "925514277987704842"
+let discordDesktopRPCAppID = "928798784174051399"
+let vsCodeRPCAppID = "928861386140971078"
 
 #if DEBUG
      let keychainItemName = "com.superbro.AccordIOS"
@@ -44,7 +45,7 @@ enum Storage {
     static var usernames: [String: String] = [:]
 }
 
-final class AccordCoreVars {
+final class Globals {
     //static var cancellable: Cancellable?
 
    // static var suffixes: Bool = UserDefaults.standard.bool(forKey: "enableSuffixRemover")

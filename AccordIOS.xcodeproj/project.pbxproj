@@ -21,6 +21,7 @@
 		891751D6285B60FC00CE042E /* ReactionsGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751D5285B60FC00CE042E /* ReactionsGrid.swift */; };
 		891751D8285B612500CE042E /* MessageCellMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751D7285B612500CE042E /* MessageCellMenu.swift */; };
 		891751DA285B631800CE042E /* MatchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891751D9285B631800CE042E /* MatchesView.swift */; };
+		891DEA0E285DE019008E7E1E /* FoumChannelList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891DEA0D285DE019008E7E1E /* FoumChannelList.swift */; };
 		8921DBD0285A75AC00711560 /* SetNicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBCF285A75AC00711560 /* SetNicknameView.swift */; };
 		8921DBD2285A768500711560 /* InviteUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBD1285A768500711560 /* InviteUpdate.swift */; };
 		8921DBD4285A770000711560 /* NewInviteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921DBD3285A770000711560 /* NewInviteSheet.swift */; };
@@ -133,6 +134,7 @@
 		891751D5285B60FC00CE042E /* ReactionsGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsGrid.swift; sourceTree = "<group>"; };
 		891751D7285B612500CE042E /* MessageCellMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellMenu.swift; sourceTree = "<group>"; };
 		891751D9285B631800CE042E /* MatchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesView.swift; sourceTree = "<group>"; };
+		891DEA0D285DE019008E7E1E /* FoumChannelList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoumChannelList.swift; sourceTree = "<group>"; };
 		8921DBCF285A75AC00711560 /* SetNicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNicknameView.swift; sourceTree = "<group>"; };
 		8921DBD1285A768500711560 /* InviteUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteUpdate.swift; sourceTree = "<group>"; };
 		8921DBD3285A770000711560 /* NewInviteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInviteSheet.swift; sourceTree = "<group>"; };
@@ -335,6 +337,14 @@
 				891751C7285B560B00CE042E /* ReplyView.swift */,
 			);
 			path = Reference;
+			sourceTree = "<group>";
+		};
+		891DEA0C285DE002008E7E1E /* Forum */ = {
+			isa = PBXGroup;
+			children = (
+				891DEA0D285DE019008E7E1E /* FoumChannelList.swift */,
+			);
+			path = Forum;
 			sourceTree = "<group>";
 		};
 		8991163327AFEF3800FFDE93 = {
@@ -565,6 +575,7 @@
 		89E9FEE727AFFE3200861F05 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				891DEA0C285DE002008E7E1E /* Forum */,
 				891751BC285B534900CE042E /* Login */,
 				89E9FEE827AFFE6100861F05 /* Search */,
 				89D7CBAD27B57FE800D4B567 /* Gifs */,
@@ -802,6 +813,7 @@
 				89E9FF2227B0064A00861F05 /* ChannelView.swift in Sources */,
 				89E9FE7A27AFFAAF00861F05 /* User.swift in Sources */,
 				8921DBD4285A770000711560 /* NewInviteSheet.swift in Sources */,
+				891DEA0E285DE019008E7E1E /* FoumChannelList.swift in Sources */,
 				89D7CBB827B58C3800D4B567 /* EmbedView.swift in Sources */,
 				89E9FE8927AFFBAB00861F05 /* MemberList.swift in Sources */,
 				89E9FE7D27AFFAAF00861F05 /* Settings.swift in Sources */,

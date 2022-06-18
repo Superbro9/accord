@@ -35,7 +35,7 @@ struct AccordApp: App {
     @State var loaded: Bool = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State var popup: Bool = false
-    @State var token = AccordCoreVars.token
+    @State var token = Globals.token
     
     private enum Tabs: Hashable {
         case general, rpc
@@ -51,7 +51,7 @@ struct AccordApp: App {
             if self.token == "" {
                 LoginView()
                     .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("LoggedIn"))) { _ in
-                        self.token = AccordCoreVars.token
+                        self.token = Globals.token
                         print("posted", self.token)
                     }
                     .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in

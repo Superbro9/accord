@@ -56,7 +56,7 @@
          let rolePerms = self.filter { ServerListView.mergedMembers[guildID]?.roles.contains($0.id) ?? false }
          permsArray.remove(Permissions(rolePerms.map(\.deny)))
          permsArray.insert(Permissions(rolePerms.map(\.allow)))
-         let memberPerms = self.filter { $0.id == AccordCoreVars.user?.id }
+         let memberPerms = self.filter { $0.id == Globals.user?.id }
          permsArray.remove(Permissions(memberPerms.map(\.deny)))
          permsArray.insert(Permissions(memberPerms.map(\.allow)))
          return permsArray

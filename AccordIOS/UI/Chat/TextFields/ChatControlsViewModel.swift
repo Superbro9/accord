@@ -150,7 +150,7 @@ final class ChatControlsViewModel: ObservableObject {
     func send(text: String, guildID: String, channelID: String) {
         Request.ping(url: URL(string: "\(rootURL)/channels/\(channelID)/messages"), headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             bodyObject: ["content": text, "tts": false, "nonce": generateFakeNonce()],
             type: .POST,
             discordHeaders: true,
@@ -172,7 +172,7 @@ final class ChatControlsViewModel: ObservableObject {
                 let nick = textFieldContents.dropFirst(6).stringLiteral
                 Request.ping(url: URL(string: "\(rootURL)/guilds/\(guildID)/members/%40me/nick"), headers: Headers(
                     userAgent: discordUserAgent,
-                    token: AccordCoreVars.token,
+                    token: Globals.token,
                     bodyObject: ["nick": nick],
                     type: .PATCH,
                     discordHeaders: true,
@@ -199,7 +199,7 @@ final class ChatControlsViewModel: ObservableObject {
                 `/reset`: resume websocket connection
                 `/reset force`: force reset websocket connection
                 """
-                let system = AccordCoreVars.user
+                let system = Globals.user
                 system?.id = generateFakeNonce()
                 system?.username = "Accord"
                 system?.discriminator = "0000"
@@ -280,7 +280,7 @@ final class ChatControlsViewModel: ObservableObject {
     func send(text: String, replyingTo: Message, mention: Bool, guildID: String) {
         Request.ping(url: URL(string: "\(rootURL)/channels/\(replyingTo.channel_id)/messages"), headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             bodyObject: ["content": text, "allowed_mentions": ["parse": ["users", "roles", "everyone"], "replied_user": mention], "message_reference": ["channel_id": replyingTo.channel_id, "message_id": replyingTo.id], "tts": false, "nonce": generateFakeNonce()],
             type: .POST,
             discordHeaders: true,
@@ -295,7 +295,7 @@ final class ChatControlsViewModel: ObservableObject {
         request.httpMethod = "POST"
         let boundary = "Boundary-\(UUID().uuidString)"
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.addValue(AccordCoreVars.token, forHTTPHeaderField: "Authorization")
+        request.addValue(Globals.token, forHTTPHeaderField: "Authorization")
         guard let string = try? ["content": text].jsonString() else { return }
         request.httpBody = try? Request.createMultipartBody(with: string, fileURLs: file.map(\.absoluteString), boundary: boundary, fileData: data)
         let task = URLSession.shared.dataTask(with: request) { [weak self] _, res, _ in
@@ -318,7 +318,7 @@ final class ChatControlsViewModel: ObservableObject {
         guard !silentTyping else { return }
         Request.ping(url: URL(string: rootURL + "/channels/\(channelID)/typing"), headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             type: .POST,
             discordHeaders: true,
             referer: "https://discord.com/channels/\(guildID)/\(channelID)"

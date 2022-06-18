@@ -146,7 +146,7 @@ struct NewInviteSheet: View {
             .appendingPathComponent("invites")
         Request.fetch(InviteUpdate.self, url: url, headers: Headers(
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             bodyObject: ["max_age" : self.maxAge,
                          "max_uses" : self.maxUses,
                          "target_type" : NSNull(),

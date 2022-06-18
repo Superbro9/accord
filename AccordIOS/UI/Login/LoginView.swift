@@ -117,7 +117,7 @@ struct LoginView: View {
                 UserDefaults.standard.set(self.loginViewDataModel.proxyPort, forKey: "proxyPort")
                 if loginViewDataModel.token != "" {
                     UserDefaults.standard.set(loginViewDataModel.token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                    Globals.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
                     
 //                    KeychainManager.save(key: keychainItemName, data: loginViewDataModel.token.data(using: String.Encoding.utf8) ?? Data())
 //                    AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
@@ -157,7 +157,7 @@ struct LoginView: View {
                     if let ticket = viewModel.ticket {
                         Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
                             userAgent: discordUserAgent,
-                            token: AccordCoreVars.token,
+                            token: Globals.token,
                             bodyObject: ["code": loginViewDataModel.twoFactor, "ticket": ticket],
                             type: .POST,
                             discordHeaders: true,
@@ -167,7 +167,7 @@ struct LoginView: View {
                             case .success(let value):
                                 if let token = value.token {
                                     UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                    Globals.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
                                   //  KeychainManager.save(key: keychainItemName, data: token.data(using: .utf8) ?? Data())
                                   //  AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
                                     self.loginViewDataModel.captcha = false
@@ -194,7 +194,7 @@ struct LoginView: View {
                         switch completion {
                         case .success(let response):
                             if let token = response.token {UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                Globals.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
                               //  KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
                               //  AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
                                 self.loginViewDataModel.captcha = false
@@ -204,7 +204,7 @@ struct LoginView: View {
                                 Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
                                     userAgent: discordUserAgent,
                                     contentType: "application/json",
-                                    token: AccordCoreVars.token,
+                                    token: Globals.token,
                                     bodyObject: ["code": loginViewDataModel.twoFactor, "ticket": ticket],
                                     type: .POST,
                                     discordHeaders: true,
@@ -214,7 +214,7 @@ struct LoginView: View {
                                     case .success(let response):
                                         if let token = response.token {
                                             UserDefaults.standard.set(token.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                                            AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                                            Globals.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
                                            // KeychainManager.save(key: keychainItemName, data: token.data(using: String.Encoding.utf8) ?? Data())
                                            // AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)
                                             self.loginViewDataModel.captcha = false
@@ -265,7 +265,7 @@ final class LoginViewViewModel: ObservableObject {
             case .success(let response):
                 if let checktoken = response.token {
                     UserDefaults.standard.set(checktoken.data(using: String.Encoding.utf8) ?? Data(), forKey: "tokenKeyUserDefault")
-                    AccordCoreVars.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
+                    Globals.token = String(decoding:  UserDefaults.standard.data(forKey: "tokenKeyUserDefault") ?? Data(), as: UTF8.self)
                     
                  //   KeychainManager.save(key: keychainItemName, data: checktoken.data(using: String.Encoding.utf8) ?? Data())
                  //   AccordCoreVars.token = String(decoding: KeychainManager.load(key: keychainItemName) ?? Data(), as: UTF8.self)

@@ -53,7 +53,7 @@ struct SetNicknameView: View {
         // if we're changing the nickname of the current user,
         // we must append @me instead
         // otherwise, you'll encounter an error
-        if self.user == AccordCoreVars.user {
+        if self.user == Globals.user {
             url.appendPathComponent("@me")
         } else {
             url.appendPathComponent(userID)
@@ -63,7 +63,7 @@ struct SetNicknameView: View {
         
         Request.fetch(url: url, headers: Headers (
             userAgent: discordUserAgent,
-            token: AccordCoreVars.token,
+            token: Globals.token,
             bodyObject: body,
             type: .PATCH,
             discordHeaders: true,

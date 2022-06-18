@@ -19,7 +19,7 @@ struct ProfileEditingView: View {
     @State var username: String = ""
     @State var status: String = ""
     @State var bioText: String = ""
-    @State var user = AccordCoreVars.user
+    @State var user = Globals.user
     @State var filePicker = false
     @State var bannerPicker = false
     @State var imageData: Data? = nil
@@ -41,7 +41,7 @@ struct ProfileEditingView: View {
             }
             Request.fetch(User.self, url: url, headers: Headers(
                 userAgent: discordUserAgent,
-                token: AccordCoreVars.token,
+                token: Globals.token,
                 bodyObject: dict,
                 type: .PATCH,
                 discordHeaders: true,
@@ -50,7 +50,7 @@ struct ProfileEditingView: View {
             )) {
                 switch $0 {
                 case .success(let user):
-                    AccordCoreVars.user = user
+                    Globals.user = user
                     DispatchQueue.main.async {
                         self.user = user
                         if let bio = user.bio {
@@ -292,13 +292,13 @@ struct ProfileEditingView: View {
             .padding()
         }
         .onAppear {
-            if AccordCoreVars.user?.bio == nil {
+            if Globals.user?.bio == nil {
                 self.loadUser()
             } else {
-                self.user = AccordCoreVars.user
+                self.user = Globals.user
                 dump(self.user)
-                self.bioText = AccordCoreVars.user?.bio ?? ""
-                self.username = AccordCoreVars.user?.username ?? ""
+                self.bioText = Globals.user?.bio ?? ""
+                self.username = Globals.user?.username ?? ""
                 self.status = Activity.current?.state ?? ""
             }
         }
@@ -317,7 +317,7 @@ struct ProfileEditingView: View {
             case .success(let user):
                 print(user)
                 DispatchQueue.main.async {
-                    AccordCoreVars.user = user.user
+                    Globals.user = user.user
                     self.user = user.user
                 }
             case .failure(let error):

@@ -34,7 +34,7 @@ struct GuildView: View {
                                 .appendingPathComponent(guild.id)
                             Request.ping(url: url, headers: Headers.init(
                                 userAgent: discordUserAgent,
-                                token: AccordCoreVars.token,
+                                token: Globals.token,
                                 bodyObject: ["lurking":false],
                                 type: .DELETE,
                                 discordHeaders: true
@@ -104,20 +104,24 @@ struct GuildView: View {
                         )
                     }
                     .navigationDestination(for: Channel.self, destination: { channel in
-                        ChannelView(channel, guild.name)
-                            .equatable()
-                            .onAppear {
-                                let prevCount = channel.read_state?.mention_count
-                                channel.read_state?.mention_count = 0
-                                channel.read_state?.last_message_id = channel.last_message_id
-                                if prevCount != 0 { self.updater.updateView() }
-                            }
-                            .onDisappear {
-                                let prevCount = channel.read_state?.mention_count
-                                channel.read_state?.mention_count = 0
-                                channel.read_state?.last_message_id = channel.last_message_id
-                                if prevCount != 0 { self.updater.updateView() }
-                            }
+                        if channel.type == .forum {
+                            ForumChannelList(forumChannel: channel)
+                        } else {
+                            ChannelView(channel, guild.name)
+                                .equatable()
+                                .onAppear {
+                                    let prevCount = channel.read_state?.mention_count
+                                    channel.read_state?.mention_count = 0
+                                    channel.read_state?.last_message_id = channel.last_message_id
+                                    if prevCount != 0 { self.updater.updateView() }
+                                }
+                                .onDisappear {
+                                    let prevCount = channel.read_state?.mention_count
+                                    channel.read_state?.mention_count = 0
+                                    channel.read_state?.last_message_id = channel.last_message_id
+                                    if prevCount != 0 { self.updater.updateView() }
+                                }
+                        }
                     })
                     
                     .buttonStyle(BorderlessButtonStyle())
