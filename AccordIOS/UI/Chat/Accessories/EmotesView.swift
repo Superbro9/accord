@@ -50,10 +50,10 @@ struct EmotesView: View, Equatable {
                                                 chatText.append(contentsOf: "<\(emote.animated ?? false ? "a" : ""):\(emote.name):\(emote.id)> ")
                                                 onSelect(emote)
                                                 self.dismiss()
-                                                print(cdnURL + "/emojis/\(emote.id).png?size=48")
+                                                print(cdnURL + "/emojis/\(emote.id).png?size=24")
                                             }) {
                                                 VStack {
-                                                    HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=48").equatable()
+                                                    HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=24").equatable()
                                                         .frame(width: 40, height: 40)
                                                 }
                                                 .frame(width: 60, height: 60)
@@ -72,7 +72,7 @@ struct EmotesView: View, Equatable {
                                         onSelect(emote)
                                         self.dismiss()
                                     }) {
-                                        HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=48").equatable()
+                                        HoveredAttachment(cdnURL + "/emojis/\(emote.id).png?size=24").equatable()
                                             .frame(width: 40, height: 40)
                                     }
                                     .buttonStyle(EmoteButton())

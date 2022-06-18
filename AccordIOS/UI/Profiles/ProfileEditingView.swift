@@ -81,13 +81,13 @@ struct ProfileEditingView: View {
                         self.emotePopup.toggle()
                     }, label: {
                         if let emoteID = emoteID {
-                            Attachment(cdnURL + "/emojis/\(emoteID).png?size=48")
+                            Attachment(cdnURL + "/emojis/\(emoteID).png?size=24")
                                 .frame(width: 16, height: 16)
                         } else if let emoteName = emoteName {
                             Text(emoteName)
                         } else if let emoji = Activity.current?.emoji {
                             if let id = emoji.id {
-                                Attachment(cdnURL + "/emojis/\(id).png?size=48")
+                                Attachment(cdnURL + "/emojis/\(id).png?size=24")
                                     .frame(width: 16, height: 16)
                             } else if let name = emoji.name {
                                 Text(name)

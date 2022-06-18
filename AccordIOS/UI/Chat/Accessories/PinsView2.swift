@@ -19,21 +19,32 @@ struct PinsView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     var body: some View {
-        List($pins, id: \.id) { $message in
-            MessageCellView(
-                message: message,
-                nick: nil,
-                replyNick: nil,
-                pronouns: nil,
-                avatar: nil,
-                guildID: "",
-                permissions: .constant(.init()),
-                role: Binding.constant(nil),
-                replyRole: Binding.constant(nil),
-                replyingTo: $replyingTo
-            )
+        VStack(alignment: .leading) {
+            List($pins, id: \.id) { $message in
+                MessageCellView(
+                    message: message,
+                    nick: nil,
+                    replyNick: nil,
+                    pronouns: nil,
+                    avatar: nil,
+                    guildID: "",
+                    permissions: .constant(.init()),
+                    role: Binding.constant(nil),
+                    replyRole: Binding.constant(nil),
+                    replyingTo: $replyingTo
+                )
+                .offset(x: 0, y: -1)
+                .rotationEffect(.radians(.pi))
+                .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
+                .listRowSeparator(.hidden)
+            }
+            .padding(.leading, 55)
         }
-        .scaleEffect(x: -1.0, y: 1.0)
+        .navigationTitle("Pinned Messages")
+        .navigationBarTitleDisplayMode(.inline)
+        .listStyle(.plain)
+        .rotationEffect(.radians(.pi))
+        .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
         .onAppear(perform: {
             messageFetchQueue.async {
                 // https://discord.com/api/v9/channels/831692717397770272/pins
