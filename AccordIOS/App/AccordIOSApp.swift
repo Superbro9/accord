@@ -32,6 +32,10 @@ var reachability: Reachability? = {
 
 @main
 struct AccordApp: App {
+    
+    @StateObject var globals = AppGlobals()
+    
+    
     @State var loaded: Bool = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State var popup: Bool = false
@@ -60,6 +64,7 @@ struct AccordApp: App {
                     }
             } else {
                 ContentView(loaded: $loaded)
+                    .environmentObject(self.globals)
                     .onDisappear {
                         loaded = false
                     }

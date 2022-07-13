@@ -13,13 +13,13 @@
          var allowed = true
          for overwrite in self {
              if (overwrite.id == user_id ||
-                 ServerListView.mergedMembers[guildID]?.roles.contains(overwrite.id) ?? false) &&
+                 Storage.mergedMembers[guildID]?.roles.contains(overwrite.id) ?? false) &&
                  overwrite.allow.contains(perms) {
                      return true
              }
              if (overwrite.id == user_id ||
                  // for the role permissions
-                ServerListView.mergedMembers[guildID]?.roles.contains(overwrite.id) ?? false ||
+                Storage.mergedMembers[guildID]?.roles.contains(overwrite.id) ?? false ||
                  // for the everyone permissions
                  overwrite.id == guildID) &&
                  overwrite.deny.contains(perms) {
@@ -31,12 +31,12 @@
 
      func allAllowed(guildID: String) -> Permissions {
          var permsArray = Permissions (
-             ServerListView.folders.lazy
+             Storage.folders.lazy
                  .map { $0.guilds }
                  .joined()
                  .filter { $0.id == guildID }
                  .first?.roles?.lazy
-                 .filter { ServerListView.mergedMembers[guildID]?.roles.contains($0.id) == true }
+                 .filter { Storage.mergedMembers[guildID]?.roles.contains($0.id) == true }
                  .compactMap { $0.permissions }
                  .compactMap { Int64($0) }
                  .map { Permissions($0) } ?? [Permissions]()

@@ -120,11 +120,12 @@ struct ChatControls: View {
                 if let range = viewModel?.textFieldContents.ranges(of: "@").last {
                     viewModel?.textFieldContents.removeSubrange(range.lowerBound ..< viewModel!.textFieldContents.endIndex)
                 }
-                viewModel?.textFieldContents.append("<@!\(key)> ")
+                viewModel?.textFieldContents.append("<@\(key)> ")
             },
             label: { key, username in
                 HStack {
                     Text(username)
+                        .foregroundColor(.primary)
                     Spacer()
                 }
             }
@@ -155,6 +156,7 @@ var matchedCommandsView: some View {
                 VStack(alignment: .leading) {
                     Text(command.name)
                         .fontWeight(.semibold)
+                        .foregroundColor(.primary)
                     Text(command.description)
                 }
                 Spacer()

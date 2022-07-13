@@ -21,7 +21,7 @@ struct EmbedView: View, Equatable {
         HStack(spacing: 0) {
             if let color = embed?.color {
                 RoundedRectangle(cornerRadius: 1)
-                    .fill(Color(int: color))
+                    .fill(Color(int: color).gradient)
                     .frame(width: 4)
                     .padding(.trailing, 5)
             } else {

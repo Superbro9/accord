@@ -9,7 +9,7 @@ import UIKit
 import Foundation
 
 final class RoleManager {
-    final class func arrangeRoleColors(guilds: [Guild]) -> [String: (Int, Int)] {
+    final class func arrangeroleColors(guilds: [Guild]) -> [String: (Int, Int)] {
         let value: [String: (Int, Int)] = guilds
             .compactMap(\.roles)
             .joined()
@@ -24,7 +24,7 @@ final class RoleManager {
         return value
     }
     
-    final class func arrangeRoleNames(guilds: [Guild]) -> [String: String] {
+    final class func arrangeroleNames(guilds: [Guild]) -> [String: String] {
            let value: [String: String] = guilds
                .compactMap(\.roles)
                .joined()

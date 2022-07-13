@@ -36,6 +36,18 @@ final class AsyncMarkdownModel: ObservableObject {
                 }
             DispatchQueue.main.async {
                 self?.hasEmojiOnly = emojis
+                guard (text.contains("*") ||
+                       text.contains("~") ||
+                       text.contains("/") ||
+                       text.contains("_") ||
+                       text.contains(">")) &&
+                        text.count < 100 else {
+                    DispatchQueue.main.async {
+                        self?.hasEmojiOnly = emojis
+                        self?.loaded = true
+                    }
+                    return
+                }
             }
         }
     }
@@ -65,7 +77,7 @@ struct AsyncMarkdown: View, Equatable {
                 .onChange(of: self.text, perform: { [weak model] text in
                     model?.make(text: text)
                 })
-                .onAppear {
+                .task {
                     model.make(text: text)
                 }
         }

@@ -27,8 +27,8 @@ var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
 var sortByMostRecent: Bool = UserDefaults.standard.bool(forKey: "sortByMostRecent")
 var pfpShown: Bool = UserDefaults.standard.bool(forKey: "pfpShown")
 var musicPlatform: Platforms? = Platforms(rawValue: UserDefaults.standard.string(forKey: "MusicPlatform") ?? "")
-let discordUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.266 Chrome/91.0.4472.164 Electron/13.6.6 Safari/537.36"
-var dscVersion = 126_462
+let discordUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.267 Chrome/91.0.4472.164 Electron/13.6.6 Safari/537.36"
+var dscVersion = 132_831
 
 let xcodeRPCAppID = "926282502937641001"
 let musicRPCAppID = "925514277987704842"
@@ -40,10 +40,6 @@ let vsCodeRPCAppID = "928861386140971078"
 #else
      let keychainItemName = "com.superbro.AccordIOS"
 #endif
-
-enum Storage {
-    static var usernames: [String: String] = [:]
-}
 
 final class Globals {
     //static var cancellable: Cancellable?

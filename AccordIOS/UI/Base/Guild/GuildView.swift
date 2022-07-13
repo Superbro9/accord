@@ -32,8 +32,7 @@ struct GuildView: View {
                                 .appendingPathComponent("@me")
                                 .appendingPathComponent("guilds")
                                 .appendingPathComponent(guild.id)
-                            Request.ping(url: url, headers: Headers.init(
-                                userAgent: discordUserAgent,
+                            Request.ping(url: url, headers: Headers(
                                 token: Globals.token,
                                 bodyObject: ["lurking":false],
                                 type: .DELETE,
@@ -151,22 +150,22 @@ struct GuildView: View {
 
 struct GuildListPreview: View {
     @State var guild: Guild
-    @Binding var selectedServer: Int?
+    @Binding var selectedServer: String?
     @Binding var updater: Bool
     var body: some View {
         if let icon = guild.icon {
             Attachment(iconURL(guild.id, icon))
                 .equatable()
-                .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
+                .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.id))
         } else {
             if let name = guild.name {
                 Text(name.components(separatedBy: " ").compactMap({ $0.first }).map(String.init).joined())
                     .equatable()
-                    .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
+                    .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.id))
             } else {
                 Image(systemName: "questionmark")
                     .equatable()
-                    .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.index))
+                    .modifier(GuildHoverAnimation(hasIcon: true, selected: selectedServer == guild.id))
             }
         }
     }

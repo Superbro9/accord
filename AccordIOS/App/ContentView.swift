@@ -31,6 +31,8 @@ struct ContentView: View {
         case offline
     }
     
+    @EnvironmentObject var globals: AppGlobals
+    
     @ViewBuilder
     var body: some View {
         if modalIsPresented {

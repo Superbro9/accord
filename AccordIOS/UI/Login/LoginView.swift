@@ -156,7 +156,6 @@ struct LoginView: View {
                 Button("Login") {
                     if let ticket = viewModel.ticket {
                         Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
-                            userAgent: discordUserAgent,
                             token: Globals.token,
                             bodyObject: ["code": loginViewDataModel.twoFactor, "ticket": ticket],
                             type: .POST,
@@ -181,7 +180,6 @@ struct LoginView: View {
                     }
                     self.loginViewDataModel.captchaPayload = loginViewDataModel.notification["key"] as? String ?? ""
                     Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/login"), headers: Headers(
-                        userAgent: discordUserAgent,
                         bodyObject: [
                             "email": loginViewDataModel.email,
                             "password": loginViewDataModel.password,
@@ -202,7 +200,6 @@ struct LoginView: View {
                             }
                             if let ticket = response.ticket {
                                 Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/mfa/totp"), headers: Headers(
-                                    userAgent: discordUserAgent,
                                     contentType: "application/json",
                                     token: Globals.token,
                                     bodyObject: ["code": loginViewDataModel.twoFactor, "ticket": ticket],
@@ -252,7 +249,6 @@ final class LoginViewViewModel: ObservableObject {
 
     func login(_ email: String, _ password: String, _: String) throws {
         Request.fetch(LoginResponse.self, url: URL(string: "\(rootURL)/auth/login"), headers: Headers(
-            userAgent: discordUserAgent,
             bodyObject: [
                 "email": email,
                 "password": password,

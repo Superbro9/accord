@@ -9,10 +9,6 @@ import Combine
 import Foundation
 import Network
 
-final class Notifications {
-    static var privateChannels: [String] = []
-}
-
 extension Gateway {
     func close(_ closeCode: NWProtocolWebSocket.CloseCode) {
         let metadata = NWProtocolWebSocket.Metadata(opcode: .close)

@@ -46,6 +46,9 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
         decoder.dateDecodingStrategy = .iso8601withFractionalSeconds
         return decoder
     }()
+    
+    @EnvironmentObject
+    var appModel: AppGlobals
 
     init(channel: Channel) {
         channelID = channel.id
@@ -235,7 +238,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                             let new = item
                             new.member?.roles = new.member?.roles?
                                 .compactMap { id -> (String, (Int, Int))? in
-                                    if let color = roleColors[id] {
+                                    if let color = Storage.roleColors[id] {
                                         return (id, color)
                                     }
                                     return nil
@@ -261,7 +264,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
         if let roles = person.roles {
             let foregroundRoleColor = roles
                 .compactMap { id -> (String, (Int, Int))? in
-                    if let color = roleColors[id] {
+                    if let color = Storage.roleColors[id] {
                         return (id, color)
                     }
                     return nil
@@ -279,7 +282,6 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
     func ack(channelID: String, guildID: String) {
         guard let last = messages.first?.id else { return }
         Request.ping(url: URL(string: "\(rootURL)/channels/\(channelID)/messages/\(last)/ack"), headers: Headers(
-            userAgent: discordUserAgent,
             token: Globals.token,
             bodyObject: ["token": NSNull()], // I don't understand why this is needed, but it wasn't when I first implemented ack...
             type: .POST,
@@ -291,7 +293,6 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
 
     func getMessages(channelID: String, guildID: String, scrollAfter: Bool = false) {
         RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/messages?limit=50"), headers: Headers(
-            userAgent: discordUserAgent,
             token: Globals.token,
             type: .GET,
             discordHeaders: true,
@@ -407,10 +408,17 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
             try? wss.getMembers(ids: allUserIDs, guild: guildID)
         }
     }
-
+    
     func loadMoreMessages() {
-        RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/messages?before=\(messages.last?.id ?? "")&limit=50"), headers: Headers(
-            userAgent: discordUserAgent,
+        let url = root
+            .appendingPathComponent("channels")
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("messages")
+            .appendingQueryParameters([
+                "before":messages.last?.id ?? "",
+                "limit":"50"
+            ])
+        RequestPublisher.fetch([Message].self, url: url, headers: Headers(
             token: Globals.token,
             type: .GET,
             discordHeaders: true,
@@ -421,6 +429,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                 guard element != msg.last else { return element }
                 var element = element
                 element.processedTimestamp = element.timestamp.makeProperDate()
+               // element._inSameDay = Calendar.current.isDate(element.timestamp, inSameDayAs: msg[index + 1].timestamp)
                 element.sameAuthor = msg[index + 1].author?.id == element.author?.id
                 element.user_mentioned = element.mentions.map(\.id).contains(user_id)
                 return element
@@ -437,10 +446,17 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
         }
         .store(in: &cancellable)
     }
-
+    
     func loadAroundMessage(id: String) {
-        RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/messages?around=\(id)&limit=50"), headers: Headers(
-            userAgent: discordUserAgent,
+        let url = root
+            .appendingPathComponent("channels")
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("messages")
+            .appendingQueryParameters([
+                "around":id,
+                "limit":"50"
+            ])
+        RequestPublisher.fetch([Message].self, url: url, headers: Headers(
             token: Globals.token,
             type: .GET,
             discordHeaders: true,
@@ -451,6 +467,7 @@ final class ChannelViewViewModel: ObservableObject, Equatable {
                 guard element != msg.last else { return element }
                 var element = element
                 element.processedTimestamp = element.timestamp.makeProperDate()
+                //element._inSameDay = Calendar.current.isDate(element.timestamp, inSameDayAs: msg[index + 1].timestamp)
                 element.sameAuthor = msg[index + 1].author?.id == element.author?.id
                 element.user_mentioned = element.mentions.map(\.id).contains(user_id)
                 return element

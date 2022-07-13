@@ -12,7 +12,7 @@ extension String {
         var mut = self
             .trimmingCharacters(in: .whitespacesAndNewlines)
         let discordEmojis = mut
-            .matchRange(precomputed: RegexExpressions.fullEmojiRegex)
+            .matchRange(precomputed: RegexExpressions.fullEmoji)
         discordEmojis
             .reversed()
             .forEach { mut.removeSubrange($0) }

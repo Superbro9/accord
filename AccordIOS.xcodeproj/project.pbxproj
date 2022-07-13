@@ -32,6 +32,7 @@
 		8984EECC27B43E6D0025AEC5 /* ChatControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */; };
 		8984EECE27B43E830025AEC5 /* ChatControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */; };
 		8984EED227B4454C0025AEC5 /* AttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984EED127B4454C0025AEC5 /* AttachmentView.swift */; };
+		898A2C9E287F0D9D00981C4E /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898A2C9D287F0D9D00981C4E /* Globals.swift */; };
 		8991164027AFEF3800FFDE93 /* AccordIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8991163F27AFEF3800FFDE93 /* AccordIOSApp.swift */; };
 		8991164227AFEF3800FFDE93 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8991164127AFEF3800FFDE93 /* ContentView.swift */; };
 		8991164427AFEF3800FFDE93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8991164327AFEF3800FFDE93 /* Assets.xcassets */; };
@@ -147,6 +148,7 @@
 		8984EECB27B43E6D0025AEC5 /* ChatControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsView.swift; sourceTree = "<group>"; };
 		8984EECD27B43E830025AEC5 /* ChatControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControlsViewModel.swift; sourceTree = "<group>"; };
 		8984EED127B4454C0025AEC5 /* AttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentView.swift; sourceTree = "<group>"; };
+		898A2C9D287F0D9D00981C4E /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		8991163C27AFEF3800FFDE93 /* AccordIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AccordIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8991163F27AFEF3800FFDE93 /* AccordIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccordIOSApp.swift; sourceTree = "<group>"; };
 		8991164127AFEF3800FFDE93 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -377,6 +379,7 @@
 				89E9FE9627AFFBF900861F05 /* Nitroless */,
 				89E9FE9927AFFC1500861F05 /* Misc */,
 				89E9FEB427AFFCE000861F05 /* Backend */,
+				89BBFC2327E3A1A700B3D122 /* Voice */,
 				89E9FEE727AFFE3200861F05 /* UI */,
 				8991164327AFEF3800FFDE93 /* Assets.xcassets */,
 				8991164527AFEF3800FFDE93 /* Preview Content */,
@@ -400,6 +403,7 @@
 				8991164127AFEF3800FFDE93 /* ContentView.swift */,
 				89E9FE6127AFF98200861F05 /* LoadingScreenView.swift */,
 				89E9FE5F27AFF98200861F05 /* AccordAlert.swift */,
+				898A2C9D287F0D9D00981C4E /* Globals.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -536,11 +540,10 @@
 			isa = PBXGroup;
 			children = (
 				89EF263B2837EF4E007A3BEC /* Reachability */,
-				89BBFC2327E3A1A700B3D122 /* Voice */,
 				89E9FEE127AFFD3B00861F05 /* Gateway */,
 				89F5A57B27B318F500385E06 /* Markdown */,
-				89E9FEE527AFFDB500861F05 /* Networking */,
 				89E9FEE627AFFDEC00861F05 /* Media */,
+				89E9FEE527AFFDB500861F05 /* Networking */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -858,6 +861,7 @@
 				89BBFC2727E3A24700B3D122 /* String++.swift in Sources */,
 				89E9FE9327AFFBD100861F05 /* Engine.swift in Sources */,
 				89E9FE9427AFFBD100861F05 /* Storage.swift in Sources */,
+				898A2C9E287F0D9D00981C4E /* Globals.swift in Sources */,
 				89E9FECD27AFFD0700861F05 /* Core.swift in Sources */,
 				89E9FECC27AFFD0700861F05 /* Keychain.swift in Sources */,
 				89EF263F2837FBF9007A3BEC /* ProfileEditingView.swift in Sources */,

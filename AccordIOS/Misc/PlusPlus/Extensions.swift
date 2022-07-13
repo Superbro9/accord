@@ -161,19 +161,18 @@ struct Folder<Content: View>: View {
                             }
                         } else {
                             Image(systemName: "folder.fill")
-                                .resizable()
-                                .scaledToFill()
+                                .font(.title2)
                                 .foregroundColor(color.lighter().opacity(0.75))
                                 .padding()
                                 .frame(width: 45, height: 45)
-                                .background(color.opacity(0.65))
+                                .background(color.opacity(0.65).gradient)
                                 .cornerRadius(15)
                                 .frame(width: 45, height: 45)
                         }
                     }
                 }
             )
-            .buttonStyle(PlainButtonStyle())
+            .buttonStyle(.plain)
             VStack {
                 if !collapsed {
                     self.content()
@@ -190,13 +189,16 @@ extension Color {
          let comp = color?.components ?? []
          return Color(red: 1.0 - comp[0], green: 1.0 - comp[1], blue: 1.0 - comp[2])
      }
-
-     func lighter() -> Self {
-         let color = self.cgColor ?? .none
-         let comp = color?.components ?? []
-         return Color(red: max(1.0, comp[0] + 0.1), green: max(1.0, comp[1] + 0.1), blue: max(1.0, comp[2] + 0.1))
-     }
- }
+    
+    func lighter() -> Self {
+        let color = self.cgColor ?? .none
+        let comp = color?.components ?? []
+        if let red = comp.first, let green = comp[safe: 1], let blue = comp[safe: 2] {
+            return Color(red: max(1.0, red + 0.1), green: max(1.0, green + 0.1), blue: max(1.0, blue + 0.1))
+        }
+        return self
+    }
+}
 
 func pronounDBFormed(pronoun: String?) -> String {
     switch pronoun {

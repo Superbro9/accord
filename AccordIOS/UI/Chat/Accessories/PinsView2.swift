@@ -21,18 +21,24 @@ struct PinsView: View {
     var body: some View {
         VStack(alignment: .leading) {
             List($pins, id: \.id) { $message in
-                MessageCellView(
-                    message: message,
-                    nick: nil,
-                    replyNick: nil,
-                    pronouns: nil,
-                    avatar: nil,
-                    guildID: "",
-                    permissions: .constant(.init()),
-                    role: Binding.constant(nil),
-                    replyRole: Binding.constant(nil),
-                    replyingTo: $replyingTo
-                )
+                ZStack(alignment: .topTrailing) {
+                    MessageCellView(
+                        message: message,
+                        nick: nil,
+                        replyNick: nil,
+                        pronouns: nil,
+                        avatar: nil,
+                        guildID: "",
+                        permissions: .constant(.init()),
+                        role: Binding.constant(nil),
+                        replyRole: Binding.constant(nil),
+                        replyingTo: $replyingTo
+                    )
+                    Button("Jump") {
+                        ChannelView.scrollTo.send((message.channel_id, message.id))
+                    }
+                    .buttonStyle(.borderless)
+                }
                 .offset(x: 0, y: -1)
                 .rotationEffect(.radians(.pi))
                 .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
@@ -49,7 +55,6 @@ struct PinsView: View {
             messageFetchQueue.async {
                 // https://discord.com/api/v9/channels/831692717397770272/pins
                 RequestPublisher.fetch([Message].self, url: URL(string: "\(rootURL)/channels/\(channelID)/pins"), headers: Headers(
-                    userAgent: discordUserAgent,
                     token: Globals.token,
                     type: .GET,
                     discordHeaders: true,

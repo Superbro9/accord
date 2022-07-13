@@ -92,7 +92,7 @@ struct MessageCellView: View, Equatable {
                 }
             default:
                 HStack(alignment: .top) {
-                    if let author = message.author, !(message.isSameAuthor && message.referenced_message == nil) {
+                    if let author = message.author, !(message.isSameAuthor && message.referenced_message == nil && message.inSameDay) {
                         AvatarView (
                             author: author,
                             guildID: self.guildID,
@@ -107,7 +107,7 @@ struct MessageCellView: View, Equatable {
                         .padding(.trailing, 1.5)
                     }
                     VStack(alignment: .leading) {
-                        if message.isSameAuthor && message.referenced_message == nil {
+                        if message.isSameAuthor && message.referenced_message == nil && message.inSameDay {
                             if !message.content.isEmpty {
                                 if self.editing {
                                     editingTextField
@@ -165,9 +165,9 @@ struct MessageCellView: View, Equatable {
                             .cornerRadius(5)
                         ProgressView()
                     }
+                    .cornerRadius(5)
                     .padding(.leading, leftPadding)
                     .padding(.top, 5)
-                    .cornerRadius(5)
                     .fixedSize()
             }
             if let reactions = message.reactions, !reactions.isEmpty {

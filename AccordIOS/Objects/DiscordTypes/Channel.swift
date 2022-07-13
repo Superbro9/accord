@@ -31,13 +31,13 @@ struct Channel: Decodable, Equatable, Identifiable, Hashable {
         var allowed = true
         for overwrite in self.permission_overwrites ?? [] {
             if (overwrite.id == user_id ||
-                ServerListView.mergedMembers[guild_id ?? "@me"]?.roles.contains(overwrite.id) ?? false) &&
+                Storage.mergedMembers[guild_id ?? "@me"]?.roles.contains(overwrite.id) ?? false) &&
                 overwrite.allow.contains(perms) {
                 return true
             }
             if (overwrite.id == user_id ||
                 // for the role permissions
-                ServerListView.mergedMembers[guild_id ?? "@me"]?.roles.contains(overwrite.id) ?? false ||
+                Storage.mergedMembers[guild_id ?? "@me"]?.roles.contains(overwrite.id) ?? false ||
                 // for the everyone permissions
                 overwrite.id == guild_id) &&
                 overwrite.allow.contains(perms) {

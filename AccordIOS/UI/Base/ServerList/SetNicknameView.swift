@@ -62,7 +62,6 @@ struct SetNicknameView: View {
         let body = ["nick": newNicknameText]
         
         Request.fetch(url: url, headers: Headers (
-            userAgent: discordUserAgent,
             token: Globals.token,
             bodyObject: body,
             type: .PATCH,
