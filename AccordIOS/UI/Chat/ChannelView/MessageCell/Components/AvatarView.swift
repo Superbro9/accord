@@ -12,6 +12,7 @@ struct AvatarView: View {
     var author: User
     var guildID: String
     var avatar: String?
+    @State private var popup = false
     
     var animated: Bool {
              (self.avatar ?? author.avatar)?.prefix(2) == "a_"
@@ -36,9 +37,21 @@ struct AvatarView: View {
     @ViewBuilder
     var body: some View {
         if animated {
-            GifView(imageURL)
+            Button(action: {
+                popup = true
+            }) {
+                GifView(imageURL).drawingGroup()
+            }.popover(isPresented: $popup, content: {
+                PopoverProfileView(user: author, guildID: self.guildID)
+            }).buttonStyle(.borderless)
         } else {
-            Attachment(imageURL).equatable()
+            Button(action: {
+                popup = true
+            }) {
+                Attachment(imageURL).drawingGroup()
+            }.popover(isPresented: $popup, content: {
+                PopoverProfileView(user: author, guildID: self.guildID)
+            }).buttonStyle(.borderless)
         }
     }
 }
